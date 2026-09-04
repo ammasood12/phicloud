@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiCloud</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">	
+    <!-- Javascript Functions -->
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/wechat-detector.js"></script>
+</head>
+<body>
+    <div class="guide-card">
+
+		<!-- Header -->
+        <div class="header" id="header">
+			<div class="next-btn-placeholder"></div>
+			
+			<div class="header-center">
+				<div class="header-icon">					
+					<div class="card-image-wrapper" style="height:100%;">
+						<img src="img/logo.png" alt="PhiCloud" class="app-logo">
+					</div>
+				</div>
+				<div>
+					<h1>PhiCloud Guide</h1>
+					<p></p>
+				</div>
+			</div>
+					
+			<!-- <button class="next-btn" onclick="nextStep()" id="nextBtnTop">Next →</button> -->
+			<div class="next-btn-placeholder"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="section-title">
+				<div class="section-title-left">
+					<i class="fas fa-info-circle"></i>
+					<span>Select option</span>
+				</div>
+				<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+			</div>
+            <!----
+			<div class="info-box-alert">	
+				<i class="fa-solid fa-triangle-exclamation"></i>
+				<div>2026-04-25: Check <strong>April 2026, Hot Fix</strong> settings in <b>Help Section </b> to resolve connection issues.</div>	
+			</div>
+  
+	
+			<div class="info-box">	
+					<ul class="no-dots-list">
+						<li><b>Connect:</b> Download & Connect (step-by-step)</li>
+						<li><b>Guide:</b> How to use the app</li>
+						<li><b>Help:</b> Solve your problems</li>
+					</ul>
+			</div>
+            --> 
+
+            <!-- Device Grid -->
+            <div class="device-grid">
+                <div class="device-card" onclick="handleProceed('packages')" id="card-">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <h3>Packages</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('connect_now')" id="card-connect">
+                    <i class="fa-solid fa-globe"></i>
+                    <h3>Connect Device</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('guide')" id="card-guide">
+                    <i class="fa-solid fa-book-open"></i>
+                    <h3>How to use App</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('help')" id="card-">
+                    <i class="fa-solid fa-wrench"></i>
+                    <h3>Solve Problems</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('faq')" id="card-">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <h3>FAQ</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('downloads')" id="card-downloads">
+                    <i class="fa-solid fa-download"></i>
+                    <h3>Downloads</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('terms')" id="card-terms">
+                    <i class="fas fa-file-contract"></i>
+                    <h3>Terms</h3>
+                </div>
+				<!--
+                <div class="device-card disabled" onclick="handleProceed('')" id="card-">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <h3>FAQ</h3>
+                </div>
+				-->
+            </div>
+            <!-- Quick Links -->
+            <div class="footer-links">
+                <i class="fas fa-bolt" style="color: #818bff;"></i>
+                Quick Connect: <br/>
+                <a href="app_guide.html?page=home&app=clashmi&device=android&version=android13"><i class="fab fa-android"></i> Android 13+</a>
+                <a href="app_guide.html?page=home&app=flclash&device=android&version=android12"><i class="fab fa-android"></i> Android ≤12</a>
+                <a href="app_guide.html?page=home&app=clashmi&device=ios"><i class="fab fa-apple"></i> iOS</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=windows"><i class="fab fa-windows"></i> Windows</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=linux"><i class="fab fa-linux"></i> Linux</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=mac&version=apple"><i class="fas fa-laptop"></i> MacOS (M-Series)</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=mac&version=intel"><i class="fas fa-laptop"></i> MacOS (intel)</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+		// Proceed to next guide
+		window.handleProceed = function(page) {
+			if (!page) return;
+			let url = ``;			
+			if (page === 'downloads')	{
+				url += `apps_list.html?page=downloads`;
+			} else {		
+				url += `${page}.html`;
+			}
+			window.location.href = url;
+		};
+
+		// nextButton.disabled = true;
+	</script>
+</body>
+</html>

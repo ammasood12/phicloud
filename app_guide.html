@@ -1,0 +1,3880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiCloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        #header2 {
+            position: static;
+            top: auto;
+            z-index: auto;
+        }
+    </style>
+    <!-- Javascript Functions -->
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/download-links.js"></script>
+    <script src="scripts/wechat-detector.js"></script>
+	<script>
+		window.VERSIONS_READY = loadVersions();
+	</script>
+</head>
+<body>
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+	<div class="guide-card" id="guideCard">
+			
+		<!-- <div style="align-items:center;"> -->
+			<!-- <button class="header btn btn-primary next-btn" onclick="nextStep()" id="" style="margin-left: 40%; align:center;"> -->
+					<!-- Home <i class="fas fa-home"></i> -->
+			<!-- </button> -->
+		<!-- </div> -->
+		
+        <!-- Header will be filled by JS -->
+		
+        <div class="header" id="header"></div>
+        <div class="header" id="header2"></div>
+        
+		<!-- Content will be filled by JS -->
+        <div class="content" id="content"></div>
+    </div>
+
+    <script>
+	(async function () {
+		// Confirm app versions are fetched
+		await window.VERSIONS_READY;
+	
+        // Get device from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const device = urlParams.get('device') || 'android';
+        const app = urlParams.get('app') || 'clashmi';
+        const app_option = urlParams.get('app_option') || 'download';
+        const getVersion = urlParams.get('version') || 'android13';
+		const page = urlParams.get('page') || 'home'; 
+		const option = urlParams.get('option') || '';
+        const substep = urlParams.get('substep') || '0'; // Current substep index
+		
+		
+		await window.VERSIONS_READY;
+		
+        // Image paths for each device and step
+        const deviceImages = {
+            android13: [
+				'img/clashmi/clashmi-logo.jpg',
+				'img/clashmi/clashmi-install.jpg',
+				'img/clashmi/clashmi-import.jpg',
+				'img/clashmi/clashmi-connect.jpg',
+            ],
+            android12: [
+				'img/flclash/flclash-logo.jpg',
+				'img/flclash/flclash-install.jpg',
+				'img/flclash/flclash-import.jpg',
+				'img/flclash/flclash-connect.jpg'
+            ],
+            ios: [
+				'img/ios/download-screen.jpg',
+				'img/ios/install-screen.jpg',
+				'img/clashmi/clashmi-import.jpg',
+				'img/clashmi/clashmi-connect.jpg'
+            ],
+            clashverge: [
+                'img/clashverge/clashverge-logo.jpg',
+                'img/clashverge/win-install.jpg',
+				'img/clashverge/macos-install.jpg',                
+                'img/clashverge/linux-install.jpg',
+                'img/clashverge/clashverge-import.jpg',
+                'img/clashverge/clashverge-connect.jpg',
+				'https://placehold.co/600x200/667eea/white?text=Windows+Download',
+            ]
+        };
+
+        // Modal functions
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = imageSrc;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+		// At the end of your async function, after defining openModal and closeModal
+		window.openModal = openModal;
+		window.closeModal = closeModal;
+
+		// generic html
+		const changeServerNotesHTML = `
+				<div class="info-box">
+					<div class="substep-container ">
+						<details class="accordion-item" style="margin: 10px 0;">
+							<summary class="substep-title" style="cursor: pointer; list-style: none;">
+								<i class="fa-solid fa-server"></i> Server Selection Guide
+								<i style="font-size:14px;">(Click to Open)</i>
+							</summary>
+							<div style="substep-content">
+								<ul class="no-dots-list">
+									<li>&nbsp;</li>
+									<li><b>⚙️SmartSelect</b> –– Auto find working Server <b style="color:green;">(recommended)</b></li>	
+									<li><b>♻️AutoSelect</b> ––– Auto select fast server</li>
+									<li><b>Country Group</b> –– Connect server only in specific country</li>
+									<li><b>Country Server</b> –– only connect with one server</li>		
+									<li>&nbsp;</li>
+									<li><b>Important Notes:</b></li>
+									<li><b>Manually selected server</b> will <b style="color:#cb0000;">not change</b> automatically.</li>
+									<li><b>TikTok</b>, <b>ChatGPT</b> and <b>Claude</b> are <b style="color:#cb0000;">not available</b> in <b>Hong Kong</b>.</li>
+								</ul>
+							</div>
+						</details>
+					</div>
+				</div>
+				`;
+
+		// Notes for Universities
+		const HitszNotesHTML = `		
+				<div class="substeps-container ">
+					<div class="substep-item">
+						<details class="accordion-item">
+							<summary class="substep-title" style="cursor: pointer; list-style: none;">
+								<div class="substep-header">
+									<span class="substep-number"><i class="fa-solid fa-info"></i></span>
+									<span class="substep-title">Note for HIT-SZ students
+										<i style="font-size:14px;"> (Click to Open)</i>
+									</span>
+								</div>
+							</summary>
+							<div class="substep-content show">								
+								<div class="notice-box">
+									<i class="fa-solid fa-info-circle"></i>
+									If you have installed University's VPN software, disable it running on startup automatically.
+								</div>
+								<div class="substep-text">								
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>open <b>RUN</b> (search in windows menu or use shortcut WindowsKey+R)</li>
+											<li>write <b>MSCONFIG</b></li>
+											<li>Press <b>Enter</b> OR click <b>ok</b></li>
+										</ol>
+									</div>
+								</div>
+								<img src="img/clashverge/hitsz/hitsz-note-1.png" alt="Open MSCONFIG" class="substep-image" onclick="openModal('img/clashverge/hitsz/hitsz-note-1.png')" onerror="this.style.display='none';">
+								<div class="substep-text">					
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list">
+											<li>Open <b>Services tab</b></li>
+											<li>Check ☑ ︎<b>Hide all Microsoft services</b></li>
+											<li>Uncheck ☐ all <b>Sangfor</b> and <b>aTrust</b></li>
+											<li>click <b>OK</b> & <b>Restart</b></li>
+										</ol>
+									</div>
+								</div>
+								<img src="img/clashverge/hitsz/hitsz-note-2.png" alt="Disable SangFor &amp; aTrust" class="substep-image" onclick="openModal('img/clashverge/hitsz/hitsz-note-2.png')" onerror="this.style.display='none';">
+							</div>
+						</details>
+					</div>	
+				</div>
+				`;
+
+		const YangzhouNotesHTML_2 = `		
+				<div class="substeps-container ">
+					<div class="substep-item">
+						<details class="accordion-item">
+							<summary class="substep-title" style="cursor: pointer; list-style: none;">
+								<div class="substep-header">
+									<span class="substep-number"><i class="fa-solid fa-info"></i></span>
+									<span class="substep-title">Note for Yangzhou University
+										<i style="font-size:14px;"> (Click to Open)</i>
+									</span>
+								</div>
+							</summary>
+							<div class="substep-content show">								
+								<div class="notice-box">
+									<i class="fa-solid fa-info-circle"></i>
+									If you have installed University's VPN software, disable it running on startup automatically.
+								</div>
+								<div class="substep-text">								
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>open <b>RUN</b> (search in windows menu or use shortcut WindowsKey+R)</li>
+											<li>write <b>NCPA.CPL</b></li>
+											<li>Press <b>Enter</b> OR click <b>ok</b></li>
+										</ol>
+									</div>
+								</div>
+								<img src="img/clashverge/yzu/yzu-note-1.png" alt="Open NCPA.CPL" class="substep-image" onclick="openModal('img/clashverge/yzu/yzu-note-1.png')" onerror="this.style.display='none';">
+								<div class="substep-text">					
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list">
+											<li>Open <b>Services tab</b></li>
+											<li>Check ☑ ︎<b>Hide all Microsoft services</b></li>
+											<li>Uncheck ☐ all <b>Sangfor</b> and <b>aTrust</b></li>
+											<li>click <b>OK</b> & <b>Restart</b></li>
+										</ol>
+									</div>
+								</div>
+								<img src="img/clashverge/yzu/yzu-note-2.png" alt="Disable SangFor &amp; aTrust" class="substep-image" onclick="openModal('img/clashverge/yzu/yzu-note-2.png')" onerror="this.style.display='none';">
+							</div>
+						</details>
+					</div>	
+				</div>
+				`;
+				
+		const YangzhouNotesHTML = `
+				<div class="substeps-container ">
+					<div class="substep-item">
+						<details class="accordion-item">
+							<summary class="substep-title" style="cursor: pointer; list-style: none;">
+								<div class="substep-header">
+									<span class="substep-number"><i class="fa-solid fa-info"></i></span>
+									<span class="substep-title">Note for Yangzhou Univeristy
+										<i style="font-size:14px;"> (Click to Open)</i>
+									</span>
+								</div>
+							</summary>
+							<div class="substep-content show">
+								<div class="substep-text">
+									<div class="notice-box">
+										<ul class="no-dots-list">
+											<li>Due to <span style="color: red;">University Wlan Network restrictions</span>, make sure <b>IPv6 is enable/configured</b> on your OS.</li>
+											<li>Click to open the picture, Right Click and <b>Save</b> on your computer</li>
+										</ul>
+									</div>
+									<!--
+									<div class="info-box">										
+										<ol class="bold-numbers-list">
+											<li>Open <b>Control Panel</b> → <b>Network and Internet</b> → <b>Network & Sharing Center</b> → <b>Change Adapter Settings <i style="font-size:14px;">(left Panel)</i></b></li>
+											<li>Right Click on your Active Network/Wi-Fi Adapter → Properties</li>
+											<li>Check ☑ <b>Internet Protocol Version 6 (TCP/IPv6)</b></li>
+											<li>Select <b>Internet Protocol Version 6 (TCP/IPv6)</b> and Click <b>Properties</b></li>
+											<li>Select ◉ following & Click <b>OK</b> to save settings:
+												<ul class="no-dots-list">
+													<li>Obtain an IPv6 address automatically</li>
+													<li>Obtain DNS server address automatically</li>
+												</ul>
+											</li>
+											<li>click <b>OK</b></li>
+										</ol>
+									</div>
+									-->
+								</div>
+								<img src="img/clashverge/yzu/yzu-note.png" alt="Open MSCONFIG" class="substep-image" onclick="openModal('img/clashverge/yzu/yzu-note.png')" onerror="this.style.display='none';">
+							</div>
+						</details>
+					</div>	
+				</div>
+				`;
+
+		
+		// App Update
+		const targetVersion = getVersion === 'android13' ? '13+' : '≤12';
+		const targetRequired = device === 'ios' ? 'iOS 15+' : 'Android 13+';
+		// const targetDownload = device === 'ios' 
+			// ? getDownloadLink('app', 'ios')
+			// : getDownloadLink('app', 'android', getVersion === 'android13' ? 'version13' : 'version12');
+		const targetDownload = getDownloadLink(app, device, getVersion);
+		const targetApp_version = getAppVersion(app, device) || '0.0';
+		const targetApp_update = getReleaseDate(app, device) || '0.0';
+
+		const appUpdateButton = `
+			<div class="notice-box">
+				<i class="fa-solid fa-circle-info"></i>
+					<!-- <button class="btn-goto-update" onclick="return handleWeChatCheck(event, '${targetDownload}')"> Download v${targetApp_version}</button> -->
+					${device === 'ios' ? `if app version <b>not v${targetApp_version}</b>, click below to <b>Update from AppStore</b>`
+							: device === 'android' ? `if app version <b>not v${targetApp_version}</b>, click below to <b>Download APK</b> file`
+								: app === 'clashverge' ? `click below to <b>Download installation</b> file`
+									: '<b>Download installation</b> file'}
+			</div>
+			<div class="download-actions">
+				<!-- <span class="step-title" style="color:red;">Required: ${targetRequired}</span> -->
+				<a  class="btn btn-primary" 
+					style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+					href="${targetDownload}" 
+					target="_blank" 
+					onclick="return handleWeChatCheck(event, '${targetDownload}')">
+						<i class="fas fa-download"></i> Download v${targetApp_version}
+				</a>
+				<!--
+				<span class="device-badge" style="text-align: center;">
+					${device === 'ios' ? 'Checked at:' : 'Updated at:'} ${targetApp_update}
+				</span>
+				-->
+			</div>
+			`;
+
+        // Device configurations with substeps
+        const configs = {            
+			// Template
+			template: {				
+				name: 'Clash Mi',
+				logo: 'img/clashmi/logo.png',
+                icon: 'fab fa-android',				
+                version: getVersion === 'android13' ? '13+' : '≤12',
+                download: device === 'ios' 
+                    ? 'https://apps.apple.com/us/app/clash-mi/id6744321968'
+                    : 'https://hk.gh-proxy.org/https://github.com/KaringX/clashmi/releases/download/v1.0.18.403/clashmi_1.0.18.403_android_arm.apk',
+                steps: [
+                    { 
+                        name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image: device === 'ios' 
+								? 'img/ios/download-screen.jpg'
+								: 'img/clashmi/logo.png',
+                        imageCaption: '',
+						content: 'Download the APK file and open it',
+                        substeps: [
+                            {
+                                title: 'Open App Store',
+                                content: 'Open the App Store on your device',
+                                image: 'img/ios/app-store.jpg',
+                                note: 'Make sure you are logged in with your Apple ID'
+                            },
+                            {
+                                title: 'Search for App',
+                                content: 'Type "Clash Mi" in the search bar',
+                                image: 'img/ios/search.jpg',
+                                note: 'Look for the official app'
+                            }
+                        ]
+                    }
+                ]
+            },   
+			
+			// Clash Mi
+			clashmi: {
+				name: 'Clash Mi',
+				logo: 'img/clashmi/logo.png',
+                icon: 'fab fa-android',
+                version: getVersion === 'android13' ? '13+' : '≤12',
+                required: device === 'ios' ? 'iOS 15+' : 'Android 13+',
+                download: device === 'ios' 
+					? getDownloadLink('clashmi', 'ios')
+					: getDownloadLink('clashmi', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'noproxy'),
+                proxy_download: device === 'ios' 
+					? getDownloadLink('clashmi', 'ios')
+					: getDownloadLink('clashmi', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'proxy'),
+				app_version: getAppVersion('clashmi', device)  || '0.0',
+				app_update: getReleaseDate('clashmi', device)  || '0.0',
+                steps: [
+					// Download
+                    { 
+                        name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image:  device === 'ios' 
+								? 'img/clashmi/ios/download.jpg'  
+								: 'img/clashmi/android/clashmi-logo.png', 
+                        imageCaption: '', 
+						content:  device === 'ios' 
+								? ``
+								: ``,
+                        substeps: device === 'ios' ? [
+
+                        ] : [
+                            
+                        ]
+                    },
+                    
+					// Install	for android only				
+					...(device === 'android' ? [
+                    { 
+						name: 'install',
+                        title: 'Install',  
+						category: 'connect',
+						image: device === 'ios' 
+								? 'img/clashmi/ios/02_install.jpg'
+								: 'img/clashmi/android/install.png',
+                        imageCaption:  device === 'ios' 
+								? 'Wait for installation to complete'  
+								: 'Click on the APK file to start installation', 
+						content:  device === 'ios' 
+								? `<div class="info-box">
+										<i class="fa-regular fa-clock"></i>
+										<div>Wait for installation to complete</div>
+									</div>
+									`
+								: `
+								<div class="info-box">
+									<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+									<div>
+										<strong>Allow unknown sources:</strong> Settings → Security → enable
+									</div>
+								</div>
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Open <b>File Browser/Manager</b> app of your phone</li>
+										<li>Open <b>${app} apk</b> file, saved in Downloads folder</li>
+										<li>Click install</li>
+									</ol>
+								</div>`,
+						substeps: []
+                    }] : []),
+
+                    // Settings
+					{ 
+						name: 'startup-settings',
+                        title: 'Startup Settings',  
+						category: 'guide',
+						image: device === 'ios' ? 'img/clashmi/startup-ios.png' 
+								: device === 'android' ? 'img/clashmi/startup-android.png'
+									: '',
+                        imageCaption:  '', 
+						content:  `
+									<div class="info-box"">
+										<i class="fas fa-shield-alt""></i>
+										<div>Only when opening the app for the first time</div>
+									</div>
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+										${device === 'ios' ? `<li>Select <b>WLAN & Cellular</b></li>` : ''}
+										<li><b>Accept & Continue</b></li>
+										<li>Select <b>Language</b> & tap <b>Done</b></li>
+									</ol>
+								</div>`
+						/*		
+                        substeps: device === 'ios' ? [
+                            {
+                                title: 'Select <b>WLAN & Cellular</b>',
+                                content: '',
+								image: 'img/clashmi/ios/03_startup-internet.png',
+                                note: ''
+                            },
+                            {
+                                title: '<b>Accept & Continue</b>, Select <b>Language</b> & tap <b>Done</b>',
+                                content: '',
+								image: 'img/clashmi/startup-terms.png',
+                                note: ''
+                            }
+                        ] : [
+                            {
+                                title: '<b>Accept & Continue</b>, Select <b>Language</b> & tap <b>Done</b>',
+                                content: '',
+								image: 'img/clashmi/startup-terms.png',
+                                note: ''
+                            }
+                        ]
+						*/
+                    },
+										
+					// enable IPv6
+					{ 
+						name: 'settings',
+						title: 'Enable IPv6',  
+						category: 'connect',
+						image: 'img/clashmi/enable-ipv6.png',
+						imageCaption: '', 
+						content: `<div class="info-box" style="margin-top: 15px;">
+									<ol class="bold-numbers-list"><li>
+										Make sure you are <b>Disconnected</b> <i class="fa-solid fa-toggle-off"></i>
+									</li><li>
+										Go to <b>Core Settings</b>
+									</li><li>
+										Find and enable <b>IPv6</b>
+									</li></ol>
+								</div>`,
+						substeps:  []
+					},
+
+					// Import Profile
+                    { 
+						name: 'import-profile', 
+                        title: 'Import Profile',  
+						category: 'connect',
+						image: 'img/clashmi/import-profile.png',
+                        imageCaption: '',
+						content:  `	<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px; color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Make sure, no VPN app is connected.</strong></div>
+									</div>
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li>
+											<li>Click on ➕ <b>sign</b></li>
+											<li>Tap <b><i class="fa-regular fa-clipboard"></i> Import From Clipboard</b></li>
+											<li>Click ✔️</li>
+										</ol>
+									</div>`,
+                        substeps: [
+                            /*
+							{
+                                title: 'Copy your PhiCloud profile link',
+                                content: '',
+                                image: 'img/import-copy.png',
+                                note: 'This link is for example only, copy your profile link'
+                            },
+                            {
+                                title: 'Paste and Import',
+                                content: `<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Click on ➕ <b>sign</b>
+											</li><li>
+												Tap <b><i class="fa-regular fa-clipboard"></i> Import From Clipboard</b>
+											</li><li>
+												Click <b>URL</b>
+											</li></ol>
+										</div>`,
+                                image: 'img/clashmi/import-profile.png',
+                                note: ''
+                            },                            
+							{
+                                title: 'Paste and Import',
+                                content: `Link will be automatically pasted, <b>Tap ✔️ to import</b>
+										<div class="info-box" style="margin-top: 15px;">
+											<i class="fas fa-tools" style="color: #818bff;"></i>
+											<div>
+												<strong> if you are unable to import, contact support</strong>
+											</div>
+										</div>`,
+                                image: 'img/clashmi/import-2.png',
+                                note: 'Wait for the profile to download'
+                            }
+							*/
+                        ]
+                    },
+					
+					// Connect
+                    { 
+						name: 'connect', 
+                        title: 'Connect',  
+						category: 'connect',
+						image: device === 'ios' 
+								? 'img/clashmi/connect-all-ios.png'
+								: 'img/clashmi/connect-all-android.png',
+                        imageCaption: '',
+						content: `<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Click on <b style="color:#2D8BD6;">PhiCloud Profile</b> to select</li>
+										<li>Press <i class="fa-solid fa-chevron-left"></i> to <b>Go Back</b></li>
+										<li>Make sure <b>Rule mode</b> is selected</li>
+										<li>Enable <i class="fa-solid fa-toggle-on"></i> to connect</b></li>
+										<li>Press <b>OK</b> or <b>Allow</b> to allow VPN configuration</li>
+									</ol>
+								</div>`,
+                        substeps: [
+                        ]
+                    },
+                    
+					// Refresh Servers
+					{ 
+						name: 'refresh-servers', 
+                        title: 'Refresh Servers',  
+						category: 'guide',				
+						image: 'img/clashmi/refresh-servers.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Proxy Tab</b>
+									</li>
+									</li><li>
+										Click <i class="fa-solid fa-bolt"></i> to refresh all servers
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.
+								</div>`,
+                        substeps: [
+
+                        ]
+                    },
+					
+					// Change Server
+					{ 
+						name: 'change-server', 
+                        title: 'Change Server',  
+						category: 'connect',				
+						image: 'img/clashmi/refresh-change-server.png',
+                        imageCaption: '',						
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Connect <i class="fa-solid fa-toggle-on"></i></li>
+										<li>Open <b>Proxy Tab</b></li>
+										<li>Press <i class="fa-solid fa-bolt-lightning"></i> to <b>Refresh Servers</b> <i style="font-size:15px;">(Optional)</i></li>
+										<li>Open <b>🚀Global (PhiCloud)</b> Group</li>
+										<li>Select Group/Server with numbers accordingly</li>
+									</ol>
+								</div>
+								${changeServerNotesHTML}
+								`,						
+                        substeps: []
+                    },
+					
+					// Update Profile
+					{ 
+						name: 'update-profile', 
+                        title: 'Update Profile',  
+						category: 'guide',					
+						image: 'img/clashmi/update-profile-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Profiles Tab</b>
+									</li><li>
+										Click <i class="fa-solid fa-cloud-arrow-down"></i> to update profile.
+									</li><li>
+										Re-Connect (Disconnct <i class="fa-solid fa-toggle-off"></i> & then Connect <i class="fa-solid fa-toggle-on"></i>)
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									<strong style="color: #cb0000;">Don’t keep pressing <i class="fa-solid fa-cloud-arrow-down"></i> repeatedly & Wait for update to complete.</strong>.
+								</div>`,
+                        substeps: [
+							{
+								title: 'Problem – Can’t Update Profile',
+                                content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disonnect <i class="fa-solid fa-toggle-off"></i>
+										</li><li>
+											Open <b>Profiles Tab</b>
+										</li>
+										</li><li>
+											Click <i class="fa-solid fa-cloud-arrow-down"></i> to update profile.
+										</li><li>
+											Connect <i class="fa-solid fa-toggle-on"></i>
+										</li></ol>
+									</div>`,
+                                image: 'img/clashmi/update-profile-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Check Expiry
+					{ 
+						name: 'check-expiry', 
+                        title: 'Check Expiry & Data Usage',  
+						category: 'guide',
+						image: 'img/clashmi/check-expiry.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<div>
+										<ul class="no-dots-list">
+											<li><b>Methods to Check</b></li>
+										</ul>
+										<ol class="bold-numbers-list">
+											<li>Profile details on <strong>ClashMi Homepage</strong></li>
+											<li>Profile details in <strong>Profiles</strong> tab</li>
+											<li><b>Proxy tab</b> -> 🚀<b>Global</b> -> <b>Servers list</b></li>
+										</ol>
+									</div>
+								</div>
+								`,
+                        substeps: []
+                    },
+					
+					// Update App
+					{ 
+						name: 'update-app', 
+                        title: 'Update App',  
+						category: 'guide',											
+						image: 'img/clashmi/app-update-check.png',
+                        imageCaption: '',
+						content: `
+							<!--
+							<div class="info-box">
+								<div>
+									<ul class="no-dots-list">
+										<li><b>Check App Update Availability</b></li>
+										<li>Scroll Down on <strong>Clash Mi</strong> Homepage to check update availability
+									</ul>
+								</div>
+							</div>
+							<img src="img/clashmi/update-available.png" class="step-image" onerror="this.style.display='none';">				
+							-->
+							<div class="info-box">
+								<div>
+									<ul class="no-dots-list">
+										<li><b>Check App version</b></li>
+									</ul>
+									<ol class="bold-numbers-list">
+										<li>Scroll Down & Open <b>About</b></li>
+									</ol>
+								</div>
+							</div>
+							${appUpdateButton}
+							`,	
+			
+                        substeps: []
+                    },
+
+					// Per App Proxy
+					{ 
+						name: 'per-app-proxy', 
+                        title: 'Per App Proxy (Only for Android)',  
+						category: 'guide',					
+						image: device === 'ios' 
+								? ''
+								: 'img/clashmi/android/per-app-proxy.png',
+                        imageCaption: '',
+						content: device === 'ios'
+								? ``
+								: `	<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Scroll Down & Open <strong>Core Settings</strong> on Homepage</li>
+											<li>Open <b>Per App Proxy</b></li>
+											<li>Enable <strong>Per App Proxy</strong></li>
+											<li>Select <b>Apps</b> to exclude</li>
+										</ol>
+									</div>
+									`,
+                        substeps: []
+                    },
+				]
+            },
+			
+			// Shadow Rocket
+			shadowrocket: {
+				name: 'ShadowRocket',
+				logo: 'img/shadowrocket/logo.png',
+                icon: 'fab fa-android',
+                version: getVersion === 'android13' ? '13+' : '≤12',
+                required: device === 'ios' ? 'iOS 13+' : '',
+                download: getDownloadLink('shadowrocket', 'ios'),
+				app_version: getAppVersion('shadowrocket', device)  || '0.0',
+				app_update: getReleaseDate('shadowrocket', device)  || '0.0',
+                steps: [
+					
+					// Download
+                    { 
+                        name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image:  'img/shadowrocket/download.png', 
+                        imageCaption: '', 
+						content:  `	<div class="info-box" style="color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Shadow Rocket is paid app (not free to download)</strong></div>
+									</div>
+									`,
+                        substeps: device === 'ios' ? [
+
+                        ] : [
+                           
+                        ]
+                    },
+                    
+					// Install	disabled		
+					...(device === 'disabled' ? [
+                    { 
+						name: 'install',
+                        title: 'Install',  
+						category: 'connect',
+						image: 'img/shadowrocket/ios/02_install.jpg',
+                        imageCaption: 'Wait for installation to complete',
+						content:  device === 'ios' 
+								? `<div class="info-box">
+										<i class="fa-regular fa-clock"></i>
+										<div>Wait for installation to complete</div>
+									</div>
+									`
+								: `
+								<div class="info-box">
+									<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+									<div><strong>Allow unknown sources:</strong> Settings → Security → enable</div>
+								</div>
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Open File Browser App of your phone
+									</li><li>
+										Open Clash Mi file, saved in Downloads folder
+									</li>
+									</li><li>
+										Click install
+									</li></ol>
+								</div>`,								
+                        substeps: device === 'ios' ? [] : []
+                    }] : []),
+					
+					// Settings
+					{ 
+						name: 'settings',
+                        title: 'Startup Settings',  
+						category: 'connect',
+						image: 'img/shadowrocket/startup-settings.png',
+                        imageCaption:  '', 
+						content:  `<div class="info-box">
+										<div>
+										<ul class="no-dots-list">							
+											<li><b>Change Connectivity Test</b></li>
+											<ol class="bold-numbers-list">
+												<li>Tap on <i class="fa-regular fa-circle"></i> icon</li>
+												<!-- <li>Tap on <i class="fa-solid fa-t"></i> or <i class="fa-solid fa-i"></i> icon</li> -->
+												<li>Make sure <b>TCP</b> is selected</li>
+											</ol>
+										</ul>
+										&nbsp;
+										<ul class="no-dots-list">							
+											<li><b>Enable Profile Auto-Update</b></li>
+											<ol class="bold-numbers-list">
+												<li>Open <i class="fa-solid fa-cog"></i> <b>Settings</b> tab</li>
+												<li>Scroll down &amp; Open <b>Subscriptions</b> in update section</li>
+												<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Auto Background Update</b></li>
+											</ol>
+										</ul>
+										</div>
+									</div>`,
+                        substeps: []
+                    },			
+					
+					// Import Profile
+                    { 
+						name: 'import-profile', 
+                        title: 'Import Profile',  
+						category: 'connect',
+						image: 'img/shadowrocket/import-profile.png',
+                        imageCaption: '',
+						content:  `	<div class="info-box">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px; color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Make sure, no VPN app is connected.</strong></div>
+									</div>
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li>
+											<li>Tap on ➕ icon</li>
+											<li>Select <b>Subscribe</b></li>
+											<li>Paste <b>YOUR PROFILE LINK</b></li>
+											<li>Write <b>PhiCloud</b></li>
+											<li>Tap <b>Save</b></li>
+										</ol>
+									</div>`,
+                        substeps: []
+                    },
+					
+					// Connect
+                    { 
+						name: 'connect', 
+                        title: 'Connect',  
+						category: 'connect',	
+                        image: 'img/shadowrocket/connect-1.png',
+                        imageCaption: '',
+						content: `	<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Enable <i class="fa-solid fa-toggle-on"></i> to Connect</li>
+											<li>Click <b>OK</b> <i style="font-size:15px;">if asked</i></li>
+											<li>Click <b>Allow</b> <i style="font-size:15px;">if asked</i></li>
+											<li>Press <b>Connectivity Test</b></li>
+											<li>Select Server from <b>PhiCloud</b> <br>
+												🟡 <i style="font-size:15px">Yellow Dot shows the selected server.</i>
+											</li>
+										</ol>
+									</div>`,
+                        substeps: []
+                    },
+                    
+					// Refresh Servers
+					{ 
+						name: 'refresh-servers', 
+                        title: 'Refresh Servers',  
+						category: 'guide',				
+						image: 'img/shadowrocket/refresh-servers.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Tap <b>Connectivity Test</b> to refresh all servers
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.
+								</div>`,
+                        substeps: [
+
+                        ]
+                    },
+					
+					// Change Server
+					{ 
+						name: 'change-server', 
+                        title: 'Change Server',  
+						category: 'connect',				
+						image: 'img/shadowrocket/change-server.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Connect <i class="fa-solid fa-toggle-on"></i></li>
+										<li>Tap to select <b>Server</b><br>
+										🟡 <i style="font-size:15px">Yellow Dot shows the selected server.</i>
+										</li>
+									</ol>
+								</div>				
+								<div class="substep-note">
+									<b>Notes</b>: <br>
+									<br>
+									<b>♻️AutoSelect</b> --- Auto select best available server <b style="color:green;">(recommended)</b>
+									<br>
+									<b>Country Server</b> -- only connect with one server<br>
+									<br>
+									<b>ChatGPT</b> or <b>TikTok</b> are <b style="color:#cb0000;">not available</b> in <b>HongKong</b>.
+									<br>
+									<b>Manually selected</b> server will not automatically change.
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-info-circle"></i>
+									Refresh Servers, if you can't see any numbers in front of servers
+								</div>
+						`,
+                        substeps: [
+                           
+                        ]
+                    },
+					
+					// Update Profile
+					{ 
+						name: 'update-profile', 
+                        title: 'Update Profile',  
+						category: 'guide',					
+						image: 'img/shadowrocket/update-profile-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Click <i class="fa-solid fa-arrows-rotate"></i> to update profile.
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									<strong style="color: #cb0000;">Don’t keep pressing <i class="fa-solid fa-cloud-arrow-down"></i> repeatedly & Wait for update to complete.</strong>.
+								</div>`,
+                        substeps: [
+							{
+								title: 'Problem – Can’t Update Profile',
+                                content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disonnect <i class="fa-solid fa-toggle-off"></i>
+										</li><li>
+											Click <i class="fa-solid fa-arrows-rotate"></i> to update profile.
+										</li><li>
+											Connect <i class="fa-solid fa-toggle-on"></i>
+										</li></ol>
+									</div>`,
+                                image: 'img/shadowrocket/update-profile-2.png',
+                                note: ''
+							}
+                        ]
+                    },					
+					
+					// Check Expiry
+					{ 
+						name: 'check-expiry', 
+                        title: 'Check Expiry & Data Usage',  
+						category: 'guide',
+						image: '',
+                        imageCaption: '',
+						content: `
+								`,
+                        substeps: [
+							{
+								title: 'App Homepage',
+                                content: ``,
+								image: 'img/shadowrocket/check-expiry.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Update App
+					{ 
+						name: 'update-app', 
+                        title: 'Update App',  
+						category: 'guide',					
+						image: '',
+                        imageCaption: '',
+						content: `
+							<div class="info-box" style="margin-top: 15px;">
+								<i class="fas fa-download" style="color: #818bff;"></i>
+								<div>
+									<strong> Goto Download page to get APK file</strong>
+								</div>
+							</div>
+							<div class="download-actions">
+								<button class="btn btn-primary" onclick="window.open('app_guide.html?page=${page}&device=${device}&version=${getVersion}&app=${app}&app_option=download', '_self')">
+								<i class="fas fa-download"></i> Download Page
+								</button>
+							</div>`,
+                        substeps: device === 'ios' ? [
+
+                        ] : [
+								{
+									title: 'OR Update Manually',
+									content: `
+										<div class="info-box" style="margin-top: 15px;">
+											<i class="fas fa-download" style="color: #818bff;"></i>
+											<div>
+												<strong> Goto Download page to get APK file</strong>
+											</div>
+										</div>
+										<button class="btn btn-primary" onclick="window.open('app_guide.html?page=${page}&device=${device}&version=${getVersion}&app=${app}&app_option=download', '_self')">
+											<i class="fas fa-download"></i> Download Page
+										</button>`,
+									image: '',
+									note: ''
+								}
+                        ]
+                    },					
+					
+				]
+            },
+			
+			// Hiddify
+			hiddify: {
+				name: 'Hiddify',
+				logo: 'img/hiddify/logo.png',
+                icon: 'fab fa-android',
+                version: getVersion === 'android13' ? '13+' : '≤12',
+                required: device === 'ios' ? 'iOS 15+' : 'Android 7+',
+                download: device === 'ios' 
+					? getDownloadLink('hiddify', 'ios')
+					: getDownloadLink('hiddify', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'noproxy'),
+                proxy_download: device === 'ios' 
+					? getDownloadLink('hiddify', 'ios')
+					: getDownloadLink('hiddify', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'proxy'),
+				app_version: getAppVersion('hiddify', device)  || '0.0',
+				app_update: getReleaseDate('hiddify', device)  || '0.0',
+                steps: [
+					
+					// Download
+                    { 
+                        name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image: device === 'ios' 
+								? 'img/hiddify/ios/01_download.png'  
+								: 'img/hiddify/hiddify-logo.png',
+                        imageCaption:  '', 
+						content:  device === 'ios' 
+								? ``
+								: '',
+                        substeps: device === 'ios' ? [
+
+                        ] : [
+                            {
+                                title: 'Download from Google <b>PlayStore</b>',
+                                content: `
+								<div class="download-actions">
+									<button class="btn btn-primary" onclick="window.open('https://play.google.com/store/apps/details?id=app.hiddify.com', '_blank')">
+									<i class="fas fa-download"></i> PlayStore Download </button>
+								</div>
+								`,
+								image: '',
+                                note: ''								
+                            }
+                        ]
+                    },
+                    
+                    					
+					// Install	for android only				
+					...(device === 'android' ? [
+                    { 
+						name: 'install',
+                        title: 'Install',  
+						category: 'connect',
+						image: device === 'ios' 
+								? 'img/hiddify/ios/02_install.png'
+								: 'img/hiddify/android/install.png',
+                        imageCaption:  '', 
+						content:  device === 'ios' 
+								? `<div class="info-box">
+										<i class="fa-regular fa-clock"></i>
+										<div>Wait for installation to complete</div>
+									</div>
+									`
+								: `
+								<div class="info-box">
+									<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+									<div>
+										<strong>Allow unknown sources:</strong> Settings → Security → enable
+									</div>
+								</div>
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Open <b>File Browser/Manager</b> app of your phone</li>
+										<li>Open <b>${app} apk</b> file, saved in Downloads folder</li>
+										<li>Click install</li>
+									</ol>
+								</div>`,
+								
+                        substeps: device === 'ios' ? [] : []
+                    }] : []),
+
+					// Startup Settings
+					...(device === 'disabled' ? [
+					{ 
+						name: 'settings',
+						title: 'Startup Settings',  
+						category: 'connect',
+						image: '',
+						imageCaption: '', 
+						content: device === 'ios' 
+							? `<div class="info-box">
+									<i class="fas fa-shield-alt"></i>
+									<div>Only when opening the app for the first time</div>
+								</div>`
+							: '',
+						substeps: device === 'ios' ? [
+                            {
+                                title: 'Allow Services',
+								content: `										
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Allow VPN Connection
+											</li><li>
+												Select <b>WLAN & Cellular</b>
+											</li></ol>
+										</div>`,
+											
+								image: 'img/hiddify/ios/allow-services.png',
+                                note: ''                                
+                            },
+                            {
+                                title: 'Select <b>Language</b> & Tap <b>Done</b>',
+                                content: `										
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Tap <i class="fa-solid fa-language"></i> to change language
+											</li>
+											<li>
+												Tap <i class="fa-solid fa-location-dot"></i> & Select <b>China</b>
+											</li>
+											<li>
+												Tap <i class="fa-solid fa-rocket"></i> <b>Start</b>
+											</li></ol>
+										</div>`,
+								image: 'img/hiddify/startup-terms.png',
+                                note: ''
+                            }
+                        ] : [
+                            {
+                                title: 'Select <b>Language</b> & Tap <b>Done</b>',
+                                content: `										
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Tap <i class="fa-solid fa-language"></i> to change language
+											</li>
+											<li>
+												Tap <i class="fa-solid fa-location-dot"></i> & Select <b>China</b>
+											</li>
+											<li>
+												Tap <i class="fa-solid fa-rocket"></i> <b>Start</b>
+											</li></ol>
+										</div>`,
+								image: 'img/hiddify/startup-terms.png',
+                                note: ''
+                            }
+                        ]
+						}] : []),
+					
+					// Region Settings
+					{ 
+						name: 'dns-settings',
+						title: 'Region Settings',  
+						category: 'connect',
+						image: 'img/hiddify/reset-region.png',
+						imageCaption: '', 
+						content: `
+							<div class="info-box">
+								<ol class="bold-numbers-list"><li>
+									Open <b>Settings</b>
+								</li><li>
+									Click on <b>three dots</b>
+								</li><li>
+									Click <b>Reset Options</b>
+								</li><li>
+									Open <b>Routing</b>
+								</li><li>
+									Change to <b>China</b>
+								</li></ol>
+							</div>
+							`,
+						substeps: [
+                            /*
+							{
+                                title: 'Reset Options',
+								content: `										
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <b>Settings</b>
+										</li><li>
+											Click on <b>three dots</b>
+										</li><li>
+											Click <b>Reset Options</b>
+										</li></ol>
+									</div>`,
+											
+                                image: 'img/hiddify/reset-options.png',
+                                note: ''                                
+                            },
+                            {
+                                title: 'Region Settings',
+								content: `										
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <b>Settings</b>
+										</li><li>
+											Open <b>Routing</b>
+										</li><li>
+											Change to <b>China</b>
+										</li></ol>
+									</div>`,
+											
+								image: 'img/hiddify/check-region.png',
+                                note: ''                                
+                            },							
+                            {
+                                title: 'DNS Settings',
+                                content: `										
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <b>Settings</b>
+										</li><li>
+											Open <b>DNS</b>
+										</li><li>
+											Remote DNS: <b>https://1.1.1.1/dns-query</b>
+										</li><li>
+											Remote DNS domain strategy: <b>prefer IPv4</b>
+										</li><li>
+											Enable fake DNS: <i class="fa-solid fa-toggle-off"></i> <b>disabled</b>
+										</li><li>
+											Outbound Server Resolver (Direct): <b>local</b>
+										</li><li>
+											Outbound Domain strategy: <b>prefer IPv4</b>
+										</li></ol>
+									</div>`,
+								image: 'img/hiddify/change-dns.png',
+                                note: ''
+                            }
+							*/
+                        ]
+					},
+					
+					// Import Profile
+                    { 
+						name: 'import-profile', 
+                        title: 'Import Profile',  
+						category: 'connect',
+						image: 'img/hiddify/import-1.png',
+                        imageCaption: '',
+						content:  `	<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px; color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Make sure, no VPN app is connected.</strong></div>
+									</div>									
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li>
+											<li>Tap on ➕ icon</li>
+											<li>Select <b>Clipboard</b></li>
+										</ol>
+									</div>`,
+                        substeps: []
+                    },
+					
+					// Connect
+                    { 
+						name: 'connect', 
+                        title: 'Connect',  
+						category: 'connect',
+						image: device === 'ios' 
+								? 'img/hiddify/connect-1.png'
+								: 'img/hiddify/connect-android.png',
+                        imageCaption: '',
+						content: `										
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Make sure the correct profile is selected</li>
+										<li>Tap <b>connect</b> to turn on</li>
+										${device === 'android' ? `<li>Tap <b>Allow</b> for VPN connection permission</li>` : ``}
+									</ol>
+								</div>`,
+                        substeps: []
+                    },
+                    
+					// Refresh Servers
+					{ 
+						name: 'refresh-servers', 
+                        title: 'Refresh Servers',  
+						category: 'guide',				
+						image: 'img/hiddify/refresh-servers.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Proxy Tab</b>
+									</li>
+									</li><li>
+										Click <i class="fa-solid fa-bolt"></i> to refresh all servers
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.
+								</div>`,
+                        substeps: [
+
+                        ]
+                    },
+					
+					// Change Server
+					{ 
+						name: 'change-server', 
+                        title: 'Change Server',  
+						category: 'connect',				
+						image: 'img/hiddify/change-server-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Connect <i class="fa-solid fa-toggle-on"></i></li>
+										<li>Open <b>Proxy Tab</b></li>										
+										<li>Select <b>Server</b></li>
+									</ol>
+								</div>						
+								<div class="substep-note">			
+									<ul class="no-dots-list">
+										<li><b>Notes</b>:</li>
+										<li><b>Balance</b> --- <b style="color:red;">Do not use. will cause problems and spend more data</b></li>
+										<li><b>lowest</b> --- Auto select best available server <b style="color:green;">(recommended)</b></li>	
+										<li><b>Country Server</b> -- only connect with one server</li>						
+										<li>&nbsp;</li>
+										<li><b>Important Notes:</b></li>
+										<li><b>Manually selected server</b> will <b style="color:#cb0000;">not change</b> automatically.</li>
+										<li><b>TikTok</b>, <b>ChatGPT</b> and <b>Claude</b> are <b style="color:#cb0000;">not available</b> in <b>Hong Kong</b>.</li>
+									</ul>
+								</div>
+								`,
+                        substeps: []
+                    },
+					
+					// Update Profile
+					{ 
+						name: 'update-profile', 
+                        title: 'Update Profile',  
+						category: 'guide',					
+						image: 'img/hiddify/update-profile-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Click <i class="fa-solid fa-clock-rotate-left"></i> to update profile.
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									<strong style="color: #cb0000;">Don’t keep pressing <i class="fa-solid fa-clock-rotate-left"></i> repeatedly & Wait for update to complete.</strong>.
+								</div>`,
+                        substeps: [
+							{
+								title: 'Problem – Can’t Update Profile',
+                                content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disonnect <i class="fa-solid fa-toggle-off"></i>
+										</li><li>
+											Click <i class="fa-solid fa-clock-rotate-left"></i> to update profile.
+										</li></ol>
+									</div>`,
+                                image: 'img/hiddify/update-profile-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Check Expiry
+					{ 
+						name: 'check-expiry', 
+                        title: 'Check Expiry & Data Usage',  
+						category: 'guide',
+						image: '',
+                        imageCaption: '',
+						content: `
+								`,
+                        substeps: [
+							{
+								title: 'App Homepage',
+                                content: ``,
+								image: 'img/hiddify/check-expiry-1.png',
+                                note: ''
+							},
+							{
+								title: 'Servers List',
+                                content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											<strong>Connect</strong> <i class="fa-solid fa-toggle-on"></i>
+										</li><li>
+											Open <strong>Proxy</strong> tab
+										</li><li>
+											Check <strong>Expiry</strong> date in the list
+										</li></ol>
+									</div>
+									`,
+								image: 'img/hiddify/check-expiry-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+										
+					// Update App
+					{ 
+						name: 'update-app', 
+                        title: 'Update App',  
+						category: 'guide',					
+						image: device === 'ios' 
+								? 'img/hiddify/ios/update.png'
+								: 'img/hiddify/android/update.png',
+                        imageCaption: '',
+						content: device === 'ios'
+								? `	<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Search <strong>Hiddify</strong> on <strong>AppStore</strong>
+										</li><li>
+											Tap <b>Update</b>
+										</li></ol>
+									</div>`
+								: `	<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Search <strong>Hiddify</strong> on <strong>PlayStore</strong>
+										</li><li>
+											Tap <b>Update</b>
+										</li></ol>
+									</div>`,
+                        substeps: device === 'ios' ? [
+
+                        ] : [
+								{
+									title: 'OR Update Manually',
+									content: `
+										<div class="info-box" style="margin-top: 15px;">
+											<i class="fas fa-download" style="color: #818bff;"></i>
+											<div>
+												<strong> Goto Download page to get APK file</strong>
+											</div>
+										</div>
+										<div class="download-actions">
+											<button class="btn btn-primary" onclick="window.open('app_guide.html?page=${page}&device=${device}&version=${getVersion}&app=${app}&app_option=download', '_self')">
+											<i class="fas fa-download"></i> Download Page
+											</button>
+										</div>`,
+									image: '',
+									note: ''
+								}
+                        ]
+                    },
+					
+					// Per App Proxy
+					{ 
+						name: 'per-app-proxy', 
+                        title: 'Per App Proxy (Only for Android)',  
+						category: 'guide',					
+						image: device === 'ios' 
+								? ''
+								: 'img/hiddify/per-app-proxy-1.png',
+                        imageCaption: '',
+						content: device === 'ios'
+								? ``
+								: `	<div class="info-box">
+										<ol class="bold-numbers-list">
+										<li>
+											Open <i class="fa-solid fa-gear"></i> <b>Settings</b>
+										</li><li>
+											Open <i class="fa-solid fa-code-compare"></i> <b>Routing</b>
+										</li><li>
+											Open <i class="fa-solid fa-table-cells"></i> <b>Per-App Proxy</b>
+										</li><li>
+											Open <b>Bypass</b>
+										</li><li>
+											Select <b>Do not proxy selected apps</b>
+										</li><li>
+											<b>Check Apps to stop them from using proxy.</b>
+										</li>
+										</ol>
+									</div>
+									`,
+                        substeps: device === 'ios' ? [
+
+                        ] : [
+							
+                        ]
+                    },
+				]
+            },
+			
+			// FL Clash
+			flclash: {
+				name: 'FL Clash',
+				logo: 'img/flclash/logo.png',
+                icon: 'fab fa-android',
+
+                version: device === 'android' ? (getVersion === 'android13' ? '13+' : '≤12')
+							: device === 'ios' ? 'N/A'
+								: device === 'mac' ? (getVersion === 'apple' ? 'apple' : 'intel')
+									: '',
+
+                required: device === 'android' ? 'Android 10+'
+								: device === 'ios' ? 'N/A'
+									: device === 'mac' ? (getVersion === 'apple' ? 'MacOS 10.xx (M-Series Processor)' : 'MacOS 10.xx (Intel Processor)')
+											: device === 'linux' ? 'Debian/Ubuntu'
+												: device === 'windows' ? 'Windows 10/11'
+													: '',
+				download: device === 'android' ? getDownloadLink('flclash', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'noproxy')
+							: device === 'mac' ? getDownloadLink('flclash_mac', 'mac', getVersion === 'apple' ? 'apple' : 'intel')
+								: device === 'linux' ? getDownloadLink('flclash', 'linux', null, 'noproxy')
+									: device === 'windows' ? getDownloadLink('flclash', 'windows', null, 'noproxy')
+										: '',
+				proxy_download: device === 'android' ? getDownloadLink('flclash', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'proxy')
+							: device === 'mac' ? getDownloadLink('flclash_mac', 'mac', getVersion === 'apple' ? 'apple' : 'intel', 'proxy')
+								: device === 'linux' ? getDownloadLink('flclash', 'linux', null, 'proxy')
+									: device === 'windows' ? getDownloadLink('flclash', 'windows', null, 'proxy')
+										: '',
+				app_version: device === 'mac' ? getAppVersion('flclash_mac', device)
+								: getAppVersion('flclash', device)  || '0.0',
+				app_update: device === 'mac' ? getReleaseDate('flclash_mac', device)
+								: getReleaseDate('flclash', device)  || '0.0',
+                
+				steps: device === 'ios' ? 
+				// For iOS, show not supported message
+				[					
+					// Device not supported
+					{ 
+						name: 'not-supported',
+						title: 'Device Not Supported', 
+						category: '',
+						image: 'img/flclash/flclash-logo.png',
+						imageCaption:  '', 
+						content:  `Not Available for iOS`,
+						substeps: []
+					}
+				]
+				:
+				// For Android, Mac, Windows, Linux
+				[
+					
+					// Download                    
+					{ 
+						name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image: 'img/flclash/flclash-logo.png',
+						imageCaption:  '', 
+						content:  device === 'ios' 
+								? `Not Available for iOS`
+								: '',
+						substeps: []
+					},
+
+					// Install
+					...(device === 'android' ? [
+							{ 
+								name: 'install',
+								title: 'Install',  
+								category: 'connect',
+								image: 'img/flclash/android/install.png',
+								imageCaption: '', 
+								content:  device === 'ios' 
+										? `Not Available for iOS`
+										: `
+										<div class="info-box">
+											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+											<div>
+												<strong>Allow unknown sources:</strong> Settings → Security → enable
+											</div>
+										</div>
+										<div class="info-box">
+											<ol class="bold-numbers-list">
+												<li>Open <b>File Browser/Manager</b> app of your phone</li>
+												<li>Open <b>${app} apk</b> file, saved in Downloads folder</li>
+												<li>Click install</li>
+											</ol>
+										</div>`,
+										
+								substeps: device === 'ios' ? [] : []
+							}
+						] : device === 'mac' ? [
+							{ 
+								name: 'install',
+								title: 'Install',  
+								category: 'connect',
+								image: device === 'mac' 
+										? 'img/flclash/macos/install.png'  
+										: device === 'windows' 
+											? 'img/flclash/windows/install.jpg'  
+											: device === 'linux' 
+												? 'img/flclash/linux/install.jpg'
+												: 'img/flclash/flclash-logo.png',
+								imageCaption:  '',
+								content: device === 'mac' 
+										? `	<div class="info-box">
+												<ol class="bold-numbers-list"><li>
+													Double-click the downloaded .dmg file
+												</li><li>
+													Drag the <b>FL Clash</b> icon to the <b>Applications</b> folder
+												</li><li>
+													Open <b>Launchpad</b>, find and open FL Clash app from there.
+												</li></ol>
+											</div>`
+										: device === 'linux' 
+											? `	<div class="info-box">
+													<ol class="bold-numbers-list"><li>
+														Open Terminal
+													</li><li>
+														Goto Path of Downloaded .deb file
+													</li><li>
+														RUN <i>sudo apt install -y ./FlClash_x.x.x-_xxx.deb</i>
+													</li></ol>
+												</div>
+												<div class="info-box">
+													<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+													<div>use DNF or DPKG, if APT doesn’t work</div>
+												</div>`  
+											:  `
+												<div class="info-box">
+													<ol class="bold-numbers-list"><li>
+														Double-click the .exe file to start installation
+													</li><li>
+														Follow the installation wizard instructions
+													</li></ol>
+												</div>
+												<div class="info-box">
+													<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+													<div>Click <b>Yes</b> if UAC prompts</div>
+												</div>
+												`,							
+									substeps: 
+										[
+											{
+												title: 'Error while opening app?',
+												content: ``,
+												image: 'img/flclash/macos/permissions-all.png',
+												note: ''
+											}
+									]
+							}
+						] : [
+
+						]
+					),
+                    
+					// Settings
+					{ 
+						name: 'settings',
+                        title: 'Startup Settings',  
+						category: 'connect',
+						image: '',
+                        imageCaption:  '', 
+						content:  `
+									<div class="info-box"">
+										<i class="fas fa-shield-alt""></i>
+										<div>Only required once</div>
+									</div>`,
+                        substeps: 
+						[
+                            {
+                                title: 'DNS Settings', 
+                                content: `
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Go to <i class="fas fa-tools""></i> <b>Tools</b>
+											</li>
+											<li>
+												Open <i class="fas fa-wrench""></i> <b>Advance Configuration</b>
+											</li>
+											<li>
+												Open <i class="fa-solid fa-server"></i> <b>DNS</b>
+											</li>
+											<li>
+												enable <i class="fa-solid fa-toggle-on"></i> <b>Override DNS</b>
+											</li></ol>
+										</div>`,
+                                image: 'img/flclash/startup-settings.png',
+                                note: 'click on image to open'
+                            },
+                            {
+                                title: 'Enable IPv6', 
+                                content: `
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Go to <i class="fas fa-tools"></i> <b>Tools</b>
+											</li>
+											<li>
+												Open <i class="fa-solid fa-pencil"></i> <b>Basic Configuration</b>
+											</li>
+											<li>
+												enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b>
+											</li></ol>
+										</div>`,
+                                image: 'img/flclash/enable-ipv6.png',
+                                note: 'click on image to open'
+                            }
+						
+                        ]
+                    },                    
+					
+					// Import Profile
+                    { 
+						name: 'import-profile', 
+                        title: 'Import Profile',  
+						category: 'connect',
+						image: 'img/flclash/import-1.png',
+                        imageCaption: '',
+						content:  `	<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px; color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Make sure, no VPN app is connected.</strong></div>
+									</div>										
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li><li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li></li>
+											<li>Open <b>Profiles</b> tab</li>
+											<li>Click <b>URL</b></li>
+											<li>Click on ➕ <b>sign</b></li>
+											<li>Paste <b>YOUR PROFILE LINK</b></li>
+										</ol>
+									</div>`,
+                        substeps: []
+                    },
+					
+					// Connect
+                    { 
+						name: 'connect', 
+                        title: 'Connect',  
+						category: 'connect',				
+						image: 'img/flclash/connect-1.png',
+                        imageCaption: '',
+						content: `										
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Make sure the correct profile is selected</li>
+										<li>Go to <b>Dashboard</b></li>
+										<li>Tap <i class="fa-solid fa-play"></i> to Connect</li>
+										<li>Tap <b>Allow</b> for VPN connection permission </li>
+
+									</ol>
+								</div>`,
+                        substeps: []
+                    },
+                    
+					// Refresh Servers
+					{ 
+						name: 'refresh-servers', 
+                        title: 'Refresh Servers',  
+						category: 'guide',				
+						image: 'img/flclash/refresh-servers.png',
+                        imageCaption: '',
+						content: `								
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Proxies Tab</b>
+									</li>
+									</li><li>
+										Click <i class="fa-solid fa-arrow-trend-up"></i> to refresh all servers
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.
+								</div>`,
+                        substeps: [
+
+                        ]
+                    },
+					
+					// Change Server
+					{ 
+						name: 'change-server', 
+                        title: 'Change Server',  
+						category: 'connect',				
+						image: 'img/flclash/change-server-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Connect <i class="fa-solid fa-play"></i></li>
+										<li>Open <b>Proxies Tab</b></li>
+										<li>Open <b>🚀Global</b> Group</li>
+										<li>Select Group/Server with numbers accordingly</li>
+									</ol>
+								</div>											
+								${changeServerNotesHTML}
+								`,
+                        substeps: [
+                            
+                        ]
+                    },
+					
+					// Update Profile
+					{ 
+						name: 'update-profile', 
+                        title: 'Update Profile',  
+						category: 'guide',					
+						image: 'img/flclash/update-profile-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-play"></i>
+									</li><li>
+										Click <i class="fa-solid fa-arrows-rotate"></i></i> to update profile.
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									<strong style="color: #cb0000;">Don’t keep pressing <i class="fa-solid fa-clock-rotate-left"></i> repeatedly & Wait for update to complete.</strong>.
+								</div>`,
+                        substeps: [
+							{
+								title: 'Problem – Can’t Update Profile',
+                                content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disonnect <i class="fa-solid fa-play"></i>
+										</li><li>
+											Click <i class="fa-solid fa-arrows-rotate"></i> to update profile.
+										</li></ol>
+									</div>`,
+                                image: 'img/flclash/update-profile-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Check Expiry
+					{ 
+						name: 'check-expiry', 
+                        title: 'Check Expiry & Data Usage',  
+						category: 'guide',
+						image: '',
+                        imageCaption: '',
+						content: `
+								`,
+                        substeps: [
+							{
+								title: 'App Homepage',
+                                content: ``,
+								image: 'img/flclash/check-expiry-1.png',
+                                note: ''
+							},
+							{
+								title: 'Servers List',
+                                content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <strong>Proxy</strong> tab
+										</li><li>
+											Check <strong>Expiry</strong> date in the 🚀 <b>Gloabl</b> group
+										</li></ol>
+									</div>
+									`,
+								image: 'img/flclash/check-expiry-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Update App
+					{ 
+						name: 'update-app', 
+                        title: 'Update App',  
+						category: 'guide',					
+						image: 'img/flclash/android/update.png',
+                        imageCaption: '',
+						content: `	
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <i class="fa-solid fa-tools"></i> <b>Tools</b>
+										</li><li>
+											Open <i class="fa-solid fa-circle-info"></i> <b>About</b>
+										</li><li>
+											Click <b>Check for Update</b>
+										</li><li>
+											Click <b>Go Downloads</b>
+										</li><li>
+											Confirm Latest
+										</li><li>
+											Click to download APK ARMv8 file
+										</li></ol>
+									</div>`,
+                        substeps: 
+							[
+								{
+									title: 'OR Update Manually',
+									content: `
+										<div class="info-box" style="margin-top: 15px;">
+											<i class="fas fa-download" style="color: #818bff;"></i>
+											<div>
+												<strong> Goto Download page to get APK file</strong>
+											</div>
+										</div>
+										<div class="download-actions">
+											<button class="btn btn-primary" onclick="window.open('app_guide.html?page=${page}&device=${device}&version=${getVersion}&app=${app}&app_option=download', '_self')">
+											<i class="fas fa-download"></i> Download Page
+										</button>
+										</div>`,
+									image: '',
+									note: ''
+								}
+                        ]
+                    },
+					
+					// Per App Proxy
+					{ 
+						name: 'per-app-proxy', 
+                        title: 'Per App Proxy (Only for Android)',  
+						category: 'guide',					
+						image: 'img/flclash/android/per-app-proxy.png',
+                        imageCaption: '',
+						content: `	<div class="info-box">
+										<div>
+											<ol class="bold-numbers-list">
+												<li>Open <i class="fa-solid fa-gear"></i> <b>Settings</b></li>
+												<li>Open <i class="fa-solid fa-code-compare"></i> <b>Access Control</b></li>
+												<li>Allow FL Clash to <b>read apps list</b></li>
+												<li>Check <i class="fa-regular fa-square-check"></i> Apps to stop them from using proxy.</li>
+												<li>save</li>
+												<li>Disconnect & restart FL Clash</li>
+											</ol>
+											<ul class="no-dots-list">
+												<li>&nbsp;</li>
+												<li><b>Note</b></li>
+												<li>if unable to see apps list, go back and open Open <i class="fa-solid fa-code-compare"></i> <b>Access Control</b> again</li>
+											</ul>
+										</div>
+									</div>
+									`,
+                        substeps: 
+						[
+
+                        ]
+                    },
+				]
+            },
+			
+			// Clash Meta
+			clashmeta: {
+				name: 'Clash Meta',
+				logo: 'img/clashmeta/logo.png',
+                icon: 'fab fa-android',
+                version: getVersion === 'android13' ? '13+' : '≤12',
+                required: device === 'ios' ? '' : 'Android 7+',
+                download: getDownloadLink('clashmeta', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'noproxy'),
+                proxy_download: getDownloadLink('clashmeta', 'android', getVersion === 'android13' ? 'version13' : 'version12', 'proxy'),
+				app_version: getAppVersion('clashmeta', device)  || '0.0',
+				app_update: getReleaseDate('clashmeta', device)  || '0.0',
+                steps: [
+					
+					// Download
+                    { 
+                        name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image: 'img/clashmeta/clashmeta-logo.png',
+                        imageCaption:  '', 
+						content:  device === 'ios' 
+								? `Not Available for iOS`
+								: '',
+                        substeps: [
+
+                        ]
+                    },
+                    					
+					// Install	for android only				
+					...(device === 'android' ? [
+                    { 
+						name: 'install',
+                        title: 'Install',  
+						category: 'connect',
+						image: 'img/clashmeta/android/install.png',
+                        imageCaption:  '', 
+						content:  device === 'ios' 
+								? `<div class="info-box">
+										<i class="fa-regular fa-clock"></i>
+										<div>Wait for installation to complete</div>
+									</div>
+									`
+								: `
+								<div class="info-box">
+									<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+									<div>
+										<strong>Allow unknown sources:</strong> Settings → Security → enable
+									</div>
+								</div>
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Open <b>File Browser/Manager</b> app of your phone</li>
+										<li>Open <b>${app} apk</b> file, saved in Downloads folder</li>
+										<li>Click install</li>
+									</ol>
+								</div>`,
+								
+                        substeps: device === 'ios' ? [] : []
+                    }] : []),
+                    
+					// Settings
+					{ 
+						name: 'settings',
+                        title: 'Startup Settings',  
+						category: 'connect',
+						image: 'img/clashmeta/startup-settings.png',
+                        imageCaption:  '', 
+						content:  `
+									<div class="info-box"">
+										<i class="fas fa-shield-alt""></i>
+										<div>Only required once</div>
+									</div>
+									<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Open <i class="fas fa-cog""></i> <b>Settings</b>
+											</li>
+											<li>
+												Open <b>Meta Features</b>
+											</li>
+											<li>
+												Tap on <b>Unified Delay</b>
+											</li>
+											<li>
+												Select <b>Enabled</b>
+											</li></ol>
+										</div>
+									`,
+                        substeps: 
+						[
+						
+                        ]
+                    },
+					
+					// Import Profile
+                    { 
+						name: 'import-profile', 
+                        title: 'Import Profile',  
+						category: 'connect',
+						image: 'img/clashmeta/import-profile.png',
+                        imageCaption: '',
+						content:  `	<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px; color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Make sure, no VPN app is connected.</strong></div>
+									</div>
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li>
+											<li>Open <b>Profiles</b> tab</li>
+											<li>Click on ➕ <b>sign</b></li>
+											<li>Click <b>URL</b></li>
+											<li>Write <b>PhiCloud</b></li>
+											<li>Paste <b>YOUR PROFILE LINK</b></li>
+											<li>Write <b>1440</b></li>
+											<li>Tap <i class="fa-solid fa-floppy-disk"></i> <b>Save</b> to save profile.</li>
+										</ol>
+									</div>`,
+                        substeps: []
+                    },
+					
+					// Connect
+                    { 
+						name: 'connect', 
+                        title: 'Connect',  
+						category: 'connect',				
+						image: 'img/clashmeta/connect-1.png',
+                        imageCaption: '',
+						content: `	<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Tap to Select Profile and go to <b>Dashboard</b><br>
+											🔵 <i style="font-size:15px;">Blue dot will show selected profile</i>
+											</li>
+											<li>Tap to <b>Connect</b></li>											
+											<li>Tap <b>Allow</b> for VPN connection permission</li>
+										</ol>
+									</div>`,
+                        substeps: []
+                    },
+                    
+					// Refresh Servers
+					{ 
+						name: 'refresh-servers', 
+                        title: 'Refresh Servers',  
+						category: 'guide',				
+						image: 'img/clashmeta/refresh-servers.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Connect <i class="fa-solid fa-toggle-on"></i></li>
+										<li>Open <b>Proxies Tab</b></li>
+										<li>Open <b>🚀Global</b> tab</li>
+										<li>Click <i class="fa-solid fa-bolt"></i> to refresh all servers</li>
+									</ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.
+								</div>`,
+                        substeps: [
+
+                        ]
+                    },
+					
+					// Change Server
+					{ 
+						name: 'change-server', 
+                        title: 'Change Server',  
+						category: 'connect',				
+						image: 'img/clashmeta/change-server-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Connect <i class="fa-solid fa-toggle-on"></i></li>
+										<li>Open <b>Proxies Tab</b></li>
+										<li>Open <b>🚀Global</b> tab</li>										
+										<li>Select Group/Server with numbers accordingly</li>
+									</ol>
+								</div>
+								${changeServerNotesHTML}
+								`,
+                        substeps: [
+                            
+                        ]
+                    },
+					
+					// Update Profile
+					{ 
+						name: 'update-profile', 
+                        title: 'Update Profile',  
+						category: 'guide',					
+						image: 'img/clashmeta/update-profile-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-play"></i>
+									</li><li>
+										Click <i class="fa-solid fa-arrows-rotate"></i></i> to update profile.
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									<strong style="color: #cb0000;">Don’t keep pressing <i class="fa-solid fa-clock-rotate-left"></i> repeatedly & Wait for update to complete.</strong>.
+								</div>`,
+                        substeps: [
+							{
+								title: 'Problem – Can’t Update Profile',
+                                content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disonnect <i class="fa-solid fa-play"></i>
+										</li><li>
+											Click <i class="fa-solid fa-arrows-rotate"></i> to update profile.
+										</li></ol>
+									</div>`,
+                                image: 'img/clashmeta/update-profile-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Check Expiry
+					{ 
+						name: 'check-expiry', 
+                        title: 'Check Expiry & Data Usage',  
+						category: 'guide',
+						image: '',
+                        imageCaption: '',
+						content: `
+								`,
+                        substeps: [
+							{
+								title: 'App Homepage',
+                                content: ``,
+								image: 'img/clashmeta/check-expiry-1.png',
+                                note: ''
+							},
+							{
+								title: 'Servers List',
+                                content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <strong>Proxy</strong> tab
+										</li><li>
+											Check <strong>Expiry</strong> date in the 🚀 <b>Gloabl</b> group
+										</li></ol>
+									</div>
+									`,
+								image: 'img/clashmeta/check-expiry-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Update App
+					{ 
+						name: 'update-app', 
+                        title: 'Update App',  
+						category: 'guide',					
+						image: '',
+                        imageCaption: '',
+						content: `
+								<div class="info-box" style="margin-top: 15px;">
+									<i class="fas fa-download" style="color: #818bff;"></i>
+									<div>
+										<strong> Goto Download page to get APK file</strong>
+									</div>
+								</div>
+								<div class="download-actions">
+								<button class="btn btn-primary" onclick="window.open('app_guide.html?page=${page}&device=${device}&version=${getVersion}&app=${app}&app_option=download', '_self')">
+									<i class="fas fa-download"></i> Download Page
+								</button>
+								</div>`,
+                        substeps: 
+							[
+
+                        ]
+                    },
+					
+				]
+            },
+			
+			// Clash Verge
+			clashverge: {
+				name: 'Clash Verge',
+				logo: 'img/clashverge/logo.png',
+                icon: 'fab fa-laptop',				
+                version: getVersion === 'apple' ? 'apple' : 'intel',
+                required: device === 'mac' ? (getVersion === 'apple' ? 'MacOS 11+ (M-Series Processor)' : 'MacOS 11+ (Intel Processor)')
+						: device === 'linux' ? 'Debian/Ubuntu'
+							: device === 'windows' ? 'Windows 10/11'
+								: '',
+				download: device === 'mac' 
+						? getDownloadLink('clashverge', 'mac', getVersion, 'noproxy')
+						: device === 'linux' 
+							? getDownloadLink('clashverge', 'linux', null, 'noproxy')
+							: device === 'windows' 
+								? getDownloadLink('clashverge', 'windows', null, 'noproxy')
+								: getDownloadLink('clashverge', 'windows', null, 'noproxy'),
+				proxy_download: device === 'mac' 
+						? getDownloadLink('clashverge', 'mac', getVersion, 'proxy')
+						: device === 'linux' 
+							? getDownloadLink('clashverge', 'linux', null, 'proxy')
+							: device === 'windows' 
+								? getDownloadLink('clashverge', 'windows', null, 'proxy')
+								: getDownloadLink('clashverge', 'windows', null, 'proxy'),
+				app_version: getAppVersion('clashverge', device)  || '0.0',
+				app_update: getReleaseDate('clashverge', device)  || '0.0',
+                steps: [
+                    
+					// Download
+					{ 
+                        name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image: 'img/clashverge/clashverge-logo.jpg',
+                        imageCaption: '',
+						content: '',
+                        substeps: [
+                           
+                        ]
+                    },
+					
+					// Install
+                    { 
+						name: 'install',
+                        title: 'Install',  
+						category: 'connect',
+						image: device === 'mac' 
+								? 'img/clashverge/macos/install.png'  
+								: device === 'windows' 
+									? 'img/clashverge/windows/install.jpg'  
+									: device === 'linux' 
+										? 'img/clashverge/linux/install.jpg'
+										: 'img/clashverge/clashverge-logo.jpg',
+                        imageCaption:  '',
+						content: device === 'mac' 
+								? `	<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Double-click the downloaded .dmg file
+										</li><li>
+											Drag the <b>Clash Verge</b> icon to the <b>Applications</b> folder
+										</li><li>
+											Open <b>Launchpad</b>, find and open ClashVerge app from there.
+										</li></ol>
+									</div>`
+								: device === 'linux' 
+									? `	<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Open Terminal
+											</li><li>
+												Goto Path of Downloaded .deb file
+											</li><li>
+												RUN <i>sudo apt install -y ./Clash.Verge_x.x.x-_xxx.deb</i>
+											</li></ol>
+										</div>
+										<div class="info-box">
+											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+											<div>use DNF or DPKG, if APT doesn’t work</div>
+										</div>`  
+									:  `
+										<div class="info-box">
+											<ol class="bold-numbers-list">
+												<li><b>Open .exe</b> file & <b>select language</b></li>
+												<li>Follow the installation & Click <b>Finish</b></li>
+												<li>Check <i class="fa-regular fa-square-check"></i> <b>Private Network</b> & <b>Public Network</b></li>
+												<li>Click <b>Allow Access</b></li>
+											</ol>
+										</div>
+										<div class="info-box">
+											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+											<div>Click <b>Yes</b> if UAC prompts</div>
+										</div>
+										`
+                    },
+             
+					// Allow Network for Windows - disabled
+					...(device === 'TEST' ? [
+                    { 
+						name: 'allow-network',
+						title: 'Allow Network',
+						category: 'connect',
+						image: 'img/clashverge/windows/allow-network.png',
+						imageCaption: '',
+						content: `
+								<div class="info-box" style="margin-top: 15px;">
+									<ol class="bold-numbers-list">
+										<b>If you are asked for network access permission.</b>
+										<li><i class="fa-regular fa-square-check"></i> Private networks ...</li>
+										<li><i class="fa-regular fa-square-check"></i> Public networks ...</li>
+										<li>Press <b>Allow Access</b></li>
+									</ol>
+								</div>
+								`,
+						substeps: []
+                    }] : []),
+
+					// Settings
+                    { 
+						name: 'settings',
+						title: 'Basic Settings', 
+						category: 'connect',
+						image: 'img/clashverge/settings-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Open <i class="fa-solid fa-gear"></i> Settings</li>
+										<li>enable <b>DNS Overwrite</b></li>
+										<li>enable <b>IPv6</b></li>
+										<li>enable <b>Unified Delay</b></li>
+									</ol>
+								</div>`,
+                        substeps: [
+							{
+								title: 'Change Language',
+								image: 'img/clashverge/settings-language.png',
+								content: `
+									<b>if showing Chinese language:</b>
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Open <i class="fa-solid fa-gear"></i> Settings</li>
+											<li>Change Language</li>
+										</ol>
+									</div>`,
+								note: ''
+							}
+                        ]
+                    },
+                    
+					// Import Profile
+                    { 
+						name: 'import-profile', 
+                        title: 'Import Profile',  
+						category: 'connect',
+						image: 'img/clashverge/import-profile.png',
+                        imageCaption: '',
+						content:  `	<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px; color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Make sure, no VPN app is connected.</strong></div>
+									</div>										
+									<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li>
+											<li>Open <i class="fa-solid fa-server"></i></i> <b>Profiles</b> tab</li>
+											<li>Paste <b>URL</b> at the <i class="fa-regular fa-clipboard"></i> top bar</li>
+											<li>Click <b>Import</b></li>
+											<li>Click on <b>PhiCloud PROFILE</b> to select</li>
+										</ol>
+									</div>`,
+                        substeps: [
+							/*
+                            {
+                                title: 'Copy your PhiCloud profile link',
+                                content: '',
+                                image: 'img/import-copy.png',
+                                note: 'This link is for example only, copy your profile link'
+                            },
+                            {
+                                title: 'Paste and Import',
+                                content: `										
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Open <i class="fa-solid fa-server"></i></i> <b>Profiles</b> tab
+											</li><li>
+												Paste <b>URL</b> at the <i class="fa-regular fa-clipboard"></i> top bar
+											</li><li>
+												Click <b>Import</b>
+											</li><li>
+												Click on <b>PhiCloud PROFILE</b> to select
+											</li></ol>
+										</div>`,
+                                image: 'img/clashverge/import-2.png',
+                                note: 'click on image to open'
+                            }								
+							*/	
+                        ]
+                    },
+                    
+					// Connect
+					{ 
+						name: 'connect', 
+                        title: 'Connect',  
+						category: 'connect',				
+						image: 'img/clashverge/connect-2.png',
+                        imageCaption: '',
+						content: `	<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open Home tab
+										</li><li>
+											Select <b>Group: 🚀 Global</b>
+										</li><li>
+											Select <b>Proxy: ⚙️ SmartSelect</b>
+										</li><li>
+											Select <b>Proxy Mode: ⇄ Rule</b>
+										</li><li>
+											Enable <i class="fa-solid fa-toggle-on"></i> <b>System Proxy</b> to connect
+										</li></ol>
+									</div>
+									<div class="info-box">
+										<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+										<div>
+											<span style="color: #cb0000;">If these options aren’t available,</span> <br>
+											Open <b>Profiles</b> tab and <b>select your profile</b> (right-click → select).
+											</div>
+									</div>` ,
+                        substeps: [
+                            
+                        ]
+                    },
+                    
+					// Refresh Server
+					{ 
+						name: 'refresh-servers', 
+                        title: 'Refresh Servers',  
+						category: 'guide',				
+						image: 'img/clashverge/refresh-servers.png',
+                        imageCaption: '',
+						content: `								
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Open <b>Proxies</b> Tab
+									</li><li>
+										Make sure <b>Rule</b> mode is selected
+									</li><li>
+										Open <b>🚀Global</b> Group
+									</li><li>
+										Click <i class="fa-solid fa-wifi"></i> to refresh all servers
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.
+								</div>`,
+                        substeps: [
+
+                        ]
+                    },
+					
+					// Change Server
+					{ 
+						name: 'change-server', 
+                        title: 'Change Server',  
+						category: 'connect',				
+						image: 'img/clashverge/change-server-all.png',
+                        imageCaption: '',
+						content: `								
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Open <b>Proxies</b> Tab</li>
+										<li>Make sure <b>Rule</b> mode is selected</li>
+										<li>Open <b>🚀Global</b> Group</li>
+										<li>Select Group/Server with numbers accordingly</li>
+									</ol>
+								</div>									
+								${changeServerNotesHTML}
+								`,
+                        substeps: [
+                            
+                        ]
+                    },
+										
+					// Update Profile
+					{ 
+						name: 'update-profile', 
+                        title: 'Update Profile',  
+						category: 'guide',					
+						image: 'img/clashverge/update-profile-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <i class="fa-solid fa-server"></i></i> <b>Profiles</b> tab.
+									</li><li>
+										Click <i class="fa-solid fa-arrow-rotate-right"></i> to <b>Update</b> profile.
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									<strong style="color: #cb0000;">Don’t keep pressing <i class="fa-solid fa-clock-rotate-left"></i> repeatedly & Wait for update to complete.</strong>.
+								</div>`,
+                        substeps: [
+							{
+								title: 'Problem – Can’t Update Profile',
+                                content: `
+									<div class="info-box">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Disonnect <i class="fa-solid fa-toggle-off"></i>
+										</li><li>
+											Open <i class="fa-solid fa-server"></i></i> <b>Profiles</b> tab.
+										</li><li>
+											Click <i class="fa-solid fa-arrow-rotate-right"></i> to <b>Update</b> profile.
+										</li></ol>
+									</div>`,
+                                image: 'img/clashverge/update-profile-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Check Expiry
+					{ 
+						name: 'check-expiry', 
+                        title: 'Check Expiry & Data Usage',  
+						category: 'guide',
+						image: '',
+                        imageCaption: '',
+						content: `
+								`,
+                        substeps: [
+							{
+								title: 'App Homepage',
+                                content: ``,
+								image: 'img/clashverge/check-expiry-3.png',
+                                note: ''
+							},
+							{
+								title: 'Profiles tab',
+                                content: ``,
+								image: 'img/clashverge/check-expiry-1.png',
+                                note: ''
+							},
+							{
+								title: 'Servers List',
+                                content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <strong>Proxy</strong> tab
+										</li><li>
+											Check <strong>Expiry</strong> date in the 🚀 <b>Gloabl</b> group
+										</li></ol>
+									</div>
+									`,
+								image: 'img/clashverge/check-expiry-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Update App
+					{ 
+						name: 'update-app', 
+                        title: 'Update App',  
+						category: 'guide',					
+						image: 'img/clashverge/update-app.png',
+                        imageCaption: '',
+						content: `	
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Click on <b style="color:#cb0000;">New</b>
+										</li><li>
+											Click on <b>Update</b>
+										</li></ol>
+									</div>
+								<div class="substep-note">
+									<i class="fas fa-shield-alt"></i>
+									Update and install <b>Manually</b> for faster update</strong>.
+								</div>`,
+                        substeps: 
+							[
+								{
+									title: 'OR Update Manually',
+									content: `
+										<div class="info-box" style="margin-top: 15px;">
+											<i class="fas fa-download" style="color: #818bff;"></i>
+											<div>
+												<strong> Goto Download page to get update file</strong>
+											</div>
+										</div>
+										<div class="download-actions">
+											<button class="btn btn-primary" onclick="window.open('app_guide.html?page=${page}&device=${device}&version=${getVersion}&app=${app}&app_option=download', '_self')">
+												<i class="fas fa-download"></i> Download Page
+											</button>
+										</div>
+										`,
+									image: '',
+									note: ''
+								}
+                        ]
+                    },
+             					
+					// Enable Tun. Mode
+					{ 
+						name: 'tun-mode', 
+                        title: 'Tunnel Mode',  
+						category: 'guide',					
+						image: 'img/clashverge/enable-tun.png',
+                        imageCaption: '',
+						content: `	
+								<div class="info-box" style="margin-top: 15px;">
+									<div>
+										<ul class="no-dots-list">
+											<li><b>Enable Tunnel Mode</b></li>
+										</ul>
+										<ol class="bold-numbers-list">											
+											<li>Goto Home</li>
+											<li>Network Settings → Tun Mode</li>
+											<li>Click <i class="fa-solid fa-wrench"></i> to install</li>
+											<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Tun Mode</b></li>
+										</ol>
+									</div>
+								</div>
+								<div class="notice-box" style="margin-top: 15px;">
+									<i class="fa-solid fa-info-circle"></i>
+									<b>No need to enable System proxy</b> to use Tunnel Mode, but if having problems then also enable <b>System Proxy</b>.
+								</div>`,
+                        substeps: []
+                    },
+ 					
+					// Global Mode
+					{ 
+						name: 'global-mode', 
+                        title: 'Global Mode',  
+						category: 'guide',				
+						image: 'img/clashverge/global-mode.png',
+                        imageCaption: '',
+						content: `
+								<div class="notice-box" style="margin-top: 15px;">
+									<i class="fa-solid fa-info-circle"></i>
+									<b style="color:green;">Rule Mode</b> is <b style="color:green;">Recommended</b> for better performance and stability.
+								</div>
+								<div class="info-box" style="margin-top: 15px;">
+									<div>
+										<ul class="no-dots-list">
+											<li><b>Enable Tunnel Mode</b></li>
+										</ul>
+										<ol class="bold-numbers-list">											
+											<li>Open <b>Proxies</b> Tab</li>
+											<li>Select <b>Global</b> Mode on top</li>
+											<li>Click <i class="fa-solid fa-wifi"></i> to refresh all servers (optional)</li>
+											<li>Select <b>Server</b></li>
+										</ol>
+										<ul class="no-dots-list">
+											<li><li>
+											<li><b>Note:</b> </li>
+											<li>Selected server won't change automatically.</li>
+											<li>Some services e.g. <b>ChatGPT</b>, <b>Claude</b>, <b>Gemini</b> or <b>TikTok</b> etc. are <b style="color:#cb0000;">not available</b> in <b>HongKong</b>.</li>
+										</ul>
+									</div>
+								</div>`,
+                        substeps: []
+                    },
+			 
+					// Note for University students
+					...(device === 'windows' ? [
+                    { 
+						name: 'notes',
+						title: 'Notes for Universities',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: `
+								<div class="notice-box">
+									<i class="fa-solid fa-info-circle"></i>
+									Check the following notes for your University.
+								</div>
+								${HitszNotesHTML}
+								${YangzhouNotesHTML}
+							`,
+						substeps: []
+                    }] : []),	
+
+					// Note for DISABLED
+					...(device === 'disable' ? [
+                    { 
+						name: 'note-hitsz',
+						title: 'Note for HIT-SZ students',
+						category: 'note',
+						image: '',
+						imageCaption: '',
+						content: ``,
+						substeps: [							
+							// Open MSCONFIG
+							{
+								title: 'Open MSCONFIG',
+								content: `								
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list">
+											<li>open <b>RUN</b> (search in windows menu or use shortcut CTRL+R)</li>
+											<li>write <b>MSCONFIG</b></li>
+											<li>Press <b>Enter</b> OR click <b>ok</b></li>
+										</ol>
+									</div>
+								`,
+								image: 'img/clashverge/hitsz/hitsz-note-1.png',
+								note: ''
+							},
+
+							// Disable SangFor & aTrust
+							{
+								title: 'Disable SangFor & aTrust',
+								content: `							
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list">
+											<li>Open <b>Services tab</b></li>
+											<li>Check ☑ ︎<b>Hide all Microsoft services</b></li>
+											<li>Uncheck ☐ all <b>Sangfor</b> and <b>aTrust</b></li>
+											<li>click <b>OK</b></li>
+											<li>click <b>Restart</b></li>
+										</ol>
+									</div>
+								`,
+								image: 'img/clashverge/hitsz/hitsz-note-2.png',
+								note: ''
+							}
+						]
+                    }] : []),
+														
+				]
+            },
+			
+			// FL Clash Desktop
+			flclashdesktop: {
+				name: 'FL Clash',
+				logo: 'img/flclash/logo.png',
+                icon: 'fab fa-laptop',				
+                version: getVersion === 'apple' ? 'apple' : 'intel',
+                required: device === 'mac' 
+						? (getVersion === 'apple' ? 'MacOS 10.xx (M-Series Processor)' : 'MacOS 10.xx (Intel Processor)')
+						: device === 'linux' 
+							? 'Debian/Ubuntu'
+							: device === 'windows' 
+								? 'Windows 10/11'
+								: '',
+				download: device === 'mac' 
+						? getDownloadLink('flclash', 'mac', getVersion)
+						: device === 'linux' 
+							? getDownloadLink('flclash', 'linux')
+							: device === 'windows' 
+								? getDownloadLink('flclash', 'windows')
+								: getDownloadLink('flclash', 'windows'),
+				app_version: getAppVersion('flclash', device)  || '0.0',
+				app_update: getReleaseDate('flclash', device)  || '0.0',
+                steps: [
+                    
+					// Download
+					{ 
+                        name: 'download',
+						title: 'Download App', 
+						category: 'connect',
+						image: 'img/flclash/flclash-logo.png',
+                        imageCaption: '',
+						content: '',
+                        substeps: [
+                           
+                        ]
+                    },
+					
+					// Install
+                    { 
+						name: 'install',
+                        title: 'Install',  
+						category: 'connect',
+						image: device === 'mac' 
+								? 'img/flclash/macos/install.png'  
+								: device === 'windows' 
+									? 'img/flclash/windows/install.jpg'  
+									: device === 'linux' 
+										? 'img/flclash/linux/install.jpg'
+										: 'img/flclash/flclash-logo.png',
+                        imageCaption:  '',
+						content: device === 'mac' 
+								? `	<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Double-click the downloaded .dmg file
+										</li><li>
+											Drag the <b>FL Clash</b> icon to the <b>Applications</b> folder
+										</li><li>
+											Open <b>Launchpad</b>, find and open FL Clash app from there.
+										</li></ol>
+									</div>`
+								: device === 'linux' 
+									? `	<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Open Terminal
+											</li><li>
+												Goto Path of Downloaded .deb file
+											</li><li>
+												RUN <i>sudo apt install -y ./FlClash_x.x.x-_xxx.deb</i>
+											</li></ol>
+										</div>
+										<div class="info-box">
+											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+											<div>use DNF or DPKG, if APT doesn’t work</div>
+										</div>`  
+									:  `
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Double-click the .exe file to start installation
+											</li><li>
+												Follow the installation wizard instructions
+											</li></ol>
+										</div>
+										<div class="info-box">
+											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+											<div>Click <b>Yes</b> if UAC prompts</div>
+										</div>
+										`,							
+							substeps: 
+								[
+									{
+										title: 'Error while opening app?',
+										content: ``,
+										image: 'img/flclash/macos/permissions-all.png',
+										note: ''
+									}
+							]
+                    },
+             
+					// Allow Network for Windows
+					...(device === 'windows' ? [
+                    { 
+						name: 'allow-network',
+						title: 'Allow Network',
+						category: 'connect',
+						image: 'img/clashverge/windows/allow-network.png',
+						imageCaption: '',
+						content: `
+								<div class="info-box" style="margin-top: 15px;">
+									<ol class="bold-numbers-list">
+										<b>If you are asked for network access permission.</b>
+										<li><i class="fa-regular fa-square-check"></i> Private networks ...</li>
+										<li><i class="fa-regular fa-square-check"></i> Public networks ...</li>
+										<li>Press <b>Allow Access</b></li>
+									</ol>
+								</div>
+								`,
+						substeps: []
+                    }] : []),
+
+					// Settings
+                    { 
+						name: 'settings',
+                        title: 'Settings',  
+						category: 'connect',
+						image: 'img/clashverge/settings-language.png',
+                        imageCaption: '',
+						content: `
+							<div class="info-box">
+								<ol class="bold-numbers-list"><li>
+									Open <i class="fa-solid fa-gear"></i> Settings
+								</li><li>
+									Change Language
+								</li></ol>
+							</div>
+						`,
+                        substeps: [
+                            {
+                                title: 'Clash Settings',
+                                content: `
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Open <i class="fa-solid fa-gear"></i> Settings
+											</li><li>
+												enable <b>DNS Overwrite</b>
+											</li><li>
+												enable <b>IPv6</b>
+											</li><li>
+												enable <b>Unified Delay</b>
+											</li></ol>
+										</div>
+									`,
+                                image: 'img/clashverge/settings-1.png',
+                                note: ''
+                            }
+                        ]
+                    },
+                    
+					// Import Profile
+                    { 
+						name: 'import-profile', 
+                        title: 'Import Profile',  
+						category: 'connect',
+						image: '',
+                        imageCaption: '',
+						content:  `	<div class="info-box" style="margin-top: 15px;">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box" style="margin-top: 15px; color: #cb0000;">
+										<i class="fas fa-shield-alt" style="color: #cb0000;"></i>
+										<div><strong>Make sure, no VPN app is connected.</strong></div>
+									</div>`,
+                        substeps: [
+                            {
+                                title: 'Copy your PhiCloud profile link',
+                                content: '',
+                                image: 'img/import-copy.png',
+                                note: 'This link is for example only, copy your profile link'
+                            },
+                            {
+                                title: 'Paste and Import',
+                                content: `										
+										<div class="info-box">
+											<ol class="bold-numbers-list"><li>
+												Open <i class="fa-solid fa-server"></i></i> <b>Profiles</b> tab
+											</li><li>
+												Paste <b>URL</b> at the <i class="fa-regular fa-clipboard"></i> top bar
+											</li><li>
+												Click <b>Import</b>
+											</li><li>
+												Click on <b>PhiCloud PROFILE</b> to select
+											</li></ol>
+										</div>`,
+                                image: 'img/clashverge/import-2.png',
+                                note: 'click on image to open'
+                            }
+                        ]
+                    },
+                    
+					// Connect
+					{ 
+						name: 'connect', 
+                        title: 'Connect',  
+						category: 'connect',				
+						image: 'img/clashverge/connect-2.png',
+                        imageCaption: '',
+						content: `	<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open Home tab
+										</li><li>
+											Select <b>Group: 🚀 Global</b>
+										</li><li>
+											Select <b>Proxy: ♻️ AutoSelect</b>
+										</li><li>
+											Select <b>Proxy Mode: ⇄ Rule</b>
+										</li><li>
+											Enable <i class="fa-solid fa-toggle-on"></i> <b>System Proxy</b> to connect
+										</li></ol>
+									</div>
+									<div class="info-box">
+										<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+										<div>If these options aren’t available, Open Profiles tab and select your profile (right-click → select).</div>
+									</div>` ,
+                        substeps: [
+                            
+                        ]
+                    },
+                    
+					// Refresh Server
+					{ 
+						name: 'refresh-servers', 
+                        title: 'Refresh Servers',  
+						category: 'guide',				
+						image: 'img/clashverge/refresh-servers.png',
+                        imageCaption: '',
+						content: `								
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Open <b>Proxies</b> Tab
+									</li><li>
+										Make sure <b>Rule</b> mode is selected
+									</li><li>
+										Open <b>🚀Global</b> Group
+									</li><li>
+										Click <i class="fa-solid fa-wifi"></i> to refresh all servers
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.
+								</div>`,
+                        substeps: [
+
+                        ]
+                    },
+					
+					// Change Server
+					{ 
+						name: 'change-server', 
+                        title: 'Change Server',  
+						category: 'guide',				
+						image: 'img/clashverge/change-server.png',
+                        imageCaption: '',
+						content: `								
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>										
+										Open <b>Proxies</b> Tab
+									</li><li>
+										Make sure <b>Rule</b> mode is selected
+									</li><li>
+										Open <b>🚀Global</b> Group
+									</li><li>
+										Select any <b>Server / Group</b>
+									</li></ol>
+								</div>	
+								<div class="substep-note">
+									<b>Notes</b>: <br>
+									<br>
+									<b>♻️AutoSelect</b> ––– Auto select best available server <b style="color:green;">(recommended)</b><br>
+									<b>Country Server</b> –– only connect with one server<br>
+									<br>
+									<b>ChatGPT</b> or <b>TikTok</b> are <b style="color:#cb0000;">not available</b> in <b>HongKong</b>.<br>
+									<b>Manually selected</b> server will not automatically change.
+								</div>
+								`,
+                        substeps: [
+                            
+                        ]
+                    },
+										
+					// Update Profile
+					{ 
+						name: 'update-profile', 
+                        title: 'Update Profile',  
+						category: 'guide',					
+						image: 'img/clashverge/update-profile-1.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <i class="fa-solid fa-server"></i></i> <b>Profiles</b> tab.
+									</li><li>
+										Click <i class="fa-solid fa-arrow-rotate-right"></i> to <b>Update</b> profile.
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
+									<strong style="color: #cb0000;">Don’t keep pressing <i class="fa-solid fa-clock-rotate-left"></i> repeatedly & Wait for update to complete.</strong>.
+								</div>`,
+                        substeps: [
+							{
+								title: 'Problem – Can’t Update Profile',
+                                content: `
+									<div class="info-box">
+										<i class="fas fa-wifi" style="color: #818bff;"></i>
+										<div>
+											<strong> Connect Wi-Fi to import (not hotspot)</strong>
+										</div>
+									</div>
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Disonnect <i class="fa-solid fa-toggle-off"></i>
+										</li><li>
+											Open <i class="fa-solid fa-server"></i></i> <b>Profiles</b> tab.
+										</li><li>
+											Click <i class="fa-solid fa-arrow-rotate-right"></i> to <b>Update</b> profile.
+										</li></ol>
+									</div>`,
+                                image: 'img/clashverge/update-profile-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Check Expiry
+					{ 
+						name: 'check-expiry', 
+                        title: 'Check Expiry & Data Usage',  
+						category: 'guide',
+						image: '',
+                        imageCaption: '',
+						content: `
+								`,
+                        substeps: [
+							{
+								title: 'App Homepage',
+                                content: ``,
+								image: 'img/clashverge/check-expiry-3.png',
+                                note: ''
+							},
+							{
+								title: 'Profiles tab',
+                                content: ``,
+								image: 'img/clashverge/check-expiry-1.png',
+                                note: ''
+							},
+							{
+								title: 'Servers List',
+                                content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <strong>Proxy</strong> tab
+										</li><li>
+											Check <strong>Expiry</strong> date in the 🚀 <b>Gloabl</b> group
+										</li></ol>
+									</div>
+									`,
+								image: 'img/clashverge/check-expiry-2.png',
+                                note: ''
+							}
+                        ]
+                    },
+					
+					// Update App
+					{ 
+						name: 'update-app', 
+                        title: 'Update App',  
+						category: 'guide',					
+						image: 'img/clashverge/update-app.png',
+                        imageCaption: '',
+						content: `	
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Click on <b style="color:#cb0000;">New</b>
+										</li><li>
+											Click on <b>Update</b>
+										</li></ol>
+									</div>
+								<div class="substep-note">
+									<i class="fas fa-shield-alt"></i>
+									Update and install <b>Manually</b> for faster update</strong>.
+								</div>`,
+                        substeps: 
+							[
+								{
+									title: 'OR Update Manually',
+									content: `
+										<div class="info-box" style="margin-top: 15px;">
+											<i class="fas fa-download" style="color: #818bff;"></i>
+											<div>
+												<strong> Goto Download page to get update file</strong>
+											</div>
+										</div>
+										<div class="download-actions">
+											<button class="btn btn-primary" onclick="window.open('app_guide.html?page=${page}&device=${device}&version=${getVersion}&app=${app}&app_option=download', '_self')">
+												<i class="fas fa-download"></i> Download Page
+											</button>
+										</div>
+										`,
+									image: '',
+									note: ''
+								}
+                        ]
+                    },
+             
+					// Note for HIT-SZ
+					...(device === 'windows' ? [
+                    { 
+						name: 'note-hitsz',
+						title: 'Note for HIT-SZ students',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Open MSCONFIG
+							{
+								title: 'Open MSCONFIG',
+								content: `								
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list">
+											<li>open <b>RUN</b> (search in windows menu or use shortcut CTRL+R)</li>
+											<li>write <b>MSCONFIG</b></li>
+											<li>Press <b>Enter</b> OR click <b>ok</b></li>
+										</ol>
+									</div>
+								`,
+								image: 'img/clashverge/hitsz/hitsz-note-1.png',
+								note: ''
+							},
+
+							// Disable SangFor & aTrust
+							{
+								title: 'Disable SangFor & aTrust',
+								content: `							
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list">
+											<li>Open <b>Services tab</b></li>
+											<li>Check ☑ ︎<b>Hide all Microsoft services</b></li>
+											<li>Uncheck ☐ all <b>Sangfor</b> and <b>aTrust</b></li>
+											<li>click <b>OK</b></li>
+											<li>click <b>Restart</b></li>
+										</ol>
+									</div>
+								`,
+								image: 'img/clashverge/hitsz/hitsz-note-2.png',
+								note: ''
+							}
+						]
+                    }] : []),													
+				]
+            }
+ 			
+		};
+		
+		// Determine which CONNECTING-page app config to use based on category
+		let targetApp = app;
+		switch (page) {
+			case 'connect':
+				switch (device) {
+					case 'android':
+						if (getVersion === 'harmony' || getVersion === 'harmonyos') {
+							targetApp = getVersion === 'harmony' ? 'hiddify' : 'hiddify';
+						} else {
+							targetApp = getVersion === 'android13' ? 'clashmi' : 'flclash';
+						}
+						break;
+					case 'ios':
+						targetApp = 'clashmi';
+						break;
+					default:
+						targetApp = 'clashverge';
+						break;
+				}
+				break;
+			// Add other cases for different page values if needed
+			default:
+				// Handle other pages or do nothing
+				break;
+		}
+		// manual redirect app to another app page
+		switch (app) {
+			case 'flclash_mac':
+				targetApp = 'flclash';
+				break;
+			// Add other cases for different page values if needed
+			default:
+				// Handle other pages or do nothing
+				break;
+		}
+
+		const config = configs[targetApp] || configs.clashmi;		
+
+		// Get release date
+		// const releaseDate = getReleaseDate(targetApp, device);
+
+		// Get version using bracket notation
+		// const versionNumber = APP_VERSIONS[targetApp];
+		// const versionNumber = getAppVersion(targetApp, device);
+		// const versionText = versionNumber ? `v${versionNumber}` : `N/A`;
+
+		// Set header
+		document.getElementById('header').innerHTML = `
+			<button class="back-btn" onclick="prevStep()" id="backBtnTop">
+				<i class="fas fa-angle-left"></i> Guide
+			</button>
+			
+			<div class="header-center">
+				<button class="back-btn" onclick="goBack()" id="centerBtnTop">
+				<i class="fa-solid fa-book-open"></i> Guide</button>
+			</div>
+			
+			<button class="next-btn" onclick="nextStep()" id="nextBtnTop">
+				Next <i class="fas fa-angle-right"></i>
+			</button>			
+		`;	
+
+		// Set header 2
+		document.getElementById('header2').innerHTML = `
+			<div class="next-btn-placeholder"></div>
+			
+			<div class="header-center">
+				<div class="header-icon">					
+					<div class="card-image-wrapper" style="height:100%;">
+						<img src="${config.logo}" alt="${config.name}" class="app-logo">
+					</div>
+				</div>
+				<div>
+					<h1>${config.name}</h1>
+					<p>Guide</p>
+				</div>
+			</div>
+			
+			<div class="next-btn-placeholder"></div>
+		`;
+
+		// Filter steps based on page
+		let filteredSteps = config.steps;
+		let isConnectNow = false;
+
+		switch (true) {
+			case (page === 'connect' || option === 'connect-now'):
+				filteredSteps = config.steps.filter(step => step.category === 'connect');
+				isConnectNow = true;
+				
+				// If no connect steps found in connect page, show fallback message
+				if (page === 'connect' && filteredSteps.length === 0) {
+					filteredSteps = [{
+						title: 'Not Available',
+						content: 'No connection steps available for this app on your device.',
+						image: '',
+						imageCaption: ''
+					}];
+				}
+				break;
+				
+			default:
+				filteredSteps = config.steps;
+				break;
+		}
+
+		// Simple step navigation - DECLARE BEFORE generating HTML
+		let currentStep = 0;
+		let currentSubstep = parseInt(substep) || 0;
+		let steps = []; // Will be populated after HTML generation
+
+		// Generate steps HTML with images and substeps
+		let stepsHtml = '';
+
+		// Add empty container for progress indicator (will be filled by showStep)
+		if (page === 'connect' || option === 'connect-now') {
+			stepsHtml += `<div class="main-steps-progress" id="mainStepsProgress"></div>`;
+		}
+		
+		filteredSteps.forEach((step, index) => {
+			// Generate substeps HTML if they exist
+			let substepsHtml = '';
+
+			if (step.substeps && step.substeps.length > 0) {
+				substepsHtml += `
+								<div class="substeps-container" id="substeps-${index}">
+								<!-- <div class="substep-item substep-header substep-title">DETAILED PROCESS</div> -->
+								`;
+				step.substeps.forEach((substep, subIndex) => {
+					substepsHtml += `
+						<div class="substep-item">
+							<div class="substep-header">
+								<span class="substep-number">${subIndex + 1}</span>
+								<span class="substep-title">${substep.title}</span>
+							</div>
+							<div class="substep-content show" id="substep-content-${index}-${subIndex}">
+								<div class="substep-text">${substep.content}</div>
+								${substep.image ? `
+									<img src="${substep.image}" 
+										 alt="${substep.title}" 
+										 class="substep-image"
+										 onclick="openModal('${substep.image}')"
+										 onerror="this.style.display='none';">
+								` : ''}
+								${substep.note ? `
+									<div class="substep-note">
+										<i class="fas fa-info-circle"></i>
+										${substep.note}
+									</div>
+								` : ''}
+							</div>
+						</div>
+					`;
+				});
+				substepsHtml += `</div>`;
+			}
+
+			stepsHtml += `
+				<div class="step" id="step-${index}">
+				
+					<div class="section-title">
+						<div class="step-header">
+							<div class="step-num">${index + 1}</div>
+							<div class="step-title">${step.title} <b style="color: red;">${isConnectNow ? (index === filteredSteps.length - 1 ? `& Press Finish` : `& Press ${index + 2}`) : ''}</b></div>
+						</div>  
+						<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+					</div>
+										  
+					<!-- Progress indicator for substeps -->
+					<!-- ${step.substeps && step.substeps.length > 0 ? ` -->
+						<!-- <div class="progress-indicator" id="progress-${index}"> -->
+							<!-- ${step.substeps.map((_, i) => ` -->
+								<!-- <span class="substep-dot ${i === 0 ? 'active' : ''}" id="dot-${index}-${i}"></span> -->
+							<!-- `).join('')} -->
+						<!-- </div> -->
+					<!-- ` : ''} -->
+					
+					<p style="color: #4a5568; margin-bottom: 15px;">${step.content}</p>
+
+					${index === 0 ? `
+						<!-- <div class="download-link" style="margin-top: 15px;"> -->
+							<!-- <i class="fas fa-link"></i>  -->
+							<!-- <a onclick="handleDownloadClick('${config.download}')" href="${config.download}" target="_blank">${config.download.substring(0, 50)}...</a> -->
+							<!-- <a href="javascript:void(0)" onclick="handleDownloadClick('${config.download}')">${config.download.substring(0, 50)}...</a> -->
+							<!-- <a href="${config.download}">${config.download}</a> -->
+						<!-- </div> -->
+						
+						<!-- Android note for download -->
+						${getVersion === 'harmony'
+							?`<div class="notice-box" style="margin-top:0px;">
+								<ul class="no-dots-list">
+									<li><strong>Harmony OS (Tested versions)</strong></li>
+									<li>
+									<ul class="bold-numbers-list">
+										<li>Harmony OS 4.0.0.175</li>
+										<li>Harmony OS 4.2.0</li>
+									</ul>
+									</li>
+									<li><b>Note:</b> HarmonyOS version 3 and 4 has Android 12.</li>
+								</ul>
+							</div>`
+							:``}
+						
+						<!-- Free VPN uninstall note -->
+						${device === 'ios' ||	device === 'android'
+							?`
+							<div class="info-box-alert">						
+									<i class="fa-solid fa-triangle-exclamation"></i>
+									<div>
+									If you have any <b>Free VPN</b> app like <i><b>VPNIFY</b></i> etc. installed,<br>
+									<strong>Uninstall & restart phone</strong> to prevent connection issues.
+									</div>
+							</div>`
+							:``}
+							
+						<!-- iOS note for download -->
+						${device === 'ios-show' && app !== 'shadowrocket'
+							?`
+							<div class="info-box-alert">
+								<img src="img/shadowrocket/logo.png" alt="Shadowrocket Logo">
+									<div><strong>Uninstall Shadowrocket & restart phone</strong> if you don't have the updated version, to prevent connection issues.</div>
+							</div>`
+							:``}
+						
+						<!-- Windows note for download -->
+						${device === 'windows'
+							?`
+							<div class="info-box-alert">						
+									<i class="fa-solid fa-triangle-exclamation"></i>
+									<div>
+									If you have any <b>VPN</b> or <b>internet Protection software installed</b> e.g. RAV point, etc.<br>
+									<strong>Uninstall & restart computer</strong> to prevent connection issues.
+									</div>
+							</div>`
+							:``}
+							
+						<!-- Download instruction note -->
+						<div class="note-box">
+								<i class="fa-solid fa-info-circle"></i>
+								${device === 'android' 
+								? `Tap <b>Download</b> button to download APK file` 
+								: device === 'ios' 
+									? `Search <b>${config.name}</b> on AppStore or Tap on <b>Download</b> button` 
+									: `Tap <b>Download</b> button to download installation file`}
+						</div>	
+						${device === 'ios' ? `
+						<div class="alert-box">
+								<i class="fa-solid fa-triangle-exclamation"></i>
+								<strong>If app is not available on AppStore, Login with non-Chinese Apple ID</strong>
+						</div>` : ``}						
+
+						<div class="download-actions">
+							<span class="step-title" style="color: #cb0000; text-align: center;">Required: ${config.required}</span>
+							<span class="device-badge" style="text-align: center;">${device === 'ios' ? 'Checked at:' : 'Updated at:'} ${config.app_update}</span>
+							
+							<div class="step-title" style="color: #cb0000"><b> Download App &amp; Press 2 on top</b></div>
+							<!-- Proxy Download Link -->
+							<a href="${config.proxy_download}" 
+								target="_blank" 
+								class="btn btn-primary" 
+								style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+								onclick="return handleWeChatCheck(event, '${config.proxy_download}')">
+									<i class="fas fa-download"></i> Download v${config.app_version}
+							</a>
+							<!-- Direct Download Link -->
+							${device !== 'ios' ? `
+							<i class="step-title" style="color: #cb0000; text-align: center;">if above link is not working, <br>use Download Link 2.</i>
+							<a href="${config.download}" 
+								target="_blank" 
+								class="btn btn-primary" 
+								style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+								onclick="return handleWeChatCheck(event, '${config.download}')">
+									<i class="fas fa-download"></i> Download Link 2
+							</a>							
+							` : ``}
+						</div>
+					` : ''}
+					
+					<!-- ${index === 1 && device === 'android' ? ` -->
+						<!-- <div class="info-box" style="margin-top: 15px;"> -->
+							<!-- <i class="fas fa-shield-alt" style="color: #818bff;"></i> -->
+							<!-- <div><strong>Allow unknown sources:</strong> Settings → Security → enable</div> -->
+						<!-- </div> -->
+					<!-- ` : ''} -->
+					
+					<!-- ${index === 0 && device === 'ios' ? ` -->
+						<!-- <div class="info-box" style="margin-top: 15px;"> -->
+							<!-- <i class="fas fa-shield-alt" style="color: #818bff;"></i> -->
+							<!-- <div><strong style="color: #cb0000;">If app is not available on AppStore, Login with non-Chinese Apple ID</strong></div> -->
+						<!-- </div> -->
+					<!-- ` : ''} -->
+					
+					<!-- Step Image -->					
+					<img src="${step.image}" 
+						 alt="${step.title}" 
+						 class="step-image" 
+						 onclick="openModal('${step.image}')"
+						 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+						 
+					<!-- <div class="image-placeholder" style="display: none;" onclick="openModal('${step.image}')"> -->
+						<!-- <i class="fas fa-image"></i> -->
+						<!-- <p>${step.imageCaption || 'Click to view image'}</p> -->
+					<!-- </div> -->
+					
+					${step.imageCaption ? `
+						<div class="image-caption">
+							<i class="fas fa-camera" style="font-size: 0.8rem;"></i> 
+							${step.imageCaption}
+						</div>
+					` : ''}
+					
+					<!-- Substeps -->
+					${substepsHtml}
+				</div>
+			`;
+		});
+
+		// Add navigation	
+		stepsHtml += `
+			<div class="nav-btns">
+				<button class="btn" onclick="prevStep()" id="prevBtn"><i class="fas fa-angle-left"></i> Back</button>
+				<!-- <button class="back-btn" onclick="goBack()"><i class="fas fa-angle-left"></i> Back</button> -->
+				<button class="btn btn-primary" onclick="nextStep()" id="nextBtn">Next <i class="fas fa-angle-right"></i></button>
+			</div>
+		`;
+		
+
+		document.getElementById('content').innerHTML = stepsHtml;
+
+		// Now get the steps elements after they're added to DOM
+		steps = document.querySelectorAll('.step');
+		
+		function truncateText(text, maxLength = 15) {
+			if (text.length <= maxLength) return text;
+			return text.substring(0, maxLength) + '...';
+		}
+
+		// Function to update progress indicator
+		function updateProgressIndicator(step) {
+			const progressContainer = document.getElementById('mainStepsProgress');
+			if (!progressContainer) return;
+			
+			// Generate fresh HTML for progress indicator
+			progressContainer.innerHTML = filteredSteps.map((stepItem, idx) => `
+				<div class="main-step-item ${idx === step ? 'active' : ''} ${idx < step ? 'completed' : ''}" data-step-index="${idx}">
+					<div class="main-step-number">${idx + 1}</div>
+					<div class="main-step-label">${stepItem.title}</div>
+					<!-- <div class="main-step-label">${truncateText(stepItem.title, 10)}</div> -->
+				</div>
+			`).join('');
+			
+			// Add click handlers
+			const progressItems = progressContainer.querySelectorAll('.main-step-item');
+			progressItems.forEach((item, idx) => {
+				item.style.cursor = 'pointer';
+				// Remove existing listener to avoid duplicates
+				const oldHandler = item._clickHandler;
+				if (oldHandler) {
+					item.removeEventListener('click', oldHandler);
+				}
+				// Create and store new handler
+				const handler = () => {
+					if (idx !== currentStep) {
+						currentStep = idx;
+						currentSubstep = 0;
+						showStep(currentStep);
+						
+						const url = new URL(window.location);
+						url.searchParams.set('app_option', filteredSteps[currentStep].name);
+						url.searchParams.set('substep', 0);
+						window.history.replaceState({}, '', url);
+					}
+				};
+				item._clickHandler = handler;
+				item.addEventListener('click', handler);
+			});
+		}
+
+		function showStep(step) {
+			steps.forEach((s, i) => {
+				s.style.display = i === step ? 'block' : 'none';
+			});
+			
+			// Update main steps progress indicator
+			updateProgressIndicator(step);
+			
+			document.getElementById('prevBtn').disabled = step === 0;
+			
+			let buttonText = '';
+			buttonText = page === 'home' 
+					? '<i class="fa-solid fa-home"></i> Home'
+					: page === 'connect'
+						? '<i class="fa-solid fa-globe"></i> Connect'
+						: page === 'help'
+							? `<i class="fa-solid fa-wrench"></i> ${config.name} Help`
+							: `<i class="fa-solid fa-book-open"></i> ${config.name} Guide`;
+			document.getElementById('centerBtnTop').innerHTML = buttonText;
+			let buttonBackText = '<i class="fas fa-angle-left"></i> Back';
+			document.getElementById('backBtnTop').innerHTML = buttonBackText;
+			
+			
+			document.getElementById('nextBtn').innerHTML = step === filteredSteps.length - 1 ? 'Finish' : 'Next <i class="fas fa-angle-right"></i>';
+			document.getElementById('nextBtnTop').innerHTML = step === filteredSteps.length - 1 ? 'Finish' : 'Next <i class="fas fa-angle-right"></i>';
+		}
+
+		// Initialize progress indicator after DOM is ready
+		setTimeout(() => {
+			updateProgressIndicator(currentStep);
+		}, 0);
+
+		// get current step
+		function getStep(app_option) {
+			// Use filteredSteps instead of config.steps
+			const step_number = filteredSteps.findIndex(step => step.name === app_option);
+			
+			if (step_number === -1) {
+				console.warn(`Step "${app_option}" not found in filtered steps`);
+				return 0; // Default to first step if not found
+			}
+			
+			return step_number;
+		}
+
+		// Show step
+		let step_number = getStep(app_option);
+		currentStep = step_number;
+		showStep(step_number);
+
+		// Initialize first substep if exists
+		setTimeout(() => {
+			const firstStep = filteredSteps[currentStep];
+			if (firstStep && firstStep.substeps && firstStep.substeps.length > 0) {
+				// Open the substep from URL or first
+				const targetSubstep = Math.min(parseInt(substep) || 0, firstStep.substeps.length - 1);
+				// toggleSubstep(currentStep, targetSubstep);
+			}
+		}, 100);
+
+		window.nextStep = function() {
+			if (currentStep < filteredSteps.length - 1) {
+				currentStep++;
+				currentSubstep = 0; // Reset substep for new step
+				showStep(currentStep);
+				
+				// Update URL
+				const url = new URL(window.location);
+				url.searchParams.set('app_option', filteredSteps[currentStep].name);
+				url.searchParams.set('substep', 0);
+				window.history.replaceState({}, '', url);
+			} else if (page === 'connect'){                
+				alert('✅ Setup complete! You can now use PhiCloud.');
+				goBack();
+			} else {
+				goBack();
+			}
+		};
+
+		window.prevStep = function() {
+			if (currentStep > 0) {
+				currentStep--;
+				currentSubstep = 0; // Reset substep for new step
+				showStep(currentStep);
+				
+				// Update URL
+				const url = new URL(window.location);
+				url.searchParams.set('app_option', filteredSteps[currentStep].name);
+				url.searchParams.set('substep', 0);
+				window.history.replaceState({}, '', url);
+			} else {
+				// let url = ``;
+				// url = `app_options.html?page=${page}&device=${device}&version=${getVersion}&app=${app}`;
+				// window.location.href = url;
+				goBack();
+			}
+		};
+
+		window.markComplete = function(step) {
+			alert('✅ Great! Step completed.');
+			nextStep();
+		};
+
+		window.goBack = function() {			
+			let url = ``;
+			if (page === 'connect') {
+				url = `connect_now.html`;
+			// } else if (page === 'downloads') {
+			// url = `apps_list.html?page=downloads`;
+			} else if (page === 'help') {
+				url = `help_options.html?page=${page}&device=${device}&version=${getVersion}&app=${app}`;
+			} else if (page === 'home') {
+				url = `index.html`;
+			} else {
+				url = `app_options.html?page=${page}&device=${device}&version=${getVersion}&app=${app}`;
+			}
+			
+			window.location.href = url;
+		};
+
+		// Handle image load errors
+		document.querySelectorAll('.step-image').forEach(img => {
+			img.onerror = function() {
+				this.style.display = 'none';
+				const placeholder = this.nextElementSibling;
+				if (placeholder && placeholder.classList.contains('image-placeholder')) {
+					placeholder.style.display = 'block';
+				}
+			};
+		});
+
+		// Handle download button click with WeChat detection
+		window.handleDownloadClick = function(downloadUrl) {
+			if (typeof handleWeChatDownload === 'function') {
+				handleWeChatDownload(downloadUrl);
+			} else {
+				// Fallback if function not available
+				window.open(downloadUrl, '_blank');
+			}
+		};
+
+		window.handleWeChatCheck = function(event, downloadUrl) {
+			// Check if WeChat
+			if (typeof window.isInWeChat === 'function' && window.isInWeChat()) {
+				event.preventDefault();
+				if (typeof showWeChatMessage === 'function') {
+					showWeChatMessage();
+				} else if (typeof window.showWeChatMessage === 'function') {
+					window.showWeChatMessage();
+				}
+				return false;
+			}
+			return true; // Allow normal navigation
+		};
+
+		})();
+</script>
+</body>
+</html>

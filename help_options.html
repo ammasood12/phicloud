@@ -1,0 +1,319 @@
+	<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiCloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">    
+    <!-- Javascript Functions -->
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/wechat-detector.js"></script>
+</head>
+<body>
+    <div class="guide-card" id="guideCard">
+	
+        <!-- Header will be filled by JS -->
+        <div class="header" id="header"></div>
+        
+        <!-- Content will be filled by JS -->
+        <div class="content" id="content"></div>
+    </div>
+
+    <script>
+        // Get device from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const device = urlParams.get('device') || 'android';
+        const app = urlParams.get('app') || 'clashmi';
+		const macVer = urlParams.get('mac') || 'apple'; 
+		const page = urlParams.get('page') || 'home'; 
+		const version = urlParams.get('version') || 'home'; 
+
+        // App configurations
+        const configs = {
+			// Android
+            clashmi: {
+                name: 'Clash Mi',
+				logo: 'img/clashmi/logo.png',		
+				options: [
+					//{ name: '<b>Apri 2026, HOT FIX</b>', action: 'hot-fix' },
+					{ name: 'Not Working / Slow Speed', action: 'not-working' },
+					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
+					{ name: 'Unable to update profile', action: 'cant-update' },
+					// ...(device === 'ios' ? [{ name: 'Cant find on appstore', action: 'cant-find' }] : []),
+					// { name: 'Some Servers show timeout', action: 'some-timeout' },
+					{ name: 'Tiktok Problems', action: 'tiktok-problem' },
+					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
+					{ name: 'ChatGPT/Claude not working', action: 'ai-problem' },
+					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' },
+					{ name: 'Netflix: unable to signout', action: 'netflix-cant-signout' },
+					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
+					// { name: 'Netflix', action: 'netflix-problem' },
+					// { name: 'ChatGPT not working', action: 'chatgpt-problem' },
+					// { name: 'Google Scholar not working', action: 'scholar-problem' },
+					// { name: 'App close automatically after sometime ', action: 'background-problem' }
+				]
+            },
+            flclash: {
+                name: 'FL Clash',
+				logo: 'img/flclash/logo.png',		
+				options: [
+					// { name: '<b>Apri 2026, HOT FIX</b>', action: 'hot-fix' },
+					{ name: 'Not Working / Slow Speed', action: 'not-working' },
+					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
+					{ name: 'Unable to update profile', action: 'cant-update' },
+					{ name: 'Some Servers show timeout', action: 'some-timeout' },
+					{ name: 'Tiktok Problems', action: 'tiktok-problem' },
+					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
+					{ name: 'ChatGPT/Claude not working', action: 'ai-problem' },
+					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' },
+					{ name: 'Netflix: unable to signout', action: 'netflix-cant-signout' },
+					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
+				]
+            },
+            hiddify: {
+                name: 'Hiddify',
+				logo: 'img/hiddify/logo.png',		
+				options: [
+					// { name: '<b>Apri 2026, HOT FIX v1.2</b>', action: 'hot-fix' },
+					{ name: 'Error while Connecting', action: 'error-connecting' },
+					{ name: 'Not Working / Slow Speed', action: 'not-working' },
+					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
+					{ name: 'Unable to update profile', action: 'cant-update' },
+					// { name: 'Some Servers show timeout', action: 'some-timeout' },
+					{ name: 'Tiktok Problems', action: 'tiktok-problem' },
+					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
+					{ name: 'ChatGPT/Claude not working', action: 'ai-problem' },
+					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' },
+					{ name: 'Netflix: unable to signout', action: 'netflix-cant-signout' },
+					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
+				]
+            },
+            clashmeta: {
+                name: 'Clash Meta',
+				logo: 'img/clashmeta/logo.png',		
+				options: [
+					// { name: '<b>Apri 2026, HOT FIX (Not Required)</b>', action: '' },
+					{ name: 'Not Working / Slow Speed', action: 'not-working' },
+					{ name: 'All-Some Servers show timeout', action: 'all-timeout' },
+					{ name: 'Unable to update profile', action: 'cant-update' },
+					//{ name: 'Some Servers show timeout', action: 'some-timeout' },
+					{ name: 'Tiktok Problems', action: 'tiktok-problem' },
+					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
+					{ name: 'ChatGPT/Claude etc. not working', action: 'ai-problem' },
+					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' },
+					{ name: 'Netflix: unable to signout', action: 'netflix-cant-signout' },
+					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
+				]
+            },
+			// iOS
+            shadowrocket: {
+                name: 'Shadow Rocket',
+				logo: 'img/shadowrocket/logo.png',		
+				options: [
+					// { name: '<b>Apri 2026, HOT FIX (Not Required)</b>', action: '' },
+					{ name: 'Not Working / Slow Speed', action: 'not-working' },
+					{ name: 'All Servers show timeout', action: 'all-timeout' },
+					{ name: 'Unable to update profile', action: 'cant-update' },
+					// { name: 'Some Servers show timeout', action: 'some-timeout' },
+					{ name: 'Tiktok Problems', action: 'tiktok-problem' },
+					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
+					{ name: 'ChatGPT/Claude not working', action: 'ai-problem' },
+					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' },
+					{ name: 'Netflix: unable to signout', action: 'netflix-cant-signout' },
+					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
+				]
+            },
+			// desktop
+            clashverge: {
+                name: 'Clash Verge',
+				logo: 'img/clashverge/logo.png',		
+				options: [
+					//{ name: '<b>Apri 2026, HOT FIX</b>', action: 'hot-fix' },
+					...(device === 'windows' ? [
+						{ name: 'Note for HIT-SZ students', action: 'note-hitsz' },						
+						{ name: 'Note for Yangzhou University', action: 'note-yzu' }
+					] : []),
+					{ name: 'Not Working / Slow Speed', action: 'not-working' },
+					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
+					{ name: 'Unable to update profile', action: 'cant-update' },
+					// { name: 'Some Servers show timeout', action: 'some-timeout' },
+					{ name: 'ChatGPT/Claude not working', action: 'ai-problem' },
+					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
+					{ name: 'Netflix: unable to Login', action: 'netflix-login-problem' },
+					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' },
+					{ name: 'Google Scholar not working', action: 'scholar-problem' }
+				]
+            },
+			// netflix
+            netflix: {
+                  name: 'Netflix',
+				  logo: 'img/netflix/logo.png',
+				  options:
+					(device === 'ios' || device === 'android')
+					  ? [
+						  { name: 'Movie/Series Not available', action: 'not-available' },
+						  { name: 'unable to signout', action: 'cant-signout' },
+						  { name: 'Date & Time Error', action: 'date-error' }
+						]
+					  : [
+						  { name: 'Movie/Series Not available', action: 'not-available' }
+						]
+            },
+			// ChatGPT
+            chatgpt: {
+                name: 'ChatGPT',
+				logo: 'img/chatgpt/logo.png',		
+				options: [
+					{ name: 'unable to login/use after Team Deactivation', action: 'not-available' },
+					{ name: 'ChatGPT not working', action: 'chatgpt-problem' },
+					{ name: 'How to Redeem CDKey', action: 'chatgpt-redeem' }
+				]
+            },
+        };
+
+		
+		const config = configs[app] || configs.clashmi;
+		const page_options = config.options; // Fallback to default options if app has none
+
+		document.getElementById('header').innerHTML = `
+		  <button class="back-btn" onclick="goHome()">
+			<i class="fas fa-angle-left"></i> Back
+		  </button>
+			
+			<div class="header-center">
+				<div class="header-icon">					
+					<div class="card-image-wrapper" style="height:100%;">
+						<img src="${config.logo}" alt="${config.name}" class="app-logo">
+					</div>
+				</div>
+				<div>
+					<h1>${config.name}</h1>
+					<p>Problems / Error</p>
+				</div>
+			</div>
+						
+			<div class="next-btn-placeholder"></div>
+		`;
+
+        // Generate apps HTML with icons
+        let appsHtml = `
+				<div class="section-title">
+					<div class="section-title-left">
+						<i class="fas fa-info-circle"></i>
+						<span>Select <b style="color: #818bff;">Problem</b></span>
+					</div>
+					<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+				</div>								
+			`;
+
+        // Contact Support Message
+		SupportMessage = false;
+        if (SupportMessage === true){
+			appsHtml += `
+					<div class="alert-box">
+						<div>
+							<i class="fa-solid fa-triangle-exclamation"></i>
+							<strong>Only contact Support with problem details if you cannot resolve the issue here.</strong>
+						</div>
+					</div>						
+				`;
+			}
+		
+		// uninstall VPNIFY notice for iOS users
+		if (device === 'ios' || device === 'android'){
+			appsHtml += `
+					<!--
+					<div class="info-box-alert">
+						<img src="img/vpnify/logo.png" alt="VPNify Logo">
+							<div><strong>Uninstall VPNIFY & restart phone</strong> to prevent connection issues.</div>
+					</div>
+					-->
+					<div class="info-box-alert">						
+							<i class="fa-solid fa-triangle-exclamation"></i>
+							<div>
+							If you have any <b>Free VPN</b> app like <i><b>VPNIFY</b></i> etc. installed,<br>
+							<strong>Uninstall & restart phone</strong> to prevent connection issues.
+							</div>
+					</div>
+					`;
+		}
+
+
+		// uninstall Shadowrocket notice for iOS users
+		/*
+		if (device === 'ios' && app !== 'shadowrocket'){
+			appsHtml += `
+					<div class="info-box-alert">
+						<img src="img/shadowrocket/logo.png" alt="Shadowrocket Logo">
+							<div><strong>Uninstall Shadowrocket & restart phone</strong> if you don't have the updated version, to prevent connection issues.</div>
+					</div>`;
+		}
+		*/
+
+		if (app === 'clashverge'){			
+			appsHtml += `
+				<div class="notice-box">
+					<!-- <i class="fa-solid fa-bell"></i> -->
+					<div>
+						<span style="background-color: #cb0000; color: white; padding: 1px 4px; font-weight: bold; border-radius: 4px;">NEW</span> icon shows that ClashVerge need to be updated. 
+						<button class="btn-goto-update" onclick="window.location.href = 'app_guide.html?page=help&device=${device}&version=${version}&app=${app}&app_option=download'">
+							How to Update
+						</button>
+					</div>
+				</div>`;
+		}
+		
+		appsHtml += `<div class="device-grid" style="display:block;">`;		
+		if (page_options && page_options.length > 0) {
+			page_options.forEach((option, index) => {
+				appsHtml += `
+					<div class="device-card" style="flex-direction:row; margin: 5px 0px;" onclick="handleOption('${option.action}')" id="option-${option.action}">
+						<!-- <i class="${option.icon}"></i> -->
+						<h3>${option.name}</h3>
+						<!-- <span class="device-badge">Android</span> -->
+					</div>
+				`;
+			});
+		}
+
+		appsHtml += `</div>`;
+
+        document.getElementById('content').innerHTML = appsHtml;
+
+		window.goHome = function() {
+		  let url;
+		  
+		  const homeContent = {			  			
+			help: `apps_list.html?page=${page}&device=${device}`,
+			default: `app_options.html?page=${page}&device=${device}&version=${version}&app=${app}`
+		  };
+		  
+		  url = homeContent[page] || homeContent.default;
+		  window.location.href = url;
+		};
+		
+		// Proceed to app page
+		window.handleOption = function(option) {
+			if (!option) return;
+			// let url = `app_guide.html?page=${page}&device=${device}&version=${version}&app=${app}&app_option=${option}`;
+			let url = `help_guide.html?page=${page}&device=${device}&version=${version}&app=${app}&problem=${option}`;
+			window.location.href = url;
+		};
+
+        // Handle image load errors
+        document.querySelectorAll('.step-image').forEach(img => {
+            img.onerror = function() {
+                this.style.display = 'none';
+                const placeholder = this.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('image-placeholder')) {
+                    placeholder.style.display = 'block';
+                }
+            };
+        });		
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiCloud</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">
+    <!-- Javascript Functions -->
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/wechat-detector.js"></script>
+</head>
+<body>
+    <div class="guide-card">
+
+        <!-- Header -->
+        <div class="header" id="header">
+			<button class="back-btn" onclick="goHome()">
+				<i class="fas fa-home"></i> Home
+			</button>
+			
+			<div class="header-center">
+				<div class="header-icon">
+					<i class="fa-solid fa-book-open"></i>
+				</div>
+				<div>
+					<h1>Guide</h1>
+					<!-- <p>Choose your app get started</p> -->
+				</div>
+			</div>
+
+			<div class="next-btn-placeholder"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+			
+			<!-- Section Title -->			
+            <div class="section-title">
+				<div class="section-title-left">
+					<i class="fas fa-mobile-alt"></i>
+                <span>Select your device for <b style="color: #818bff;">Detailed Guide</b></span>
+				</div>
+				<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+			</div>
+			
+			<!-- Device Grid -->
+            <div class="device-grid">
+                <div class="device-card" onclick="handleProceed('android')" id="card-android">
+                    <i class="fab fa-android"></i>
+                    <h3>Android</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('ios')" id="card-ios">
+                    <i class="fab fa-apple"></i>
+                    <h3>iPhone/iPad</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('windows')" id="card-windows">
+                    <i class="fab fa-windows"></i>
+                    <h3>Windows</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('mac')" id="card-mac">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Macbook</h3>
+                </div>
+                <div class="device-card" onclick="handleProceed('linux')" id="card-linux">
+                    <i class="fab fa-linux"></i>
+                    <h3>Linux</h3>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-links">
+                <i class="fas fa-bolt" style="color: #818bff;"></i>
+                Quick Connect: <br/>
+                <a href="app_guide.html?page=home&app=clashmi&device=android&version=android13"><i class="fab fa-android"></i> Android 13+</a>
+                <a href="app_guide.html?page=home&app=flclash&device=android&version=android12"><i class="fab fa-android"></i> Android ≤12</a>
+                <a href="app_guide.html?page=home&app=clashmi&device=ios"><i class="fab fa-apple"></i> iOS</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=windows"><i class="fab fa-windows"></i> Windows</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=linux"><i class="fab fa-linux"></i> Linux</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=mac&version=apple"><i class="fas fa-laptop"></i> MacOS (M-Series)</a>
+                <a href="app_guide.html?page=home&app=clashverge&device=mac&version=intel"><i class="fas fa-laptop"></i> MacOS (intel)</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+		// Proceed to device guide
+		window.handleProceed = function(device) {
+			if (!device) return;
+			let url = `apps_list.html?page=guide&device=${device}`;
+			window.location.href = url;
+		};
+
+		window.goHome = function() {
+			window.location.href = 'index.html';
+		};
+		
+		// Initialize
+		//nextButton.disabled = true;
+	</script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <title>PhiCloud</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/terms.css">
+</head>
+<body>
+    <div class="guide-card">
+        <!-- Header with back button -->
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-angle-left"></i> Back
+            </button>
+            <div class="header-center">
+                <div class="header-icon"><i class="fas fa-file-contract"></i></div>
+                <div>
+                    <h1>Terms</h1>
+                    <p>& <b>Conditions</b></p>
+                </div>
+            </div>
+            <div class="next-btn-placeholder"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content legal-content">
+            <div class="effective-date">
+                <i class="far fa-calendar-alt"></i> Effective date: <span id="effective-date"></span> | Last updated: March 28, 2026
+            </div>
+            
+            <!-- 1. Acceptance -->
+            <div class="legal-block">
+                <h3><i class="fas fa-check-circle"></i> 1. Acceptance of Terms</h3>
+                <p>By accessing or using any PhiCloud service, website, or purchasing any package (collectively, the "Services"), you agree to be bound by these Terms & Conditions ("Terms"). If you do not agree with any part of these Terms, you must immediately discontinue use of our Services. Your continued use constitutes unconditional acceptance.</p>
+                <p>PhiCloud reserves the right to modify, suspend, or terminate any service at any time without prior notice. Changes to these Terms become effective immediately upon posting. It is your responsibility to review this page periodically.</p>
+            </div>
+            
+            <!-- 2. Service Description -->
+            <div class="legal-block">
+                <h3><i class="fas fa-cloud-upload-alt"></i> 2. Services & Packages</h3>
+                <p>PhiCloud provides cloud network services, server plans, streaming account access, ChatGPT subscriptions, and related digital solutions. All plans are described on our official <a href="packages.html" style="color:#818bff; text-decoration:underline;">Packages page</a>. We reserve the right to modify features, data limits, or pricing with reasonable notice. Any promotional materials are for informational purposes only; actual service quality may vary depending on network conditions and third-party providers.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Important note:</strong> Your payment covers service charges only. Technical support is provided as a courtesy service and is not contractually guaranteed. For complete guides and troubleshooting, visit <a href="http://guide.PhiCloud.shop" target="_blank" style="color:#818bff;">Guide.PhiCloud.shop</a>.
+                </div>
+            </div>
+            
+            <!-- 3. Payments & Refund Policy -->
+            <div class="legal-block">
+                <h3><i class="fas fa-credit-card"></i> 3. Payments, Subscriptions & Refunds</h3>
+                <ul class="legal-list">
+                    <li><i class="fas fa-circle-dollar-to-slot"></i> <strong>Pricing:</strong> All prices are listed in Chinese Yuan (¥) and are inclusive of applicable taxes where required. Plans are available in monthly, quarterly, or semi-annual intervals.</li>
+                    <li><i class="fas fa-rotate-left"></i> <strong>No Refunds:</strong> Due to the digital nature of our services, all sales are final. We do not offer refunds, exchanges, or credits for partially used periods. If a technical issue arises, we will attempt to resolve it as a courtesy but are not obligated to issue refunds.</li>
+                    <li><i class="fas fa-hourglass-half"></i> <strong>Service Expiry:</strong> Subscription-based plans expire at the end of the purchased duration. Unused data or benefits do not roll over unless explicitly stated in the package (e.g., NANO / MICRO permanent data plans).</li>
+                    <li><i class="fas fa-id-card"></i> <strong>Chargebacks:</strong> Any unjustified chargeback or payment dispute will result in immediate termination of all active services and permanent blacklisting from PhiCloud.</li>
+                </ul>
+            </div>
+            
+            <!-- 4. User Responsibilities -->
+            <div class="legal-block">
+                <h3><i class="fas fa-user-shield"></i> 4. User Obligations & Prohibited Use</h3>
+                <p>You agree to use PhiCloud services only for lawful purposes. You shall not:</p>
+                <ul class="legal-list">
+                    <li><i class="fas fa-ban"></i> Engage in any illegal activity, including but not limited to hacking, unauthorized surveillance, fraud, or distribution of malicious software.</li>
+                    <li><i class="fas fa-share-alt"></i> Resell, share, or redistribute your personal subscription/account credentials to third parties unless explicitly permitted by the plan (e.g., "Sharing Allowed" plans).</li>
+                    <li><i class="fas fa-tachometer-alt"></i> Attempt to bypass speed limits, abuse unlimited device policies, or consume excessive bandwidth that negatively impacts other users.</li>
+                    <li><i class="fas fa-robot"></i> Use automated scripts to abuse network resources or violate third-party terms of service (e.g., streaming platforms).</li>
+                </ul>
+                <p>PhiCloud reserves the right to suspend or terminate accounts that violate these provisions without prior notice and without refund.</p>
+            </div>
+            
+            <!-- 5. Third-Party Services & Liability -->
+            <div class="legal-block">
+                <h3><i class="fas fa-link"></i> 5. Third-Party Integrations & Social Media</h3>
+                <p>Certain services offered (Netflix, ChatGPT, Microsoft 365, etc.) are provided through third-party platforms. PhiCloud does not own, operate, or control these platforms. We act as an intermediary to facilitate access or shared accounts. Any service interruption, account ban, or policy change by the third party is beyond our control.</p>
+                <div class="highlight-box">
+                    <i class="fas fa-triangle-exclamation"></i> <strong>High-risk services:</strong> ChatGPT Team accounts (TEAM-A, TEAM-B, TEAM-C) are labeled as HIGH RISK due to rapid policy changes by OpenAI. Purchase at your own discretion; PhiCloud does not guarantee warranty beyond stated period (7–28 days depending on plan). No refunds for banned team accounts.
+                </div>
+                <p>For streaming services (Netflix, Prime Video, etc.), we provide login credentials. It is your responsibility to follow the platform's terms. Shared accounts are for personal use only; oversharing may result in termination without compensation.</p>
+            </div>
+            
+            <!-- 6. Data & Privacy -->
+            <div class="legal-block">
+                <h3><i class="fas fa-lock"></i> 6. Privacy & Data Collection</h3>
+                <p>Your privacy matters. PhiCloud collects minimal personal data required for order processing (e.g., email, payment confirmation). We do not sell or share personal data with third parties for marketing. However, please note:</p>
+                <ul class="legal-list">
+                    <li><i class="fas fa-database"></i> Some account activation services (e.g., MS365, Gemini) require us to invite your email address. We only use this for service provisioning.</li>
+                    <li><i class="fas fa-chart-line"></i> Anonymous usage statistics may be collected to improve network performance.</li>
+                    <li><i class="fas fa-envelope"></i> We may contact you regarding service renewals, important updates, or security issues.</li>
+                </ul>
+                <p>By using our services, you consent to the collection and use of information as described. For full details, you may request our privacy policy summary via support channels.</p>
+            </div>
+            
+            <!-- 7. Disclaimer of Warranties -->
+            <div class="legal-block">
+                <h3><i class="fas fa-shield-heart"></i> 7. Disclaimer & Limitation of Liability</h3>
+                <p>PhiCloud provides services on an "AS IS" and "AS AVAILABLE" basis. We do not warrant that:</p>
+                <ul class="legal-list">
+                    <li><i class="fas fa-wifi"></i> The service will be uninterrupted, error-free, or completely secure.</li>
+                    <li><i class="fas fa-gauge-high"></i> Speed or latency will meet expectations under all network conditions.</li>
+                    <li><i class="fas fa-video"></i> Third-party platforms (Netflix, ChatGPT, etc.) will remain accessible or unrestricted.</li>
+                </ul>
+                <p><strong>To the maximum extent permitted, PhiCloud and its affiliates shall not be liable for any indirect, incidental, or consequential damages, including loss of data, revenue, or profits, arising from the use or inability to use our services. Our total liability shall not exceed the amount paid by you for the service during the preceding three months.</strong></p>
+            </div>
+            
+            <!-- 8. Account suspension / Termination -->
+            <div class="legal-block">
+                <h3><i class="fas fa-gavel"></i> 8. Termination & Suspension</h3>
+                <p>PhiCloud reserves the right to suspend or terminate your access at any time, without notice, for conduct that violates these Terms, endangers the network, or disrupts other users. Upon termination, you must cease all use of our Services. No refunds will be provided for termination due to breach. Inactive accounts (no login for 90+ days) may be archived and require re-activation.</p>
+            </div>
+            
+            <!-- 9. Changes & Contact -->
+            <div class="legal-block">
+                <h3><i class="fas fa-edit"></i> 9. Modifications & Contact Information</h3>
+                <p>We may update these Terms from time to time. The most current version will always be available at <strong>guide.PhiCloud.shop/terms.html</strong>. Continued use of services after changes constitutes acceptance.</p>
+                <p>For questions, support requests, or inquiries regarding these Terms, please contact us via:</p>
+                <ul class="legal-list">
+                    <li><i class="fab fa-weixin"></i> WeChat ID: <strong>Phi-Link</strong></li>
+                    <li><i class="fas fa-globe"></i> Website: <a href="http://www.PhiCloud.xyz" target="_blank" style="color:#818bff;">www.PhiCloud.xyz</a></li>
+                    <li><i class="fas fa-envelope"></i> Support: (via official contact form on website)</li>
+                </ul>
+                <p><i class="fas fa-clock"></i> Response times for support are typically 24–72 hours (courtesy service).</p>
+            </div>
+            
+            <div class="legal-divider"></div>
+            
+            <!-- Consent / Acknowledge footer -->
+            <div class="consent-footer">
+                <i class="fas fa-hand-peace" style="font-size: 2rem; color:#818bff; margin-bottom: 8px; display: block;"></i>
+                <p style="margin-bottom: 16px; font-weight: 500;">By purchasing any package, accessing PhiCloud network, or using our digital services, you confirm that you have read, understood, and agreed to these Terms & Conditions in full.</p>
+                <button class="btn-legal" onclick="goToPackages()">
+                    <i class="fas fa-arrow-right"></i> I Agree & Continue to Packages
+                </button>
+                <p style="margin-top: 18px; font-size: 0.75rem; color:#64748b;">If you do not agree, please exit this page and refrain from using our services.</p>
+            </div>
+        </div>
+        
+        <!-- Footer note / additional must-read (similar to packages.html) -->
+        <div class="footer-note" style="margin-top: 0; border-radius: 0 0 30px 30px;">
+            <h3><i class="fas fa-exclamation-triangle"></i> IMPORTANT LEGAL NOTICE</h3>
+            <ul>
+                <li><i class="fas fa-circle"></i> PhiCloud is a network service provider; all plans are subject to fair usage policies.</li>
+                <li><i class="fas fa-circle"></i> Third-party trademarks (Netflix, ChatGPT, Microsoft, etc.) are property of their respective owners. PhiCloud is not affiliated, endorsed, or sponsored by any of these brands unless stated.</li>
+                <li><i class="fas fa-circle"></i> Service quality may be impacted by geographic location, local ISP restrictions, or international bandwidth conditions.</li>
+                <li><i class="fas fa-circle"></i> By using shared streaming accounts, you acknowledge that the account owner may change credentials in case of misuse; we will provide replacement access when possible but not guaranteed.</li>
+                <li><i class="fas fa-circle"></i> If you have any doubt regarding terms, please contact our support before making a purchase. Your transaction implies acceptance of these Terms.</li>
+            </ul>
+            <div style="border-top: 1px solid #334155; margin-top: 15px; padding-top: 15px;">
+                <div class="footer-links-grid">
+                    <span><i class="fab fa-weixin"></i> ID: Phi-Link</span>
+                    <span><i class="fas fa-globe"></i> www.PhiCloud.xyz</span>
+                    <span><i class="fas fa-file-contract"></i> Terms v2.4</span>
+                </div>
+                <div class="footer-links-grid">
+                    <span><i class="fas fa-file-pdf"></i> PDF Guide</span>
+                    <span><i class="fas fa-video"></i> Video Guide</span>
+                    <span><i class="fas fa-headset"></i> Tech Support (Courtesy)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // back navigation function (same as used in packages.html)
+        function goBack() {
+            // Check if there is a referrer or fallback to packages page
+            if (document.referrer && (document.referrer.includes('packages.html') || document.referrer.includes('index.html'))) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        function goToPackages() {
+            // Redirect to packages page after agreement
+            window.location.href = 'packages.html';
+        }
+        
+        const date = new Date();
+        const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('effective-date').textContent = formattedDate;
+    </script>
+</body>
+</html>

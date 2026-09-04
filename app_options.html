@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiCloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">    	
+    <!-- Javascript Functions -->
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/wechat-detector.js"></script>
+</head>
+<body>
+    <div class="guide-card" id="guideCard">
+	
+        <!-- Header will be filled by JS -->
+        <div class="header" id="header"></div>
+        
+        <!-- Content will be filled by JS -->
+        <div class="content" id="content"></div>
+    </div>
+
+    <script>
+        // Get device from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const device = urlParams.get('device') || 'android';
+        const app = urlParams.get('app') || 'clashmi';
+		const macVer = urlParams.get('mac') || 'apple'; 
+		const page = urlParams.get('page') || 'home'; 
+		const version = urlParams.get('version') || 'home'; 
+
+		// App configurations with all options
+		const configs = {
+			// Android
+			clashmi: {
+				name: 'Clash Mi',
+				logo: 'img/clashmi/logo.png',
+				options: [
+					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
+					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
+					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
+					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
+					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
+					{ icon: 'fa-solid fa-arrows-rotate', name: 'Change Server', action: 'change-server' },
+					{ icon: 'fa-solid fa-cloud-arrow-down', name: 'Update Profile', action: 'update-profile' },
+					{ icon: 'fa-solid fa-hourglass-half', name: 'Check Expiry', action: 'check-expiry' },
+					{ icon: 'fa-solid fa-circle-down', name: 'Update App', action: 'update-app' },
+					{ icon: 'fas fa-sitemap', name: 'Per-App Proxy', action: 'per-app-proxy' },
+					{ icon: 'fa-solid fa-wrench', name: 'Help', action: 'help' }
+				]
+			},
+			
+			flclash: {
+				name: 'FL Clash',
+				logo: 'img/flclash/logo.png',
+				options: [
+					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
+					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
+					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
+					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
+					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
+					{ icon: 'fa-solid fa-arrows-rotate', name: 'Change Server', action: 'change-server' },
+					{ icon: 'fa-solid fa-cloud-arrow-down', name: 'Update Profile', action: 'update-profile' },
+					{ icon: 'fa-solid fa-hourglass-half', name: 'Check Expiry', action: 'check-expiry' },
+					{ icon: 'fa-solid fa-circle-down', name: 'Update App', action: 'update-app' },
+					{ icon: 'fas fa-sitemap', name: 'Per-App Proxy', action: 'per-app-proxy' },
+					{ icon: 'fa-solid fa-wrench', name: 'Help', action: 'help' }
+				]
+			},
+			
+			flclash_mac: {
+				name: 'FL Clash',
+				logo: 'img/flclash/logo.png',
+				options: [
+					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
+					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
+					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
+					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
+					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
+					{ icon: 'fa-solid fa-arrows-rotate', name: 'Change Server', action: 'change-server' },
+					{ icon: 'fa-solid fa-cloud-arrow-down', name: 'Update Profile', action: 'update-profile' },
+					{ icon: 'fa-solid fa-hourglass-half', name: 'Check Expiry', action: 'check-expiry' },
+					{ icon: 'fa-solid fa-circle-down', name: 'Update App', action: 'update-app' },
+					{ icon: 'fas fa-sitemap', name: 'Per-App Proxy', action: 'per-app-proxy' },
+					{ icon: 'fa-solid fa-wrench', name: 'Help', action: 'help' }
+				]
+			},
+			
+			hiddify: {
+				name: 'Hiddify',
+				logo: 'img/hiddify/logo.png',
+				options: [
+					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
+					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
+					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
+					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
+					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
+					{ icon: 'fa-solid fa-arrows-rotate', name: 'Change Server', action: 'change-server' },
+					{ icon: 'fa-solid fa-cloud-arrow-down', name: 'Update Profile', action: 'update-profile' },
+					{ icon: 'fa-solid fa-hourglass-half', name: 'Check Expiry', action: 'check-expiry' },
+					{ icon: 'fa-solid fa-circle-down', name: 'Update App', action: 'update-app' },
+					{ icon: 'fas fa-sitemap', name: 'Per-App Proxy', action: 'per-app-proxy' },
+					{ icon: 'fa-solid fa-wrench', name: 'Help', action: 'help' }
+				]
+			},
+			
+			clashmeta: {
+				name: 'Clash Meta',
+				logo: 'img/clashmeta/logo.png',
+				options: [
+					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
+					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
+					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
+					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
+					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
+					{ icon: 'fa-solid fa-arrows-rotate', name: 'Change Server', action: 'change-server' },
+					{ icon: 'fa-solid fa-cloud-arrow-down', name: 'Update Profile', action: 'update-profile' },
+					{ icon: 'fa-solid fa-hourglass-half', name: 'Check Expiry', action: 'check-expiry' },
+					{ icon: 'fa-solid fa-circle-down', name: 'Update App', action: 'update-app' },
+					{ icon: 'fas fa-sitemap', name: 'Per-App Proxy', action: 'per-app-proxy' },
+					{ icon: 'fa-solid fa-wrench', name: 'Help', action: 'help' }
+				]
+			},
+			
+			// iOS
+			shadowrocket: {
+				name: 'Shadow Rocket',
+				logo: 'img/shadowrocket/logo.png',
+				options: [
+					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
+					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
+					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
+					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
+					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
+					{ icon: 'fa-solid fa-arrows-rotate', name: 'Change Server', action: 'change-server' },
+					{ icon: 'fa-solid fa-cloud-arrow-down', name: 'Update Profile', action: 'update-profile' },
+					{ icon: 'fa-solid fa-hourglass-half', name: 'Check Expiry', action: 'check-expiry' },
+					{ icon: 'fa-solid fa-circle-down', name: 'Update App', action: 'update-app' },
+					{ icon: 'fas fa-sitemap', name: 'Per-App Proxy', action: 'per-app-proxy' },
+					{ icon: 'fa-solid fa-wrench', name: 'Help', action: 'help' }
+				]
+			},
+			
+			// desktop
+			clashverge: {
+				name: 'Clash Verge',
+				logo: 'img/clashverge/logo.png',
+				options: [
+					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
+					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
+					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
+					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
+					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
+					{ icon: 'fa-solid fa-arrows-rotate', name: 'Change Server', action: 'change-server' },
+					{ icon: 'fa-solid fa-desktop', name: 'Tunnel Mode', action: 'tun-mode' },
+					{ icon: 'fa-solid fa-globe', name: 'Global Mode', action: 'global-mode' },
+					{ icon: 'fa-solid fa-cloud-arrow-down', name: 'Update Profile', action: 'update-profile' },
+					{ icon: 'fa-solid fa-hourglass-half', name: 'Check Expiry', action: 'check-expiry' },
+					{ icon: 'fa-solid fa-circle-down', name: 'Update App', action: 'update-app' },
+					{ icon: 'fa-solid fa-wrench', name: 'Help', action: 'help' }
+				]
+			}
+		};
+
+		
+		// Get the current app config
+		const config = configs[app] || configs.clashmi;
+
+		// Get options from the config
+		const page_options = config.options;
+
+
+        // Set header
+		const buttonContent = {
+		  downloads: '<i class="fa-solid fa-download"></i> Downloads',
+		  guide: '<i class="fa-solid fa-book-open"></i> Guide',
+		  default: '<i class="fa-solid fa-book-open"></i> Guide'
+		};
+		document.getElementById('header').innerHTML = `
+		  <button class="back-btn" onclick="goHome()">
+			${buttonContent[page] || buttonContent.default}
+		  </button>
+			
+			<div class="header-center">
+				<div class="header-icon">					
+					<div class="card-image-wrapper" style="height:100%;">
+						<img src="${config.logo}" alt="${config.name}" class="app-logo">
+					</div>
+				</div>
+				<div>
+					<h1>${config.name}</h1>
+					<p>Guide</p>
+				</div>
+			</div>
+						
+			<div class="next-btn-placeholder"></div>
+		`;
+
+        // Generate apps HTML with icons
+        let appsHtml = `
+            <div class="section-title">
+				<div class="section-title-left">
+					<i class="fas fa-info-circle"></i>
+					<span>Select option</span>
+				</div>
+				<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+			</div>`;
+		
+		
+		// Connect Now Link
+		appsHtml += `
+				<div class="device-grid">
+				<div class="device-card" onclick="handleOption('connect-now')" id="option-connect">
+						<i class="fa-solid fa-globe"></i>
+						<h3>Download & Connect</h3>
+						<!-- <span class="device-badge">Android</span> -->
+					</div>
+				</div>					
+				`;
+				
+		// Generate apps HTML with icons
+        appsHtml += `<div class="device-grid">`;
+		
+		if (page_options && page_options.length > 0) {
+			page_options.forEach((option, index) => {
+				appsHtml += `
+					<div class="device-card" onclick="handleOption('${option.action}')" id="option-${option.action}">
+						<i class="${option.icon}"></i>
+						<h3>${option.name}</h3>
+						<!-- <span class="device-badge">Android</span> -->
+					</div>
+				`;
+			});
+		}
+
+		appsHtml += `</div>`;
+
+        document.getElementById('content').innerHTML = appsHtml;
+
+		window.goHome = function() {
+		  let url;
+		  
+		  const homeContent = {			  			
+			downloads: `apps_list.html?page=downloads`,
+			default: `guide.html?page=guide`
+		  };
+		  
+		  url = homeContent[page] || homeContent.default;
+		  window.location.href = url;
+		};
+		
+		// Proceed to app page
+		window.handleOption = function(option) {
+		  if (!option) return;
+		  
+		  let url;
+		  const handleContent = {			  				
+			help: `help_options.html?page=${page}&device=${device}&version=${version}&app=${app}`,
+			'connect-now': `app_guide.html?page=${page}&device=${device}&version=${version}&app=${app}&option=${option}`,
+			default: `app_guide.html?page=${page}&device=${device}&version=${version}&app=${app}&app_option=${option}`
+		  };
+		  
+		  url = handleContent[option] || handleContent.default;
+		  window.location.href = url;
+		};
+
+        // Handle image load errors
+        document.querySelectorAll('.step-image').forEach(img => {
+            img.onerror = function() {
+                this.style.display = 'none';
+                const placeholder = this.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('image-placeholder')) {
+                    placeholder.style.display = 'block';
+                }
+            };
+        });		
+
+    </script>
+</body>
+</html>

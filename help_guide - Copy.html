@@ -1,0 +1,4167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>PhiCloud</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<!-- Stylesheet -->
+	<link rel="stylesheet" href="styles/style.css">
+	<style>
+		#header2 {
+			position: static;
+			top: auto;
+			z-index: auto;
+		}
+	</style>
+	<!-- Javascript Functions -->
+	<script src="scripts/functions.js"></script>
+	<script src="scripts/download-links.js"></script>
+	<script src="scripts/wechat-detector.js"></script>
+	<script>
+		window.VERSIONS_READY = loadVersions();
+	</script>
+</head>
+
+<body>
+	<!-- Image Modal -->
+	<div id="imageModal" class="modal" onclick="closeModal()">
+		<span class="close-modal" onclick="closeModal()">&times;</span>
+		<img class="modal-content" id="modalImage">
+	</div>
+
+	<div class="guide-card" id="guideCard">
+		<!-- Header will be filled by JS -->
+		<div class="header" id="header"></div>
+		<div class="header" id="header2"></div>
+
+		<!-- Content will be filled by JS -->
+		<div class="content" id="content"></div>
+	</div>
+
+	<script>
+	(async function () {
+		// Confirm app versions are fetched
+		await window.VERSIONS_READY;
+		// Get device from URL
+		const urlParams = new URLSearchParams(window.location.search);
+		const page = urlParams.get('page') || 'home';
+		const device = urlParams.get('device') || 'android';
+		const getVersion = urlParams.get('version') || 'android13';
+		const app = urlParams.get('app') || 'template';
+		const app_option = urlParams.get('problem') || 'download';
+		const substep = urlParams.get('substep') || '0'; // Current substep index
+
+		// Modal functions
+		function openModal(imageSrc) {
+			const modal = document.getElementById('imageModal');
+			const modalImg = document.getElementById('modalImage');
+			modal.style.display = 'block';
+			modalImg.src = imageSrc;
+		}
+
+		function closeModal() {
+			document.getElementById('imageModal').style.display = 'none';
+		}
+
+		// Close modal when clicking outside
+		window.onclick = function (event) {
+			const modal = document.getElementById('imageModal');
+			if (event.target === modal) {
+				modal.style.display = 'none';
+			}
+		};
+
+
+		// Device configurations with substeps - Only Template
+
+		// --- Reusable Steps ---
+		//////////////////////////
+
+		// Shared HTML fragments
+		const wifiImportWarning = `
+			<div class="info-box" style="margin-top: 15px;">
+				<i class="fas fa-wifi" style="color: #818bff;"></i>
+				<div>
+					<strong> Connect Wi-Fi to import (not hotspot)</strong>
+				</div>
+			</div>`;
+
+		const changeServerNotesHTML = `
+				<div class="substep-note">
+					<ul class="no-dots-list">
+						<li><b>Server Selection</b>:</li>
+						<li><b>⚙️SmartSelect</b> –– Auto find the working Server <b style="color:green;">(recommended)</b></li>	
+						<li><b>♻️AutoSelect</b> ––– Auto select fast available server</li>
+						<li><b>📶IPv6 Only</b> –––– Only connect with IPv6 servers</li>
+						<li><b>Country Group</b> –– Connect with best available servers from a specific country</li>
+						<li><b>Country Server</b> –– only connect with one server</li>						
+						<li>&nbsp;</li>
+						<li><b>Important Notes:</b></li>
+						<li><b>Manually selected server</b> will <b style="color:#cb0000;">not change</b> automatically.</li>
+						<li><b>TikTok</b>, <b>ChatGPT</b> and <b>Claude</b> are <b style="color:#cb0000;">not available</b> in <b>Hong Kong</b>.</li>
+					</ul>
+				</div>
+				`;
+	
+		const changeServerNotesAi = `
+				<div class="substep-note">
+					<ul class="no-dots-list">						
+						<li><b>Server Selection for ChatGPT/Claude/Gemini/Copilot only</b>:</li>
+						<li><b>US Group</b> –– <b style="color:green;">(recommended)</b></li>	
+						<li><b>♻️AutoSelect</b> ––– Auto select fast available server</li>
+						<li><b>Country Server</b> –– only connect with one server</li>						
+						<li>&nbsp;</li>
+						<li><b>Important Notes:</b></li>
+						<li><b>Manually selected server</b> will <b style="color:#cb0000;">not change</b> automatically.</li>
+						<li><b>ChatGPT</b>, <b>Claude</b> and <b>Gemini</b> are <b style="color:#cb0000;">not available</b> in <b>Hong Kong</b>.</li>
+					</ul>
+				</div>
+				`;
+
+		const changeServerNotesWithoutGroups = `
+				<div class="substep-note">
+					<ul class="no-dots-list">
+						<li><b>Server Selection</b>:</li>
+						<li><b>lowest</b> ––– Auto select best available server <b style="color:green;">(recommended)</b></li>	
+						<li><b>Country Server</b> –– only connect with one server</li>						
+						<li>&nbsp;</li>
+						<li><b>Important Notes:</b></li>
+						<li><b>Manually selected server</b> will <b style="color:#cb0000;">not change</b> automatically.</li>
+						<li><b>TikTok</b>, <b>ChatGPT</b> and <b>Claude</b> are <b style="color:#cb0000;">not available</b> in <b>Hong Kong</b>.</li>
+					</ul>
+				</div>
+				`;
+			
+		const changeServerNotesShadowRocket = `
+				<div class="substep-note">
+					<ul class="no-dots-list">
+						<li><b>Important Notes:</b></li>
+						<li><b>Country Server</b> –– only connect with one server</li>	
+						<li><b>Manually selected server</b> will <b style="color:#cb0000;">not change</b> automatically.</li>
+						<li><b>TikTok</b>, <b>ChatGPT</b> and <b>Claude</b> are <b style="color:#cb0000;">not available</b> in <b>Hong Kong</b>.</li>
+					</ul>
+				</div>
+				`;
+		
+		const genericContactSupport = {
+			title: 'Contact Support',
+			content: `
+				<div class="notice-box">
+					<i class="fas fa-info-circle"></i>
+					If your issue remains unresolved, please contact support and provide <b>detailed description</b> of the problem.
+				</div>
+				`,
+			image: 'https://placehold.co/300x100/667eea/white?text=Contact+Support',
+			note: ''
+		};
+
+		const genericFullTroubleshooting = {
+			title: 'Troubleshooting',
+			content: `								
+					<div class="alert-box" style="margin-top: 15px;">
+							<i class="fas fa-exclamation-triangle"></i>
+								<b>Problem not solved???</b><br>
+								please click below for complete troubleshooting guide.
+					</div>
+						
+					<div class="download-actions">
+						<button class="btn btn-primary" onclick="window.open('help_guide.html?page=help&device=${device}&version=${getVersion}&app=${app}&problem=not-working', '_self')">
+							<i class="fas fa-tools"></i> Complete Troubleshooting
+						</button>
+					</div>
+				`,
+			image: '',
+			note: ''
+		};
+
+		// App Update
+		const targetVersion = getVersion === 'android13' ? '13+' : '≤12';
+		const targetRequired = device === 'ios' ? 'iOS 15+' : 'Android 13+';
+		// const targetDownload = device === 'ios' 
+			// ? getDownloadLink('app', 'ios')
+			// : getDownloadLink('app', 'android', getVersion === 'android13' ? 'version13' : 'version12');
+		const targetDownload = getDownloadLink(app, device, getVersion);
+		const targetApp_version = getAppVersion(app, device) || '0.0';
+		const targetApp_update = getReleaseDate(app, device) || '0.0';
+
+		const appUpdateButton = `
+			<div class="notice-box">
+				<i class="fa-solid fa-circle-info"></i>
+					<!-- <button class="btn-goto-update" onclick="return handleWeChatCheck(event, '${targetDownload}')"> Download v${targetApp_version}</button> -->
+					${device === 'ios' ? `if app version <b>not v${targetApp_version}</b>, click below to <b>Update from AppStore</b>`
+							: device === 'android' ? `if app version <b>not v${targetApp_version}</b>, click below to <b>Download APK</b> file`
+								: app === 'clashverge' ? `click below to <b>Download installation</b> file`
+									: '<b>Download installation</b> file'}
+			</div>
+			<div class="download-actions">
+				<!-- <span class="step-title" style="color:red;">Required: ${targetRequired}</span> -->
+				<a  class="btn btn-primary" 
+					style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+					href="${targetDownload}" 
+					target="_blank" 
+					onclick="return handleWeChatCheck(event, '${targetDownload}')">
+						<i class="fas fa-download"></i> Download v${targetApp_version}
+				</a>
+				<!--
+				<span class="device-badge" style="text-align: center;">
+					${device === 'ios' ? 'Checked at:' : 'Updated at:'} ${targetApp_update}
+				</span>
+				-->
+			</div>
+			`;
+
+
+		// ClashMi
+		const clashmiUpdateProfile = {
+			title: 'Update Profile',
+			content: `								
+						${wifiImportWarning}
+						<div class="info-box" style="margin-top: 15px;">							
+							<ol class="bold-numbers-list">							
+							<li>
+								Disconnect <i class="fa-solid fa-toggle-off"></i>
+							</li><li>
+								Open <b>Profiles Tab</b>
+							</li>
+							<li>
+								Click <i class="fa-solid fa-cloud-arrow-down"></i> to update profile.
+							</li><li>
+								Connect <i class="fa-solid fa-toggle-on"></i>
+							</li></ol>
+						</div>
+					`,
+			image: 'img/clashmi/update-profile-2.png',
+			note: ''
+		};
+		const clashmiUpdateApp = {
+			title: 'Update App',			
+							
+			content: `
+				<!--
+				<div class="info-box">
+					<div>
+						<ul class="no-dots-list">
+							<li><b>Check App Update Availability</b></li>
+							<li>Scroll Down on <strong>Clash Mi</strong> Homepage to check update availability
+						</ul>
+					</div>
+				</div>
+				<img src="img/clashmi/update-available.png" class="step-image" onerror="this.style.display='none';">				
+				-->
+
+				<div class="info-box">
+					<div>
+						<ul class="no-dots-list">
+							<li><b>Check App version</b></li>
+						</ul>
+						<ol class="bold-numbers-list">
+							<li>Scroll Down & Open <b>About</b></li>
+						</ol>
+					</div>
+				</div>
+				${appUpdateButton}
+				`,	
+			image: 'img/clashmi/app-update-check.png',
+			note: ''
+		};
+		const clashmiRefreshServers = {
+			title: 'Refresh Servers',
+			content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Proxy Tab</b>
+									</li>
+									<li>
+										Click <i class="fa-solid fa-bolt"></i> to refresh all servers
+									</li></ol>
+								</div>
+								`,
+			image: 'img/clashmi/refresh-servers.png',
+			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
+		};
+		const clashmiChangeServer = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li><li>
+							Open <b>Proxy Tab</b>
+						</li><li>
+							Open <b>🚀Global</b> Group
+						</li><li>
+							Select Group/Server with numbers accordingly
+						</li></ol>
+					</div>
+					${changeServerNotesHTML}
+					`,
+			image: 'img/clashmi/change-server-1.png',
+			note: ''
+		};
+		const clashmiCheckProfile = {
+			title: 'Check Profile',
+			content: `
+					<div class="info-box">						
+						<ol class="bold-numbers-list">
+							Go to <b>Profiles</b> tab & Check <br><br>
+							<li><b style="color:green;">Online Profile</b> is selected</li>
+							<li>Subscription date is <b style="color:#cb0000;">not expired</b>.</li>
+							<li>Traffic <b>Data limit</b> is <b style="color:#cb0000;">not over</b> or <b style="color:#cb0000;">near to over</b></li>
+						</ol>
+					</div>
+				`,
+			image: 'img/clashmi/check-profile.png',
+			note: ''
+		};
+		const clashmiBasicSettings = {
+			title: 'Basic Settings',
+			content: `
+			<div class="alert-box">
+				<i class="fa-solid fa-triangle-exclamation"></i>
+				<strong> Make sure no other VPN app is connected or working in the background.</strong>
+			</div>
+			<div class="info-box-alert">
+				<img src="img/vpnify/logo.png" alt="VPNify Logo">
+					<div><strong>Uninstall VPNIFY & restart phone</strong> to prevent connection issues.</div>
+			</div>
+			
+			<div class="info-box">
+				<ol class="bold-numbers-list">
+					<li>Check App is <b>Connected</b> <i class="fa-solid fa-toggle-on"></i></li>
+					<li><b>Rule</b> mode is selected</li>
+					<li><b>Online Profile</b> is selected and not expired.</li>
+					<li>
+						⚙️<b>SmartSelect</b> or ♻️<b>AutoSelect</b> is selected <br>
+						<i style="font-size: 0.95rem; color: inherit;">(single server won't change automatically)</i>
+					</li>
+				</ol>
+			</div>`,
+			image: 'img/clashmi/problems/basic-settings-check.png',
+			note: ``
+		};
+		const clashmiEnableIPV6 = {
+			title: 'Enable IPv6',
+			content: `
+				<div class="info-box" style="margin-top: 15px;">
+					<ul class="bold-numbers-list">
+						<li>
+							Disconnect <i class="fa-solid fa-toggle-off"></i>
+						</li>
+						<li>
+							Go to <b>Core Settings</b> and enable <b>IPv6</b>.
+						</li>
+					</ul>
+				</div>
+			`,
+			image: 'img/clashmi/enable-ipv6.png',
+			note: ''
+		}
+		const ClashmiChangeServerAi = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Open <b>Proxies</b> Tab
+						</li><li>
+							Open <b>🤖 Ai (ChatGPT-Claude)</b> Group <br><i style="font-size:1em; color:#000000;">Note: if <b>Ai Group</b> is not available then open <b>🚀Global</b> Group</i>
+						</li><li>
+							Select Group/Server with numbers accordingly
+						</li></ol>
+					</div>
+					${changeServerNotesAi}
+					`,
+			image: 'img/clashmeta/groups/change-server-ai.png',
+			note: ''
+		};
+		
+		// Hiddify
+		const hiddifyUpdateProfile = {
+			title: 'Update Profile',
+			content: `								
+					${wifiImportWarning}
+					<div class="info-box" style="margin-top: 15px;">
+						<ol class="bold-numbers-list"><li>
+							Disconnect <i class="fa-solid fa-toggle-off"></i>
+						</li><li>
+							Click <i class="fa-solid fa-clock-rotate-left"></i> to update profile.
+						</li><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li></ol>
+					</div>
+					<div class="substep-note">
+						<ul class="no-dots-list"><li>
+						<strong>Error while updating</strong>
+						</li><li>
+						<i class="fa-solid fa-arrow-right-from-bracket fa-rotate-270" style="color: rgb(7, 70, 120);"></i> swipe up to view all active apps
+						</li><li>
+						<i class="fa-solid fa-arrow-right-from-bracket fa-rotate-270" style="color: rgb(7, 70, 120);"></i> swipe up the app to exit
+						</li></ul>
+					</div>
+				`,
+			image: 'img/hiddify/update-profile-2.png',
+			note: ''
+		};
+		const hiddifyCheckExpiry = {
+			title: 'Check Expiry',
+			content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<ul class="no-dots-list"><li>
+											Make sure subscription is <b style="color:#cb0000;">not expired</b> and Traffic <b>Data limit</b> is <b style="color:#cb0000;">not over</b> or <b style="color:#cb0000;">near to over</b>.
+										</li></ul>
+									</div>									
+								`,
+			image: 'img/hiddify/check-expiry.png',
+			note: ''
+		};
+		const hiddifyRefreshServers = {
+			title: 'Refresh Servers',
+			content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Proxy Tab</b>
+									</li>
+									<li>
+										Click <i class="fa-solid fa-bolt"></i> to refresh all servers
+									</li></ol>
+								</div>
+								`,
+			image: 'img/hiddify/refresh-servers.png',
+			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
+		};
+		const hiddifyChangeServer = {
+			title: 'Change Server',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list"><li>
+						Connect <i class="fa-solid fa-toggle-on"></i>
+					</li><li>
+						Open <b>Proxy Tab</b>
+					</li>
+					<li>
+						Select Group/Server with numbers accordingly
+					</li></ol>
+				</div>
+				${changeServerNotesWithoutGroups}
+				`,
+			image: 'img/hiddify/change-server-1.png',
+			note: ''
+		};		
+		const hiddifyResetOptions = {
+			title: 'Reset Options',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list"><li>
+					Open <b>Settings</b>
+				</li><li>
+					Click on <b>three dots</b>
+				</li><li>
+					Click <b>Reset Options</b>
+				</li></ol>
+			</div>
+			`,
+			image: 'img/hiddify/reset-options.png',
+			note: ''
+		};
+		const hiddifyRegionSettings = {
+			title: 'Region Settings',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list"><li>
+					Open <b>Settings</b>
+				</li><li>
+					Click on <b>three dots</b>
+				</li><li>
+					Click <b>Reset Options</b>
+				</li><li>
+					Open <b>Routing</b>
+				</li><li>
+					Change to <b>China</b>
+				</li></ol>
+			</div>
+			`,
+			image: 'img/hiddify/reset-region.png',
+			note: ''
+		};
+		const hiddifyDnsSettings = {
+			title: 'DNS Settings',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list"><li>
+					Open <b>Settings</b>
+				</li><li>
+					Open <b>DNS</b>
+				</li><li>
+					Remote DNS: <b>https://1.1.1.1/dns-query</b>
+				</li><li>
+					Remote DNS domain strategy: <b>prefer IPv4</b>
+				</li><li>
+					Enable fake DNS: <i class="fa-solid fa-toggle-off"></i> <b>disabled</b>
+				</li><li>
+					Outbound Server Resolver (Direct): <b>local</b>
+				</li><li>
+					Outbound Domain strategy: <b>prefer IPv4</b>
+				</li></ol>
+			</div>
+			`,
+			image: 'img/hiddify/change-dns.png',
+			note: ''
+		};
+		const hiddifyChangeServerAi = {
+			title: 'Change Server',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list"><li>
+						Connect <i class="fa-solid fa-toggle-on"></i>
+					</li><li>
+						Open <b>Proxy Tab</b>
+					</li>
+					<li>
+						Select Group/Server with numbers accordingly
+					</li></ol>
+				</div>
+				${changeServerNotesWithoutGroups}
+				`,
+			image: 'img/hiddify/change-server-1.png',
+			note: ''
+		};		
+		const hiddifyUpdateApp = {
+			title: 'Update App',	
+			content: `
+				<div class="info-box">
+					<div>
+						<ul class="no-dots-list">
+							<li><b>Check App version</b></li>
+						</ul>
+						<ol class="bold-numbers-list">
+							<li>if the app version is not same as download button, update app</i>
+						</ol>
+					</div>
+				</div>
+				${appUpdateButton}
+				`,	
+			image: device === 'ios' 
+					? 'img/hiddify/ios/app-update-check.png'
+					: 'img/hiddify/android/app-update-check.png',
+			note: ''
+		};	
+
+		// Flclash
+		const flclashUpdateProfile = {
+			title: 'Update Profile',
+			content: `								
+									${wifiImportWarning}
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disconnect <i class="fa-solid fa-play"></i>
+										</li><li>
+											Go to <b>Profiles</b> tab
+										</li><li>
+											Click <i class="fa-solid fa-arrows-rotate"></i> to update profile.
+										</li></ol>
+									</div>
+								`,
+			image: 'img/flclash/update-profile-2.png',
+			note: ''
+		};
+		const flclashCheckExpiry = {
+			title: 'Check Expiry',
+			content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<ul class="no-dots-list"><li>
+											Make sure subscription is <b style="color:#cb0000;">not expired</b> and Traffic <b>Data limit</b> is <b style="color:#cb0000;">not over</b> or <b style="color:#cb0000;">near to over</b>.
+										</li></ul>
+									</div>
+								`,
+			image: 'img/flclash/check-expiry-1.png',
+			note: ''
+		};
+		const flclashRefreshServers = {
+			title: 'Refresh Servers',
+			content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Proxies Tab</b>
+									</li>
+									<li>
+										Click <i class="fa-solid fa-arrow-trend-up"></i> to refresh all servers
+									</li></ol>
+								</div>
+								`,
+			image: 'img/flclash/refresh-servers.png',
+			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
+		};
+		const flclashChangeServer = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li><li>
+							Open <b>Proxy Tab</b>
+						</li><li>
+							Open <b>🚀Global</b> Group
+						</li><li>
+							Select Group/Server with numbers accordingly
+						</li></ol>
+					</div>
+					${changeServerNotesHTML}
+					`,
+			image: 'img/flclash/change-server-1.png',
+			note: ''
+		};
+		const flclashBasicSettings = {
+			title: 'Basic Settings',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list"><li>
+					Go to <i class="fas fa-tools"></i> <b>Tools</b>
+				</li>
+				<li>
+					Open <i class="fas fa-wrench"></i> <b>Advance Configuration</b>
+				</li>
+				<li>
+					Open <i class="fa-solid fa-server"></i> <b>DNS</b>
+				</li>
+				<li>
+					enable <i class="fa-solid fa-toggle-on"></i> <b>Override DNS</b>
+				</li></ol>
+			</div>
+			`,
+			image: 'img/flclash/startup-settings.png',
+			note: ``
+		};
+		const flclashEnableIpv6 = {
+			title: 'Enable Ipv6',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list"><li>
+					Go to <i class="fas fa-tools"></i> <b>Tools</b>
+				</li>
+				<li>
+					Open <i class="fa-solid fa-pencil"></i> <b>Basic Configuration</b>
+				</li>
+				<li>
+					enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b>
+				</li></ol>
+			</div>
+			`,
+			image: 'img/flclash/enable-ipv6.png',
+			note: ``
+		};
+		const flclashCheckConnectionSettings = {
+			title: 'Check Connection Settings',
+			content: `
+			<div class="info-box" style="margin: 15px 0px;">
+				<i class="fa-solid fa-triangle-exclamation" style="color: #cb0000;"></i>
+				<div>
+					<strong style="color: #cb0000;"> Make sure no other VPN app is connected or working in the background.</strong>
+				</div>
+			</div>
+			<div class="substep-list-item ">
+				<strong>
+					1. Check App is Connected <i class="fa-solid fa-toggle-on"></i>
+				</strong>
+				<p>
+					Go to Homepage and Verify that app is connected <i class="fa-solid fa-toggle-on"></i>
+				</p>
+			</div>
+			<div class="substep-list-item ">
+				<strong>
+					2. Rule mode is selected
+				</strong>
+				<p>
+					Make sure Rule mode is selected on app Homepage
+				</p>
+			</div>
+			`,
+			image: 'img/flclash/problems/basic-settings-check.png',
+			note: ``
+		};
+		const flclashProfileSelected = {
+			title: 'Online Profile is Selected',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list"><li>
+					Go to <b>Profiles</b> tab
+				</li><li>
+					Make sure online Profile is selected and not expired.
+				</li></ol>
+			</div>
+			`,
+			image: 'img/flclash/problems/profile-selected.jpg',
+			note: ``
+		};
+		const flclashChangeServerAi = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li><li>
+							Open <b>Proxy Tab</b>
+						</li><li>
+							Open <b>🤖 Ai (ChatGPT-Claude)</b> Group <br><i style="font-size:1em; color:#000000;">Note: if <b>Ai Group</b> is not available then open <b>🚀Global</b> Group</i>
+						</li><li>
+							Select Group/Server with numbers accordingly
+						</li></ol>
+					</div>
+					${changeServerNotesAi}
+					`,
+			image: 'img/flclash/groups/change-server-ai.png',
+			note: ''
+		};
+		const flclashUpdateApp = {
+			title: 'Update App',	
+			content: `
+				<div class="info-box">
+					<div>
+						<ul class="no-dots-list">
+							<li><b>Check App version</b></li>
+						</ul>
+						<ol class="bold-numbers-list">
+							<li>Open <i class="fa-solid fa-screwdriver-wrench"></i> <b>Tools</b> tab</i>
+							<li>Scroll down & Open <i class="fa-solid fa-circle-info"></i> <b>About</b></i>
+						</ol>
+					</div>
+				</div>
+				${appUpdateButton}
+				`,	
+			image: device === 'ios' 
+					? 'img/flclash/ios/app-update-check.png'
+					: 'img/flclash/android/app-update-check.png',
+			note: ''
+		};		
+							
+		// ClashMeta
+		const clashmetaCheckExpiry = {
+			title: 'Check Expiry',
+			content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<ul class="no-dots-list"><li>
+											Make sure subscription is <b style="color:#cb0000;">not expired</b> and Traffic <b>Data limit</b> is <b style="color:#cb0000;">not over</b> or <b style="color:#cb0000;">near to over</b>.
+										</li></ul>
+									</div>
+								`,
+			image: 'img/clashmeta/check-expiry-1.png',
+			note: ''
+		};
+		const clashmetaRefreshServers = {
+			title: 'Refresh Servers',
+			content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Open <b>Proxies Tab</b>
+									</li><li>
+										Open <b>🚀Global</b> tab
+									</li><li>
+										Click <i class="fa-solid fa-bolt"></i> to refresh all servers
+									</li></ol>
+								</div>
+								`,
+			image: 'img/clashmeta/refresh-servers.png',
+			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
+		};
+		const clashmetaChangeServer = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li><li>
+							Open <b>Proxy Tab</b>
+						</li><li>
+							Open <b>🚀Global</b> Group
+						</li><li>
+							Click <i class="fa-solid fa-bolt"></i> to refresh all servers
+						</li><li>
+							Select Group/Server with numbers accordingly
+						</li></ol>
+					</div>
+					${changeServerNotesHTML}
+					`,
+			image: 'img/clashmeta/refresh-change-server.png',
+			note: ''
+		};
+		const clashmetaUpdateProfile = {
+			title: 'Update Profile',
+			content: `								
+									${wifiImportWarning}
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disconnect <i class="fa-solid fa-play"></i>
+										</li><li>
+											Go to <b>Profiles</b> tab
+										</li><li>
+											Click <i class="fa-solid fa-arrows-rotate"></i> to update profile.
+										</li></ol>
+									</div>
+								`,
+			image: 'img/clashmeta/update-profile-2.png',
+			note: ''
+		};
+		const clashmetaBasicSettings = {
+			title: 'Basic Settings',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list"><li>
+						Open <i class="fas fa-cog" "=""></i> <b>Settings</b>
+					</li>
+					<li>
+						Open <b>Meta Features</b>
+					</li>
+					<li>
+						Tap on <b>Unified Delay</b>
+					</li>
+					<li>
+						Select <b>Enabled</b>
+					</li></ol>
+				</div>
+			`,
+			image: 'img/clashmeta/startup-settings.png',
+			note: `Only required once while setting up first time`
+		};
+		const clashmetaCheckConnection = {
+			title: 'Check Connection Settings',
+			content: `
+			<div class="info-box" style="margin: 15px 0px;">
+				<i class="fa-solid fa-triangle-exclamation" style="color: #cb0000;"></i>
+				<div>
+					<strong style="color: #cb0000;"> Make sure no other VPN app is connected or working in the background.</strong>
+				</div>
+			</div>
+			<div class="substep-list-item ">
+				<strong>
+					1. Check App is Connected <i class="fa-solid fa-toggle-on"></i>
+				</strong>
+				<p>
+					Go to Homepage and Verify that app is connected <i class="fa-solid fa-toggle-on"></i>
+				</p>
+			</div>
+			<div class="substep-list-item ">
+				<strong>
+					2. Rule mode is selected
+				</strong>
+				<p>
+					Make sure Rule mode is selected on app Homepage
+				</p>
+			</div>
+			`,
+			image: 'img/clashmeta/problems/dashboard.jpg',
+			note: ``
+		};
+		const clashmetaProfileSelected = {
+			title: 'Online Profile is Selected',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list"><li>
+					Go to <b>Profiles</b> tab
+				</li><li>
+					Make sure online Profile is selected and not expired.
+				</li></ol>
+			</div>
+			`,
+			image: 'img/clashmeta/problems/profile-selected.png',
+			note: ``
+		};
+		const clashmetaChangeServerAi = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li><li>
+							Open <b>Proxy Tab</b>
+						</li><li>
+							Open <b>🤖 Ai (ChatGPT-Claude)</b> Group <br><i style="font-size:1em; color:#000000;">Note: if <b>Ai Group</b> is not available then open <b>🚀Global</b> Group</i>
+						</li><li>
+							Click <i class="fa-solid fa-bolt"></i> to refresh all servers
+						</li><li>
+							Select Group/Server with numbers accordingly
+						</li></ol>
+					</div>
+					${changeServerNotesAi}
+					`,
+			image: 'img/clashmeta/refresh-change-server.png',
+			note: ''
+		};
+		const clashmetaUpdateApp = {
+			title: 'Update App',	
+			content: `
+				<div class="info-box">
+					<div>
+						<ul class="no-dots-list">
+							<li><b>Check App version</b></li>
+						</ul>
+						<ol class="bold-numbers-list">
+							<li>Open <b>About</b></li>
+						</ol>
+					</div>
+				</div>
+				${appUpdateButton}
+				`,	
+			image: device === 'android' 
+					? 'img/clashmeta/app-update-check.png'
+					: '',
+			note: ''
+		};	
+		
+		// ShadowRocket
+		const shadowrocketCheckExpiry = {
+			title: 'Check Expiry',
+			content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<ul class="no-dots-list"><li>
+											Make sure subscription is <b style="color:#cb0000;">not expired</b> and Traffic <b>Data limit</b> is <b style="color:#cb0000;">not over</b> or <b style="color:#cb0000;">near to over</b>.
+										</li></ul>
+									</div>
+								`,
+			image: 'img/shadowrocket/check-expiry.png',
+			note: ''
+		};
+		const shadowrocketConnectivityTest = {
+			title: 'Connectivity Test',
+			content: `
+								<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Tap on <i class="fa-solid fa-t"></i>
+										</li><li>
+											Select <b>ICMP</b>
+										</li></ol>
+									</div>
+								`,
+			image: 'img/shadowrocket/startup-settings-2.png',
+			note: `Only required once while setting up first time`
+		};
+		const shadowrocketAutoUpdateIsEnabled = {
+			title: 'Auto Update is enabled',
+			content: `
+								<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Open <i class="fa-solid fa-cog"></i> <b>Settings</b> tab
+										</li><li>
+											Scroll down &amp; Open <b>Subscriptions</b> in update section
+										</li><li>
+											Enable <i class="fa-solid fa-toggle-on"></i> <b>Auto Background Update</b>
+										</li></ol>
+									</div>
+								`,
+			image: 'img/shadowrocket/startup-settings-3.png',
+			note: ``
+		};
+		const shadowrocketRefreshServers = {
+			title: 'Refresh Servers',
+			content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i>
+									</li><li>
+										Tap <b>Connectivity Test</b> to refresh all servers
+									</li></ol>
+								</div>
+								`,
+			image: 'img/shadowrocket/refresh-servers.png',
+			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
+		};
+		const shadowrocketChangeServer = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li><li>
+							Tap to select <b>Server</b><br>
+							🟡 <i>Yellow Dot shows the selected server.</i>										
+						</li></ol>
+					</div>
+					${changeServerNotesShadowRocket}
+					`,
+			image: 'img/shadowrocket/change-server.png',
+			note: ''
+		};
+		const shadowrocketUpdateProfile = {
+			title: 'Update Profile',
+			content: `								
+									${wifiImportWarning}
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Disconnect <i class="fa-solid fa-toggle-off"></i>
+										</li><li>
+											Click <i class="fa-solid fa-arrows-rotate"></i> to update profile.
+										</li><li>
+											Connect <i class="fa-solid fa-toggle-on"></i>
+										</li></ol>
+									</div>
+								`,
+			image: 'img/shadowrocket/update-profile-2.png',
+			note: ''
+		};
+		const shadowrocketChangeServerAi = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Connect <i class="fa-solid fa-toggle-on"></i>
+						</li><li>
+							Tap to select <b>Server</b><br>
+							🟡 <b>Yellow Dot shows the selected server.</b>
+						</li></ol>
+					</div>
+					${changeServerNotesShadowRocket}
+					`,
+			image: 'img/shadowrocket/change-server.png',
+			note: ''
+		};
+
+		// ClashVerge
+		const clashvergeAppUpdate = {
+			title: 'App Update',
+			content: `								
+					<div class="info-box" style="margin-top: 15px;">
+						<ul class="no-dots-list"><li>
+							<span style="background-color:#cb0000; color: white; padding: 1px 4px; font-weight: bold; border-radius: 4px;">NEW</span> icon shows that ClashVerge need to be updated. 
+						</li></ul>
+					</div>					
+					${appUpdateButton}
+				`,
+			image: 'img/clashverge/check-app-update.png',
+			note: ''
+		};
+
+		const clashvergeBasicSettings = {
+			title: 'Basic Settings',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list"><li>
+						Open <i class="fa-solid fa-gear"></i> Settings
+					</li><li>
+						Enable <i class="fa-solid fa-toggle-on"></i> <b>DNS Overwrite</b>
+					</li><li>
+						Enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b>
+					</li><li>
+						Enable <i class="fa-solid fa-toggle-on"></i> <b>Unified Delay</b>
+					</li></ol>
+				</div>
+				`,
+			image: 'img/clashverge/settings-1.png',
+			note: ``
+		};
+		const clashvergeUpdateProfile = {
+			title: 'Update Profile',
+			content: `								
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Disconnect <i class="fa-solid fa-toggle-off"></i>
+						</li><li>
+							Open <i class="fa-solid fa-server"></i> <b>Profiles</b> tab.
+						</li><li>
+							Click <i class="fa-solid fa-arrow-rotate-right"></i> to <b>Update</b> profile.
+						</li><li>
+							Connect <i class="fa-solid fa-toggle-on"></i> again 
+						</li></ol>
+					</div>
+				`,
+			image: 'img/clashverge/update-profile-2.png',
+			note: ''
+		};
+		const clashvergeConnectionSettings = {
+			title: 'Connection Settings',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list">
+						<li>Open Home tab</li>
+						<li>Select <b>Group: 🚀 Global</b></li>
+						<li>Select <b>Proxy: ♻️ AutoSelect</b></li>
+						<li>Select <b>Proxy Mode: ⇄ Rule</b></li>
+						<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>System Proxy</b> to connect</li>
+					</ol>
+				</div>
+				<div class="info-box">
+					<i class="fas fa-shield-alt" style="color: #818bff;"></i>
+					<div>If these options aren’t available, Open Profiles tab and select your profile (right-click → select).</div>
+				</div>
+				`,
+			image: 'img/clashverge/connect-2.png',
+			note: ``
+		};
+
+		const clashvergeCheckExpiry = {
+			title: 'Check Expiry',
+			content: `								
+					<div class="info-box" style="margin-top: 15px;">
+						<ul class="no-dots-list"><li>
+							Make sure subscription is <b style="color:#cb0000;">not expired</b> and Traffic <b>Data limit</b> is <b style="color:#cb0000;">not over</b> or <b style="color:#cb0000;">near to over</b>.
+						</li></ul>
+					</div>
+				`,
+			image: 'img/clashverge/check-expiry-3.png',
+			note: ''
+		};		
+		const clashvergeChangeServerAi = {
+			title: 'Change Server',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list">
+							<li>Open <b>Proxies</b> Tab</li>
+							<li>Make sure <b>Rule</b> mode is selected</li>
+							<li>Open <b>🤖 Ai (ChatGPT-Claude)</b> Group <br><i style="font-size:1em; color:#000000;">Note: if <b>Ai Group</b> is not available then open <b>🚀Global</b> Group</i></li>
+							<li>Click <i class="fa-solid fa-wifi"></i> to refresh all servers</li>
+							<li>Select Group/Server with numbers accordingly</li>
+						</ol>
+					</div>
+					${changeServerNotesAi}
+					`,
+			image: 'img/clashverge/groups/chatgpt-claude-group.png',
+			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
+		};
+		const clashvergeChangeServer = {
+			title: 'Change Server',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list">
+					<li>Open <b>Proxies</b> Tab</li>
+					<li>Make sure <b>Rule</b> mode is selected</li>
+					<li>Open <b>🚀Global</b> Group</li>
+					<li>Click <i class="fa-solid fa-wifi"></i> to refresh all servers</li>
+					<li>Select Group/Server with numbers accordingly</li>
+				</ol>
+			</div>
+			${changeServerNotesHTML}
+			`,
+			image: 'img/clashverge/server-refresh-change.png',
+			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
+		};		
+		const clashvergeCheckProfile = {
+			title: 'Check Profile',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list">
+						<li>Go to <b>Profiles</b> tab</li>
+						<li>
+							Make sure <b style="color:green;">Online Profile</b> is selected and <b style="color:#cb0000;">not expired</b>.
+						</li>
+					</ol>
+				</div>
+				`,
+			image: 'img/clashverge/offline-profile-2.png',
+			note: ``
+		};
+				
+		// Netflix
+		const netflixVideoNotAvailable = {
+			title: 'Change Server',
+			content: `
+						<div class="substep-note">
+							<i class="fas fa-info-circle"></i>
+							<b style="color:#cb0000;">Netflix provides different content for each country.</b>
+						</div>
+						<div class="info-box">
+							<ol class="bold-numbers-list"><li>
+								Connect <i class="fa-solid fa-toggle-on"></i> your app
+							</li><li>
+								Open <b>Proxy Tab</b> or <b>Servers List</b> 
+							</li><li>
+								Open <b>🚀Global</b> Group
+							</li><li>
+								Select any <b>Server/Group</b> with numbers
+							</li></ol>
+						</div>
+						<div class="substep-note">
+							<ul class="no-dots-list"><li>
+							<b>Notes</b>:
+							</li><li>
+							<b>♻️AutoSelect</b> ––– Auto select best available server <b style="color:green;">(recommended)</b>
+							</li><li>
+							Country Server</b> –– only connect with one server
+							</li><li>
+							<b>ChatGPT</b>, <b>TikTok</b> and <b>Claude</b> are <b style="color:#cb0000;">not available</b> in <b>HongKong</b>.
+							</li><li>
+							<b>Manually selected</b> server will not automatically change.
+							</li></ul>
+						</div>
+					`,
+			image: '',
+			note: ``
+		};
+		const netflixIosUninstall = {
+			title: 'Reset & Uninstall Netflix',
+			content: `
+					<div class="info-box">
+							<ol class="bold-numbers-list"><li>
+								Open <b>iPhone Settings</b>
+							</li><li>
+								Scroll down and Open <b>Apps</b>
+							</li><li>
+								Search <b>Netflix</b> and Open
+							</li><li>
+								<b>Enable Reset</b>
+							</li><li>
+								<b>Remove Netflix</b>
+							</li></ol>
+						</div>
+					`,
+			image: 'img/netflix/ios/cant-signout.png',
+			note: ``
+		};
+		const netflixIosReinstall = {
+			title: 'Reinstall Netflix app',
+			content: `
+					<div class="info-box" style="margin-top: 15px;">
+						<ol class="bold-numbers-list"><li>
+							Open <i class="fa-brands fa-app-store-ios"></i> <b>AppStore</b> and <b>install Netflix</b>
+						</li><li>
+							Connect with US or HK server
+						</li><li>
+							Click <b>sign-in</b>
+						</li></ol>
+					</div>
+					`,
+			image: '',
+			note: ``
+		};
+		const netflixAndroidReinstall = {
+			title: 'Reinstall Netflix app',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Open <b>Google Playstore</b>
+						</li><li>
+							Search Netflix and uninstall
+						</li><li>
+							install Netflix again
+						</li></ol>
+					</div>
+					`,
+			image: '',
+			note: ``
+		};
+		const netflixIosDateError = {
+			title: 'Fix Error: Date is Incorrect',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Open <b>iPhone Settings</b>
+						</li><li>
+							Search <b>Date</b>
+						</li><li>
+							Open <b>Date and Time</b>
+						</li><li>
+							<b>enable</b> Automatic Date and Time
+						</li><li>
+							<b>enable</b> Automatic Time Zone
+						</li></ol>
+					</div>
+					`,
+			image: 'img/netflix/ios/date-error.png',
+			note: ``
+		};
+		const netflixAndroidDateError = {
+			title: 'Fix Error: Date is Incorrect',
+			content: `
+				<div class="substep-note">
+					<i class="fas fa-info-circle"></i>
+					Different phones have different yet similar options
+				</div>
+					<div class="info-box">
+						<ol class="bold-numbers-list"><li>
+							Open <b>Phone Settings</b>
+						</li><li>
+							Click <b>Search</b>
+						</li><li>
+							Search Date
+						</li><li>
+							Open Date and Time option
+						</li><li>
+							Open Date and Time 
+						</li><li>
+							<b>enable</b> Automatic Date and Time
+						</li><li>
+							<b>enable</b> Automatic Time Zone
+						</li></ol>
+					</div>`,
+			image: 'img/netflix/android/date-error.png',
+			note: ``
+		};
+
+		const testIPV6 = {
+			title: 'IPv6 Status',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list">
+						<p>if <b>ChinaMobile</b> or <b>IPv6</b> servers still show <b style="color:#cb0000;">timeout</b>, your <b style="color:#cb0000;">network doesn't have IPv6</b></p>
+						<br>
+						<li>
+							Disconnect <i class="fa-solid fa-toggle-off"></i>
+						</li>
+						<li>
+							Open <a href="https://testipv6.cn" target="_blank">https://testipv6.cn</a> 
+						</li>
+						<li>
+							Check IPv6 is available
+						</li>
+					</ol>
+				</div>
+				<div class="substep-note">
+					<ul class="no-dots-list">
+						<li>
+							<b>Solutons</b> if <b style="color:#cb0000;">IPv6 is not available</b>
+						</li>
+						<li>
+							<b>Solution 1:</b> use other <b>network with IPv6 support</b>
+						</li>
+						<li>
+							<b>Solution 2:</b> use <b>♻️AutoSelect</b> or <b>⚙️SmartSelect</b>
+						</li>
+						<li>
+							<b>Solution 3:</b> use <b>Mobile Hotspot</b> (enable "5Ghz preffered" if available)
+						</li>
+					</ul>
+				</div>
+			`,
+			image: '',
+			note: ``
+		};
+
+		const tiktokDeviceRegionProblem = {
+			title: 'Device/Region Problem',
+			content: device === 'ios' ? `							
+				<div class="info-box" style="color:#cb0000;">
+					<i class="fas fa-info-circle"></i>
+					<b>Some Android and iPhone devices can’t use TikTok.</b>
+				</div>				
+				<div class="info-box">
+					<ul class="no-dots-list">
+						<li>
+							<b>iOS</b>:
+						</li><li>
+							<b>Solution 1</b> – Dual-sim phone, use your international SIM card as primary SIM.
+						</li><li>
+							<b>Solution 2</b> – Remove Chinese SIM card as it can trigger a location ban.
+						</li><li>
+							<b>Solution 3</b> – Disable Location Services: Go to "Settings" → "Privacy" → "Location Services" and turn off location access for the TikTok app.
+						</li><li>
+							<b>Solution 4</b> – use via website <a href="https://TikTok.com" target="_blank"> TikTok.com </a>
+							<p>(if website reditecting to Tiktok app, uninstall app)</p>
+							<i style="color:#cb0000;">uninstalling Tiktok app might cause difficulty logging in again on app.</i>
+						</li>
+					</ul>
+				</div>
+				` : `			
+				<div class="info-box" style="color:#cb0000;">
+					<i class="fas fa-info-circle"></i>
+					<b>Some Android and iPhone devices can’t use TikTok.</b>
+				</div>
+				<div class="info-box">
+					<ul class="no-dots-list">
+						<li><b>Android</b>:</li>
+						<li>
+							<b>Solution 1</b> – use via website <a href="https://TikTok.com" target="_blank"> TikTok.com </a>
+							<p>(if website reditecting to Tiktok app, uninstall app)</p>
+							<i style="color:#cb0000;">uninstalling Tiktok app might cause difficulty logging in again on app.</i>
+						</li>
+						<li>&nbsp;</li>
+						<li>
+							<b>Solution 2</b> – Download and install modified version of TikTok<br>
+							<i style="color:#cb0000;">We are not responsible for any Third-Party app.</i>
+						</li>
+						<li>
+							<button class="btn-goto-update" style="margin: 0 auto; " onclick="handleDownloadClick(getDownloadLink('tiktok', 'other', 'default'))"> Download TikTok mod </button>
+							<button class="btn-goto-update" style="margin: 0 auto; " onclick="handleDownloadClick(getWebsiteLink('tiktok'))"> Website</button>
+						</li>
+					</ul>
+				</div>
+				`,
+			image: '',
+			note: ''
+		};
+
+		const genericInternetStatus = {
+			title: 'internet status',
+			content: `								
+					${device === 'windows' ?
+					`<div class="info-box" style="margin-top: 15px;">
+						<i class="fa-solid fa-globe"></i> <p>in lower-right corner means no internet connection</p>
+					</div>`
+					: ''}
+					<div class="info-box" style="margin-top: 15px;">
+						<div>
+							<ol class="bold-numbers-list">
+								<li><i class="fa-solid fa-toggle-off"></i> <b>Disconnect</b> app
+								<li><b>Open</b> following link <b>in browser</b> to confirm <b>internet is working</b>
+									<br><a href="https://www.bing.com" target="_blank">www.bing.com</a> 
+									<br>or <a href="https://www.baidu.com" target="_blank">www.baidu.com</a>
+									</li>
+							</ol>
+							${getVersion === 'windows' ? `Note: if internet is working, and still have <i class="fa-solid fa-globe"></i> icon then restart your device and connect again.` : ''}
+						</div>
+					</div>
+				`,
+			image: '',
+			note: ''
+		};
+
+		const configs = {
+
+			// Clash Mi
+			clashmi: {
+				name: 'Clash Mi',
+				logo: 'img/clashmi/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+
+					// Apri 2026, HOT FIX
+					{
+						name: 'hot-fix',
+						title: 'Apri 2026, HOT FIX',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check App Update
+							clashmiUpdateApp,
+
+							// Update Profile
+							clashmiUpdateProfile,
+
+							// Enable ipv6
+							clashmiEnableIPV6,
+
+							// Check Basic Settings
+							clashmiBasicSettings,
+
+							// Change Server
+							clashmiChangeServer
+						]
+					},
+
+					// Not Working / Slow Speed
+					{
+						name: 'not-working',
+						title: 'Not Working / Slow Speed',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Internet Status
+							genericInternetStatus,
+
+							// Check Expiry & Data
+							clashmiCheckProfile,
+
+							// Check App Update
+							clashmiUpdateApp,
+
+							// Check Basic Settings
+							clashmiBasicSettings,
+
+							// Enable ipv6
+							clashmiEnableIPV6,
+
+							// Update Profile
+							clashmiUpdateProfile,
+
+							// Refresh Servers
+							clashmiRefreshServers,
+
+							// Change Server
+							clashmiChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Unable to update profile
+					{
+						name: 'cant-update',
+						title: 'Unable to update profile',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [							
+							// Check Expiry & Traffic
+							clashmiCheckProfile,
+							// Update Profile
+							clashmiUpdateProfile,
+							// Full Troubleshooting
+							genericFullTroubleshooting		 
+						]
+					},
+
+					// All Servers show timeout
+					{
+						name: 'all-timeout',
+						title: 'All Servers show timeout',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Data
+							clashmiCheckProfile,
+
+							// Check Basic Settings
+							clashmiBasicSettings,
+
+							// Enable ipv6
+							clashmiEnableIPV6,
+
+							// Update Profile
+							clashmiUpdateProfile,
+
+							// Refresh Servers
+							clashmiRefreshServers,
+
+							// Change Server
+							clashmiChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Some Servers show timeout
+					{
+						name: 'some-timeout',
+						title: 'Some Servers show timeout',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Enable ipv6
+							clashmiEnableIPV6,
+
+							// Refresh Servers
+							clashmiRefreshServers,
+
+							// Test IPv6
+							testIPV6,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// ChatGPT/claude not working
+					{
+						name: 'ai-problem',
+						title: 'ChatGPT/Claude not working',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							
+							// Check App Update
+							clashmiUpdateApp,
+
+							// Check Expiry & Traffic
+							clashmiCheckProfile,
+
+							// Check App Update
+							clashvergeAppUpdate,
+
+							// Check Basic Settings
+							clashmiBasicSettings,
+
+							// Enable ipv6
+							clashmiEnableIPV6,
+
+							// Update Profile
+							clashmiUpdateProfile,
+
+							// Change Servers
+							ClashmiChangeServerAi,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Tiktok Not Working
+					{
+						name: 'tiktok-problem',
+						title: 'Tiktok Not Working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							clashmiChangeServer,
+
+							// Device/Region Problem
+							tiktokDeviceRegionProblem,
+
+							// Contact Support
+							genericContactSupport
+						]
+					},
+
+					// Youtube/Facebook/Instagram
+					{
+						name: 'social-problem',
+						title: 'Youtube/Facebook/Instagram',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							clashmiChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+					
+					// Netflix: Movie/Series Not available
+					{
+						name: 'netflix-unavailable',
+						title: 'Netflix: Movie/Series Not available',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Netflix video not available, change server
+							netflixVideoNotAvailable
+
+						]
+					},
+					
+					// Netflix: unable to signout
+					{
+						name: 'netflix-cant-signout',
+						title: 'Netflix: unable to signout',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosUninstall,
+							netflixIosReinstall
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidReinstall
+						]
+					},	
+					
+					// Netflix: Date & Time Error
+					{
+						name: 'netflix-date-error',
+						title: 'Netflix: Date & Time Error',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosDateError
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidDateError
+						]
+					},					
+
+				]
+			},
+
+			// HIddify
+			hiddify: {
+				name: 'Hiddify',
+				logo: 'img/hiddify/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+
+					// Apri 2026, HOT FIX
+					{
+						name: 'hot-fix',
+						title: 'Apri 2026, HOT FIX',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Reset Options
+							// hiddifyResetOptions,
+
+							// Region Settings
+							hiddifyRegionSettings,
+
+							// Update Profile
+							hiddifyUpdateProfile,
+
+							// DNS Settings
+							// hiddifyDnsSettings
+						]
+					},
+
+					// Problem while Connecting
+					{
+						name: 'error-connecting',
+						title: 'Error while Connecting',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Disconnect & Exit
+							{
+								title: 'Disconnect & Exit',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										<b>Disconnect </b> <i class="fa-solid fa-toggle-off"></i>
+									</li><li>
+										<b>Exit</b> app
+									</li></ol>
+								</div>
+								<div class="substep-note">
+									<ul class="no-dots-list"><li>
+									<i><strong>How to Exit app</strong></i>:
+									</li><li>
+									<i class="fa-solid fa-arrow-right-from-bracket fa-rotate-270" style="color: rgb(7, 70, 120);"></i> swipe up to view all active apps
+									</li><li>
+									<i class="fa-solid fa-arrow-right-from-bracket fa-rotate-270" style="color: rgb(7, 70, 120);"></i> swipe up the app to exit
+									</li></ul>
+								</div>
+								`,
+								image: 'img/hiddify/disconnect.png',
+								note: ''
+							},
+
+							// Open and Connect
+							{
+								title: 'Open and Connect',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										<b>Open</b> app
+									</li><li>
+										<b>Connect</b> <i class="fa-solid fa-toggle-on"></i>
+									</li></ol>
+								</div>
+								`,
+								image: 'img/hiddify/connect.png',
+								note: ''
+							},
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Not Working / Slow Speed
+					{
+						name: 'not-working',
+						title: 'Not Working / Slow Speed',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Expiry & Traffic
+							hiddifyCheckExpiry,
+
+							hiddifyUpdateApp,
+
+							// Region Settings
+							hiddifyRegionSettings,
+
+							// Refresh Servers
+							hiddifyRefreshServers,
+
+							// Change Server
+							hiddifyChangeServer,
+
+							// Update Profile
+							hiddifyUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Unable to update profile
+					{
+						name: 'cant-update',
+						title: 'Unable to update profile',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Traffic
+							hiddifyCheckExpiry,
+
+							// Update Profile
+							hiddifyUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// All Servers show timeout
+					{
+						name: 'all-timeout',
+						title: 'All Servers show timeout',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+
+							// Check Expiry & Traffic
+							hiddifyCheckExpiry,
+
+							// Region Settings
+							hiddifyRegionSettings,
+
+							// Update Profile
+							hiddifyUpdateProfile,
+							
+							// Refresh Servers
+							hiddifyRefreshServers,
+
+							// Change Server
+							hiddifyChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Some Servers show timeout
+					{
+						name: 'some-timeout',
+						title: 'Some Servers show timeout',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Refresh Servers
+							hiddifyRefreshServers,
+
+							// Test IPv6
+							testIPV6,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Tiktok Not Working
+					{
+						name: 'tiktok-problem',
+						title: 'Tiktok Not Working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							hiddifyChangeServer,
+
+							// Device/Region Problem
+							tiktokDeviceRegionProblem,
+
+							// Contact Support
+							genericContactSupport
+						]
+					},
+
+					// Youtube/Facebook/Instagram
+					{
+						name: 'social-problem',
+						title: 'Youtube/Facebook/Instagram',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							hiddifyChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// ChatGPT/Claude not working
+					{
+						name: 'ai-problem',
+						title: 'ChatGPT/Claude not working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							hiddifyChangeServerAi,
+
+							// Contact Support
+							genericContactSupport
+						]
+					},
+
+					// Netflix: Movie/Series Not available
+					{
+						name: 'netflix-unavailable',
+						title: 'Netflix: Movie/Series Not available',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Netflix video not available, change server
+							netflixVideoNotAvailable
+
+						]
+					},
+					
+					// Netflix: unable to signout
+					{
+						name: 'netflix-cant-signout',
+						title: 'Netflix: unable to signout',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosUninstall,
+							netflixIosReinstall
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidReinstall
+						]
+					},	
+					
+					// Netflix: Date & Time Error
+					{
+						name: 'netflix-date-error',
+						title: 'Netflix: Date & Time Error',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosDateError
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidDateError
+						]
+					},
+
+				]
+			},
+
+			// FL Clash
+			flclash: {
+				name: 'FL Clash',
+				logo: 'img/flclash/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+
+					// Apri 2026, HOT FIX
+					{
+						name: 'hot-fix',
+						title: 'Apri 2026, HOT FIX',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Update Profile
+							flclashUpdateProfile,
+
+							// Basic Settings
+							flclashBasicSettings,
+
+							// Enable IPv6
+							flclashEnableIpv6,
+
+							// Change Server
+							flclashChangeServer
+						]
+					},
+
+					// Not Working / Slow Speed
+					{
+						name: 'not-working',
+						title: 'Not Working / Slow Speed',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Expiry & Traffic
+							flclashCheckExpiry,
+
+							flclashUpdateApp,
+
+							// Basic Settings
+							flclashBasicSettings,
+
+							// Check Connection Settings
+							flclashCheckConnectionSettings,
+
+							// Profile is selected
+							flclashProfileSelected,
+
+							// Refresh Servers
+							flclashRefreshServers,
+
+							// Change Server
+							flclashChangeServer,
+
+							// Update Profile
+							flclashUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Unable to update profile
+					{
+						name: 'cant-update',
+						title: 'Unable to update profile',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Traffic
+							flclashCheckExpiry,
+
+							// Update Profile
+							flclashUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// All Servers show timeout
+					{
+						name: 'all-timeout',
+						title: 'All Servers show timeout',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Traffic
+							flclashCheckExpiry,
+
+							// Basic Settings
+							flclashBasicSettings,
+
+							// Check Connection Settings
+							flclashCheckConnectionSettings,
+
+							// Profile is selected
+							flclashProfileSelected,
+
+							// Refresh Servers
+							flclashRefreshServers,
+
+							// Change Server
+							flclashChangeServer,
+
+							// Update Profile
+							flclashUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Some Servers show timeout
+					{
+						name: 'some-timeout',
+						title: 'Some Servers show timeout',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Refresh Servers
+							flclashRefreshServers,
+
+							// Test IPv6
+							testIPV6,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Tiktok Not Working
+					{
+						name: 'tiktok-problem',
+						title: 'Tiktok Not Working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							flclashChangeServer,
+
+							// Tiktok Problem
+							tiktokDeviceRegionProblem,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Youtube/Facebook/Instagram
+					{
+						name: 'social-problem',
+						title: 'Youtube/Facebook/Instagram',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							flclashChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// ChatGPT/Claude not working
+					{
+						name: 'ai-problem',
+						title: 'ChatGPT/Claude not working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							flclashChangeServerAi,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+					
+					// Netflix: Movie/Series Not available
+					{
+						name: 'netflix-unavailable',
+						title: 'Netflix: Movie/Series Not available',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Netflix video not available, change server
+							netflixVideoNotAvailable
+
+						]
+					},
+					
+					// Netflix: unable to signout
+					{
+						name: 'netflix-cant-signout',
+						title: 'Netflix: unable to signout',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosUninstall,
+							netflixIosReinstall
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidReinstall
+						]
+					},	
+					
+					// Netflix: Date & Time Error
+					{
+						name: 'netflix-date-error',
+						title: 'Netflix: Date & Time Error',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosDateError
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidDateError
+						]
+					},
+				]
+			},
+
+			// Clash Meta
+			clashmeta: {
+				name: 'Clash Meta',
+				logo: 'img/clashmeta/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+
+					// Not Working / Slow Speed
+					{
+						name: 'not-working',
+						title: 'Not Working / Slow Speed',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Expiry & Traffic
+							clashmetaCheckExpiry,
+
+							clashmetaUpdateApp,
+
+							// Basic Settings
+							clashmetaBasicSettings,
+
+							// Check Connection Settings
+							clashmetaCheckConnection,
+
+							// Profile is selected
+							clashmetaProfileSelected,
+
+							// Refresh Servers
+							// clashmetaRefreshServers,
+
+							// Change Server
+							clashmetaChangeServer,
+
+							// Update Profile
+							clashmetaUpdateProfile,	
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Unable to update profile
+					{
+						name: 'cant-update',
+						title: 'Unable to update profile',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Traffic
+							clashmetaCheckExpiry,
+
+							// Update Profile
+							clashmetaUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// All Servers show timeout
+					{
+						name: 'all-timeout',
+						title: 'All Servers show timeout',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Traffic
+							clashmetaCheckExpiry,
+
+							// Basic Settings
+							clashmetaBasicSettings,
+
+							// Check Connection Settings
+							clashmetaCheckConnection,
+
+							// Profile is selected
+							clashmetaProfileSelected,
+
+							// Refresh Servers
+							// clashmetaRefreshServers,
+
+							// Change Server
+							clashmetaChangeServer,
+
+							// Update Profile
+							clashmetaUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Some Servers show timeout
+					{
+						name: 'some-timeout',
+						title: 'Some Servers show timeout',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Refresh Servers
+							clashmetaRefreshServers,
+
+							// Test IPv6
+							testIPV6,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Tiktok Not Working
+					{
+						name: 'tiktok-problem',
+						title: 'Tiktok Not Working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							clashmetaChangeServer,
+
+							// Tiktok Problem
+							tiktokDeviceRegionProblem,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Youtube/Facebook/Instagram
+					{
+						name: 'social-problem',
+						title: 'Youtube/Facebook/Instagram',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							clashmetaChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// ChatGPT/Claude not working
+					{
+						name: 'ai-problem',
+						title: 'ChatGPT/Claude not working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							ClashmiChangeServerAi,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Netflix: Movie/Series Not available
+					{
+						name: 'netflix-unavailable',
+						title: 'Netflix: Movie/Series Not available',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Netflix video not available, change server
+							netflixVideoNotAvailable
+
+						]
+					},
+					
+					// Netflix: unable to signout
+					{
+						name: 'netflix-cant-signout',
+						title: 'Netflix: unable to signout',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosUninstall,
+							netflixIosReinstall
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidReinstall
+						]
+					},	
+					
+					// Netflix: Date & Time Error
+					{
+						name: 'netflix-date-error',
+						title: 'Netflix: Date & Time Error',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosDateError
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidDateError
+						]
+					},
+
+				]
+			},
+
+			// Shadow Rocket
+			shadowrocket: {
+				name: 'shadowrocket',
+				logo: 'img/shadowrocket/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+					// Not Working / Slow Speed
+					{
+						name: 'not-working',
+						title: 'Not Working / Slow Speed',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Expiry & Traffic
+							shadowrocketCheckExpiry,
+
+							// Connectivity Test
+							shadowrocketConnectivityTest,
+
+							// Enable Auto Update
+							shadowrocketAutoUpdateIsEnabled,
+
+							// Connected and Profile is selected
+							{
+								title: 'Connected & Server is selected in Phicloud',
+								content: `
+								<div class="substep-list-item ">
+									<strong>
+										1. Check App is Connected <i class="fa-solid fa-toggle-on"></i>
+									</strong>
+									<p>
+										Go to Homepage and Verify that app is connected <i class="fa-solid fa-toggle-on"></i>
+									</p>
+								</div>
+								<div class="substep-list-item ">
+									<strong>
+										2. Check the selected server from Phicloud profile
+									</strong>
+									<p>
+									🟡 <i>Yellow Dot shows the selected server. </i>
+									</li>
+									</p>
+								</div>
+								`,
+								image: 'img/shadowrocket/change-server.png',
+								note: ``
+							},
+
+							// Refresh Servers
+							shadowrocketRefreshServers,
+
+							// Change Server
+							shadowrocketChangeServer,
+
+							// Update Profile
+							shadowrocketUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Unable to update profile
+					{
+						name: 'cant-update',
+						title: 'Unable to update profile',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Traffic
+							shadowrocketCheckExpiry,
+
+							// Enable Auto Update
+							shadowrocketAutoUpdateIsEnabled,
+
+							// Update Profile
+							shadowrocketUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// All Servers show timeout
+					{
+						name: 'all-timeout',
+						title: 'All Servers show timeout',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Expiry & Traffic
+							shadowrocketCheckExpiry,
+
+							// Enable Auto Update
+							shadowrocketAutoUpdateIsEnabled,
+
+							// Update Profile
+							shadowrocketUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Some Servers show timeout
+					{
+						name: 'some-timeout',
+						title: 'Some Servers show timeout',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Connectivity Test
+							shadowrocketConnectivityTest,
+
+							// Refresh Servers
+							shadowrocketRefreshServers,
+
+							// Test IPv6
+							testIPV6,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Tiktok Not Working
+					{
+						name: 'tiktok-problem',
+						title: 'Tiktok Not Working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							shadowrocketChangeServer,
+
+							// Tiktok Problem
+							tiktokDeviceRegionProblem,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Youtube/Facebook/Instagram
+					{
+						name: 'social-problem',
+						title: 'Youtube/Facebook/Instagram',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							shadowrocketChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// ChatGPT/Claude not working
+					{
+						name: 'ai-problem',
+						title: 'ChatGPT/Claude not working',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							shadowrocketChangeServerAi,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+					
+					// Netflix: Movie/Series Not available
+					{
+						name: 'netflix-unavailable',
+						title: 'Netflix: Movie/Series Not available',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Netflix video not available, change server
+							netflixVideoNotAvailable
+
+						]
+					},
+
+					// Netflix: unable to signout
+					{
+						name: 'netflix-cant-signout',
+						title: 'Netflix: unable to signout',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosUninstall,
+							netflixIosReinstall
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidReinstall
+						]
+					},	
+					
+					// Netflix: Date & Time Error
+					{
+						name: 'netflix-date-error',
+						title: 'Netflix: Date & Time Error',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							
+							//Netflix ios reset, uninstall and reinstall
+							netflixIosDateError
+						] : [
+							//Netflix Android uninstall and reinstall	
+							netflixAndroidDateError
+						]
+					},
+
+				]
+			},
+
+			// Clash Verge
+			clashverge: {
+				name: 'Clash Verge',
+				logo: 'img/clashverge/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+
+					// April 2026, Hot Fix
+					{
+						name: 'hot-fix',
+						title: 'April 2026, Hot Fix',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check App Update
+							clashvergeAppUpdate,
+
+							// Check Basic Settings
+							clashvergeBasicSettings,
+
+							// Check Profile
+							clashvergeCheckProfile,
+
+							// Update Profile
+							clashvergeUpdateProfile,
+
+							// Check Connection Settings
+							clashvergeConnectionSettings,
+
+							// Change Server
+							clashvergeChangeServer,
+
+							// Check IPv6 Status
+							testIPV6
+						]
+					},
+
+					// Note for HITSZ students
+					{
+						name: 'note-hitsz',
+						title: 'Note for HIT-SZ students',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Open MSCONFIG
+							{
+								title: 'Open MSCONFIG',
+								content: `								
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											open <b>RUN</b> (search in windows menu or use shortcut CTRL+R)
+										</li><li>
+											write <b>MSCONFIG</b>
+										</li><li>
+											Press <b>Enter</b> OR click <b>ok</b>
+										</li></ol>
+									</div>
+								`,
+								image: 'img/clashverge/hitsz/hitsz-note-1.png',
+								note: ''
+							},
+
+							// Disable SangFor & aTrust
+							{
+								title: 'Disable SangFor & aTrust',
+								content: `							
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Open <b>Services tab</b>
+										</li><li>
+											Check ☑ ︎<b>Hide all Microsoft services</b>
+										</li><li>
+											Uncheck ☐ all <b>Sangfor</b> and <b>aTrust</b>
+										</li><li>
+											click <b>OK</b>
+										</li><li>
+											click <b>Restart</b>
+										</li></ol>
+									</div>
+								`,
+								image: 'img/clashverge/hitsz/hitsz-note-2.png',
+								note: ''
+							}
+						]
+					},
+
+					// Not Working / Slow Speed
+					{
+						name: 'not-working',
+						title: 'Not Working / Slow Speed',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check internet
+							genericInternetStatus,
+
+							// Check Profile
+							clashvergeCheckProfile,
+
+							// Check Expiry
+							clashvergeCheckExpiry,
+
+							// Check App Update
+							clashvergeAppUpdate,
+
+							// Check Basic Settings
+							clashvergeBasicSettings,
+
+							// Check Connection Settings
+							clashvergeConnectionSettings,
+
+							// Update Profile
+							clashvergeUpdateProfile,
+
+							// Change Server
+							clashvergeChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Unable to update profile
+					{
+						name: 'cant-update',
+						title: 'Unable to update profile',
+						category: 'connect',
+						image: 'img/template/slow.jpg',
+						imageCaption: 'Speed optimization',
+						content: 'Steps to improve app performance',
+						substeps: [
+
+							// Check Profile
+							clashvergeCheckProfile,
+
+							// Check Expiry & Traffic
+							clashvergeCheckExpiry,
+
+							// Update Profile
+							clashvergeUpdateProfile,
+
+							// Contact Support
+							genericContactSupport
+						]
+					},
+
+					// All Servers show timeout
+					{
+						name: 'all-timeout',
+						title: 'All Servers show timeout',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check internet
+							genericInternetStatus,
+
+							// Check Profile
+							clashvergeCheckProfile,
+
+							// Check Expiry
+							clashvergeCheckExpiry,
+
+							// Check App Update
+							clashvergeAppUpdate,
+
+							// Check Basic Settings
+							clashvergeBasicSettings,
+
+							// Check Connection Settings
+							clashvergeConnectionSettings,
+
+							// Update Profile
+							clashvergeUpdateProfile,
+
+							// Change Server
+							clashvergeChangeServer,
+
+							// Contact Support
+							genericContactSupport
+						]
+					},
+
+					// Some Servers show timeout
+					{
+						name: 'some-timeout',
+						title: 'Some Servers show timeout',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Basic Settings
+							clashvergeBasicSettings,
+
+							// Check App Update
+							clashvergeAppUpdate,
+
+							// Check Profile
+							clashvergeCheckProfile,
+
+							// Update Profile
+							clashvergeUpdateProfile,
+							
+							// Change Server
+							clashvergeChangeServer,
+
+							// Check IPv6 Status
+							testIPV6
+
+						]
+					},
+
+					// ChatGPT/claude not working
+					{
+						name: 'ai-problem',
+						title: 'ChatGPT/Claude not working',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Expiry & Traffic
+							clashvergeCheckExpiry,
+
+							// Check App Update
+							clashvergeAppUpdate,
+
+							// Check Basic Settings
+							clashvergeBasicSettings,
+
+							// Check Connection Settings
+							clashvergeConnectionSettings,
+
+							// Change Servers
+							clashvergeChangeServerAi,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Netflix: Movie/Series Not available
+					{
+						name: 'netflix-unavailable',
+						title: 'Netflix: Movie/Series Not available',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Netflix video not available, change server
+							netflixVideoNotAvailable
+
+						]
+					},
+
+					// Netflix: Movie/Series Not available
+					{
+						name: 'netflix-login-problem',
+						title: 'Netflix: unable to Login',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							{
+								title: 'Netflix Login',
+								content: `
+									<div class="alert-box">
+										<ul class="bold-numbers-list">
+											<strong>Error Messages:</strong>
+											<li>                    
+												your account can't be used on this device
+											</li>
+											<li>
+												Something went wrong. Please try again ina few minutes.
+											</li>
+										</ul>
+									</div>
+									<div class="note-box">
+										<ol class="bold-numbers-list">
+											<strong>Solution:</strong>
+											<li>                    
+												selecet <b>Hong Kong server</b> for Netflix login
+											</li>
+											<li>
+												Use normal browsers like <b>Chrome, Edge, Firefox, Safari,</b> etc.
+											</li>
+											<li>
+												Check and <b>disable any vpn or privacy protection extensions</b> in browser
+											</li>
+										</ol>
+									</div>
+								`,
+								image: '',
+								note: ''
+							},
+
+						]
+					},
+
+					// Youtube/Facebook/Instagram
+					{
+						name: 'social-problem',
+						title: 'Youtube/Facebook/Instagram',
+						category: 'connect',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							clashvergeChangeServer,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// Google Scholar not working
+					{
+						name: 'scholar-problem',
+						title: 'Google Scholar not working',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							{
+								title: 'MUST READ',
+								content: `
+									<div class="alert-box" style="margin-top: 15px;">
+										<div>
+											<b>Problem:</b> Some browser or extensions will get Google Scholar access blocked. e.g.<br>
+											<i><b>We're sorry, Your computer or network may be sending automated queries, etc.</b></i>
+										</div>
+									</div>
+									<strong>Following can cause the issue:</strong>
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list">
+											<li>                    
+												Non-Standard Browsers like Brave, Kiwi, etc.
+											</li>
+											<li>
+												Scholar-related extensions
+											</li>
+											<li>
+												Paywall unblocking extensions
+											</li>
+											<li>
+												Data scraping or bulk download extensions
+											</li>
+										</ol>
+									</div>
+								`,
+								image: '',
+								note: ''
+							},
+							// Change Server
+							clashvergeChangeServer
+
+						]
+					},
+
+				]
+			},
+
+			// Netflix
+			netflix: {
+				name: 'Netflix',
+				logo: 'img/netflix/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+
+					// Movie/Series Not available
+					{
+						name: 'not-available',
+						title: 'Movie/Series Not available',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							{
+								title: 'Change Server',
+								content: `
+								<div class="substep-note">
+									<i class="fas fa-info-circle"></i>
+									<b style="color:#cb0000;">Netflix provides different content for each country.</b>
+								</div>
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Connect <i class="fa-solid fa-toggle-on"></i> your app
+									</li><li>
+										Open <b>Proxy Tab</b> or <b>Servers List</b> 
+									</li><li>
+										Open <b>🚀Global</b> Group
+									</li><li>
+										Select any <b>Server/Group</b> with numbers
+									</li></ol>
+								</div>
+								${changeServerNotesHTML}
+								`,
+								image: '',
+								note: ''
+							},
+
+						]
+					},
+
+					// Unable to signout
+					{
+						name: 'cant-signout',
+						title: 'Unable to signout',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							{
+								title: 'Reset & Uninstall Netflix',
+								content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <b>iPhone Settings</b>
+										</li><li>
+											Scroll down and Open <b>Apps</b>
+										</li><li>
+											Search <b>Netflix</b> and Open
+										</li><li>
+											<b>Enable Reset</b>
+										</li><li>
+											<b>Remove Netflix</b>
+										</li></ol>
+									</div>
+								`,
+								image: 'img/netflix/ios/cant-signout.png',
+								note: ''
+							},
+							{
+								title: 'Install Netflix',
+								content: `
+									<div class="info-box" style="margin-top: 15px;">
+										<ol class="bold-numbers-list"><li>
+											Open <i class="fa-brands fa-app-store-ios"></i> <b>AppStore</b> and <b>install Netflix</b>
+										</li><li>
+											Connect with US or HK server
+										</li><li>
+											Click <b>sign-in</b>
+										</li></ol>
+									</div>`,
+								image: 'img/netflix/ios/cant-signout-2.png',
+								note: ''
+							}
+						] : [
+							{
+								title: 'Reinstall Netflix app',
+								content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <b>Google Playstore</b>
+										</li><li>
+											Search Netflix and uninstall
+										</li><li>
+											install Netflix again
+										</li></ol>
+									</div>`,
+								image: '',
+								note: ''
+							}
+						]
+					},
+
+					// Date & Time Error
+					{
+						name: 'date-error',
+						title: 'Date & Time Error',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: device === 'ios' ? [
+							{
+								title: 'Fix Error',
+								content: `
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <b>iPhone Settings</b>
+										</li><li>
+											Search <b>Date</b>
+										</li><li>
+											Open <b>Date and Time</b>
+										</li><li>
+											<b>enable</b> Automatic Date and Time
+										</li><li>
+											<b>enable</b> Automatic Time Zone
+										</li></ol>
+									</div>
+								`,
+								image: 'img/netflix/ios/date-error.png',
+								note: ''
+							}
+						] : [
+							{
+								title: 'Fix Error',
+								content: `
+								<div class="substep-note">
+									<i class="fas fa-info-circle"></i>
+									Different phones have different yet similar options
+								</div>
+									<div class="info-box">
+										<ol class="bold-numbers-list"><li>
+											Open <b>Phone Settings</b>
+										</li><li>
+											Click <b>Search</b>
+										</li><li>
+											Search Date
+										</li><li>
+											Open Date and Time option
+										</li><li>
+											Open Date and Time 
+										</li><li>
+											<b>enable</b> Automatic Date and Time
+										</li><li>
+											<b>enable</b> Automatic Time Zone
+										</li></ol>
+									</div>`,
+								image: 'img/netflix/android/date-error.png',
+								note: ''
+							}
+						]
+					},
+
+				]
+			},
+
+			// ChatGPT
+			chatgpt: {
+				name: 'ChatGPT',
+				logo: 'img/chatgpt/logo.png',
+				icon: 'fas fa-template',
+				version: getVersion === 'android13' ? '13+' : '≤12',
+				download: 'https://example.com/template/download',
+				steps: [
+
+					// ChatGPT website not working
+					{
+						name: 'chatgpt-problem',
+						title: 'ChatGPT website not working',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Check Expiry & Traffic
+							clashvergeCheckExpiry,
+
+							// Check App Update
+							clashvergeAppUpdate,
+
+							// Check Basic Settings
+							clashvergeBasicSettings,
+
+							// Check Connection Settings
+							clashvergeConnectionSettings,
+
+							// Change Servers
+							clashvergeChangeServerAi,
+
+							// Contact Support
+							genericContactSupport
+
+						]
+					},
+
+					// unable to login/use after Team Deactivation
+					{
+						name: 'not-available',
+						title: 'unable to login/use after Team Deactivation',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Change Server
+							{
+								title: 'Clear Cookies & Cache',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Click on <i class="fa-solid fa-code-compare fa-rotate-90"></i> open <b>Site Information</b>
+									</li><li>
+										Open <i class="fa-solid fa-gear"></i> <b>Site Settings</b>
+									</li><li>
+										Click <b>Delete Data</b> & Close the page
+									</li><li>
+										<b>Refresh</b> chatgpt website page (press F5 button or CTRL+R)
+									</li></ol>
+								</div>
+								`,
+								image: 'img/chatgpt/clear-cache.png',
+								note: ''
+							}
+
+						]
+					},
+
+					// How to Redeem CDKey
+					{
+						name: 'chatgpt-redeem',
+						title: 'How to Redeem CDKey',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+
+							// Select US server
+							{
+								title: 'Select US server',
+								content: `
+								<div class="notice-box">
+									<i class="fas fa-info-circle"></i>Change to US server, if you have other APP/Software
+								</div>
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Open <b>Proxies</b>
+									</li><li>
+										Open <b>🤖 ChatGPT</b> group
+									</li><li>
+										Select <b>US Group</b> OR <b>US server</b>
+									</li></ol>
+								</div>
+								`,
+								image: 'img/chatgpt/redeem/01_select-server.png',
+								note: ''
+							},
+
+							// Confirm Personal space is active
+							{
+								title: 'Confirm Personal space is active',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Login or Refresh <b>ChatGPT website</b> page
+									</li><li>
+										Make sure your <b>Personal Account</b> is selected
+									</li></ol>
+								</div>
+								`,
+								image: 'img/chatgpt/redeem/02_confirm-profile.png',
+								note: ''
+							},
+
+							// Change Language
+							{
+								title: 'Open Website',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Open website <a href="https://receipt.nitro.xin/redeem/chatgpt" target="_blank">https://receipt.nitro.xin/redeem/chatgpt</a>
+									</li><li>
+										Click on <b>中</b> to Change to <b>English</b>
+									</li></ol>
+								</div>
+								`,
+								image: 'img/chatgpt/redeem/03_change-language-1.png',
+								note: ''
+							},
+
+							// Check CDKey
+							{
+								title: 'Check CDKey',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										paste your <b>CDKey</b>
+									</li><li>
+										Click <b>Check</b> to validate your key
+									</li></ol>
+								</div>
+								`,
+								image: 'img/chatgpt/redeem/04_check-cdkey.png',
+								note: ''
+							},
+
+							// get AuthSession details
+							{
+								title: 'Get AuthSession details',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Click on the <b>Open AuthSession Deatils</b>
+									</li><li>
+										<b>Select</b> all and <b>copy</b> the details
+									</li><li>
+										<b>Paste</b> in <b>second box</b> on website
+									</li><li>
+										Click <b>Check</b> to validate session
+									</li></ol>
+								</div>
+								`,
+								image: 'img/chatgpt/redeem/05_auth-check.png',
+								note: ''
+							},
+
+							// Recharge Account
+							{
+								title: 'Recharge Account',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Click on <b>Start Recharge</b>
+									</li><li>
+										after some time your will get success message
+									</li></ol>
+								</div>
+								<div class="alert-box">
+									<i class="fas fa-triangle-exclamation"></i> <b>DO NOT TRY TO RECHARGE AGAIN AND AGAIN!!!</b>
+								</div>
+								<div class="notice-box">
+									<i class="fas fa-info-circle"></i> Save <b>TASK ID</b> incase there is some problem.
+								</div>
+								`,
+								image: 'img/chatgpt/redeem/06_recharge.png',
+								note: ''
+							},
+
+							// Check Expiry
+							{
+								title: 'Check Expiry',
+								content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list"><li>
+										Go to <b>ChatGPT website</b>
+									</li><li>
+										<b>Refresh Page</b>
+									</li><li>
+										Click on <b>Your Name</b>
+									</li><li>
+										Open <b>Settings → Account</b>
+									</li></ol>
+								</div>
+								<div class="notice-box">
+									<i class="fas fa-info-circle"></i> Sometimes few minute required to update details, refresh and check again after few minutes
+								</div>
+								`,
+								image: 'img/chatgpt/redeem/07_check-expiry.png',
+								note: ''
+							}
+
+						]
+					}
+
+				]
+			},
+
+		};
+
+		// Determine which app config to use
+		let targetApp = app;
+		const config = configs[targetApp] || configs.clashmi;
+
+		// Determine if we're in substep mode
+		const isSubstepMode = app_option && app_option !== 'home' && app_option !== 'download';
+
+		// Filter steps based on app_option and substep mode
+		let filteredSteps = [];
+		let totalSubsteps = 0;
+		let parentMainStep = null;
+
+		if (isSubstepMode) {
+			// Find the main step that matches app_option
+			const mainStep = config.steps.find(step => step.name === app_option);
+			parentMainStep = mainStep;
+
+			if (mainStep && mainStep.substeps && mainStep.substeps.length > 0) {
+				// Create an array of substep objects with parent step info
+				filteredSteps = mainStep.substeps.map((substepItem, index) => {
+					return {
+						...substepItem,
+						parentStep: mainStep,
+						parentIndex: index,
+						isSubstep: true,
+						mainStepName: mainStep.name,
+						mainStepTitle: mainStep.title,
+						stepNumber: index + 1,
+						totalSubsteps: mainStep.substeps.length
+					};
+				});
+				totalSubsteps = filteredSteps.length;
+			} else {
+				// If no substeps, just show the main step
+				filteredSteps = [mainStep].filter(Boolean);
+			}
+		} else {
+			// Use page-based filtering for main steps
+			if (page === 'connect') {
+				filteredSteps = config.steps.filter(step => step.category === 'connect');
+			} else if (page === 'problem') {
+				filteredSteps = config.steps.filter(step => step.category === 'problem');
+			} else if (page === 'guide') {
+				filteredSteps = config.steps.filter(step => step.category === 'guide');
+			} else {
+				filteredSteps = config.steps;
+			}
+		}
+
+		// Optional: If no steps found, show a message
+		if (filteredSteps.length === 0) {
+			filteredSteps = [{
+				name: 'not-available',
+				title: 'Not Available',
+				content: 'No steps available for this category on your device.',
+				image: '',
+				imageCaption: '',
+				substeps: []
+			}];
+		}
+
+		// Declare navigation variables
+		let currentStep = parseInt(substep) || 0;
+		if (currentStep >= filteredSteps.length) {
+			currentStep = 0;
+		}
+
+		// Generate steps HTML
+		let stepsHtml = '';
+
+		stepsHtml += `
+			<div class="section-title">
+				<div class="section-title-left">
+					<i class="fa-solid fa-triangle-exclamation"></i>
+					<span>${isSubstepMode ? parentMainStep?.title || 'Step Details' : 'Setup Steps'}</span>
+				</div>
+				<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+			</div>
+			<div class="note-box">
+				<i class="fas fa-info-circle"></i>
+				Check these issues one by one to resolve your problem
+			</div>
+			`;
+
+		// Add progress indicator container (will be filled dynamically)
+		stepsHtml += `<div class="main-steps-progress" id="mainStepsProgress"></div>`;
+
+		if (isSubstepMode) {
+			// SUBSTEP MODE - Show each substep as a separate page
+			filteredSteps.forEach((substepItem, index) => {
+				const parentStep = substepItem.parentStep;
+				const stepDisplayStyle = index === currentStep ? 'block' : 'none';
+
+				stepsHtml += `
+                    <div class="step" id="step-${index}" style="display: ${stepDisplayStyle}">
+					
+                        <!-- Progress Radio Buttons - Moved below title -->
+                        <!-- <div class="progress-radio"> -->
+                            <!-- ${Array(totalSubsteps).fill().map((_, i) => ` -->
+                                <!-- <div class="radio-item" onclick="jumpToSubstepPage(${i})"> -->
+                                    <!-- <div class="radio-dot" style="background: ${i === index ? '#818bff' : i < index ? '#10b981' : '#e2e8f0'};"></div> -->
+                                    <!-- <span class="radio-label" style="color: ${i === index ? '#818bff' : '#64748b'};">${i + 1}</span> -->
+                                <!-- </div> -->
+                            <!-- `).join('')} -->
+                        <!-- </div> -->
+                        
+                        <div class="step-header">
+                            <div class="step-num">${substepItem.parentIndex + 1}</div>
+                            <div class="step-title">${substepItem.title}</div>
+                        </div>
+                        
+                        <p class="step-content">${substepItem.content}</p>
+                        
+                        <!-- Substep Image -->
+                        ${substepItem.image ? `
+                            <img src="${substepItem.image}" 
+                                 alt="${substepItem.title}" 
+                                 class="step-image"
+                                 onclick="openModal('${substepItem.image}')"
+                                 onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'image-placeholder\\'><i class=\\'fas fa-image\\'></i><p>Image not available</p></div>'); this.style.display='none';">
+                        ` : ''}
+                        
+                        <!-- Substep Note -->
+                        ${substepItem.note ? `
+                            <div class="substep-note">
+                                <i class="fas fa-info-circle"></i>
+                                ${substepItem.note}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+			});
+
+			// Add navigation buttons at the bottom for substep mode
+			stepsHtml += `
+                <div class="nav-btns">
+                    <button class="btn btn-secondary" onclick="handleSubstepBack()" id="prevSubstepBtn">
+                        <i class="fa-solid fa-angle-left"></i> Previous
+                    </button>
+                    <span class="step-counter">Step ${currentStep + 1} of ${totalSubsteps}</span>
+                    <button class="btn btn-primary" onclick="handleSubstepNext()" id="nextSubstepBtn">
+                        Next <i class="fa-solid fa-angle-right"></i>
+                    </button>
+                </div>
+            `;
+		} else {
+			// MAIN STEP MODE - Show all main steps (original code)
+			filteredSteps.forEach((step, index) => {
+				// Only show the current main step, hide others
+				const stepDisplayStyle = index === currentStep ? 'block' : 'none';
+
+				stepsHtml += `
+                    <div class="step" id="step-${index}" style="display: ${stepDisplayStyle}">
+                        <div class="step-header">
+                            <div class="step-num">${index + 1}</div>
+                            <div class="step-title">${step.title}</div>
+                        </div>
+                        
+                        <p class="step-content">${step.content}</p>
+                        
+                        <!-- Step Image -->
+                        ${step.image ? `
+                            <img src="${step.image}" 
+                                 alt="${step.title}" 
+                                 class="step-image"
+                                 onclick="openModal('${step.image}')"
+                                 onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'image-placeholder\\'><i class=\\'fas fa-image\\'></i><p>Image not available</p></div>'); this.style.display='none';">
+                        ` : ''}
+                        
+                        ${step.imageCaption ? `
+                            <div class="image-caption">
+                                <i class="fas fa-camera"></i> ${step.imageCaption}
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Substeps (shown as list) -->
+                        ${step.substeps && step.substeps.length > 0 ? `
+                            <div class="substeps-list">
+                                <h4>Steps in this section:</h4>
+                                <div class="substeps-list-items">
+                                    ${step.substeps.map((sub, i) => `
+                                        <div class="substep-list-item">
+                                            <strong>${i + 1}. ${sub.title}</strong>
+                                            <p>${sub.content.substring(0, 60)}...</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+			});
+
+			// Add navigation for main steps
+			stepsHtml += `
+                <div class="nav-btns">
+                    <button class="btn btn-secondary" onclick="prevMainStep()" id="prevBtn" ${currentStep === 0 ? 'disabled' : ''}>
+                        <i class="fa-solid fa-angle-left"></i> Previous
+                    </button>
+                    <span class="step-counter">Step ${currentStep + 1} of ${filteredSteps.length}</span>
+                    <button class="btn btn-primary" onclick="nextMainStep()" id="nextBtn" ${currentStep === filteredSteps.length - 1 ? 'disabled' : ''}>
+                        Next <i class="fa-solid fa-angle-right"></i>
+                    </button>
+                </div>
+            `;
+		}
+
+		document.getElementById('content').innerHTML = stepsHtml;
+
+		// Initialize progress indicator after DOM is ready
+		setTimeout(() => {
+			updateProgressIndicator(currentStep);
+		}, 0);
+
+		// Set header after content is generated
+		document.getElementById('header').innerHTML = `
+            <button class="back-btn" onclick="handleTopBack()" id="backBtnTop">
+                <i class="fa-solid fa-angle-left"></i> Back
+            </button>
+            
+			
+			<div class="header-center">
+				<button class="back-btn" onclick="goBack()" id="centerBtnTop">
+				<i class="fa-solid fa-wrench"></i> ${config.name} Help</button>					
+			</div>
+            
+            <button class="next-btn" onclick="handleTopNext()" id="nextBtnTop">
+                ${isSubstepMode && currentStep === totalSubsteps - 1 ? 'Finish' : 'Next'} <i class="fa-solid fa-angle-right"></i>
+            </button>
+        `;
+
+		// Set header 2 after content is generated
+		document.getElementById('header2').innerHTML = `
+            <div class="next-btn-placeholder"></div>
+            
+            <div class="header-center">
+                <div class="header-icon">					
+                    <div class="card-image-wrapper">
+                        <img src="${config.logo}" alt="${config.name}" class="app-logo" onerror="this.src='https://via.placeholder.com/80?text=Logo'">
+                    </div>
+                </div>
+                <div>
+                    <h1>${config.name}</h1>
+                    <p>Help Guide</p>
+                </div>				
+            </div>
+            
+            <div class="next-btn-placeholder"></div>
+        `;
+
+		// Step navigation elements
+		const steps = document.querySelectorAll('.step');
+
+		// Function to update progress indicator
+		function updateProgressIndicator(step) {
+			const progressContainer = document.getElementById('mainStepsProgress');
+			if (!progressContainer) return;
+
+			// Determine which steps to show in progress indicator
+			let progressSteps = [];
+			let totalSteps = 0;
+
+			if (isSubstepMode) {
+				// For substep mode, show all substeps
+				progressSteps = filteredSteps; // filteredSteps already contains substeps
+				totalSteps = filteredSteps.length;
+			} else {
+				// For main step mode, show all filtered steps
+				progressSteps = filteredSteps;
+				totalSteps = filteredSteps.length;
+			}
+
+			// Generate fresh HTML for progress indicator
+			progressContainer.innerHTML = progressSteps.map((stepItem, idx) => `
+				<div class="main-step-item ${idx === step ? 'active' : ''} ${idx < step ? 'completed' : ''}" data-step-index="${idx}">
+					<div class="main-step-number">${idx + 1}</div>
+					<div class="main-step-label">${stepItem.title || stepItem.name || 'Step ' + (idx + 1)}</div>
+				</div>
+			`).join('');
+
+			// Add click handlers for navigation
+			const progressItems = progressContainer.querySelectorAll('.main-step-item');
+			progressItems.forEach((item, idx) => {
+				item.style.cursor = 'pointer';
+				// Remove existing listener to avoid duplicates
+				const oldHandler = item._clickHandler;
+				if (oldHandler) {
+					item.removeEventListener('click', oldHandler);
+				}
+				// Create and store new handler
+				const handler = () => {
+					if (idx !== currentStep) {
+						if (isSubstepMode) {
+							// Navigate to substep
+							currentStep = idx;
+							showStep(currentStep);
+
+							const url = new URL(window.location);
+							url.searchParams.set('substep', currentStep);
+							window.history.replaceState({}, '', url);
+						} else {
+							// Navigate to main step
+							currentStep = idx;
+							showStep(currentStep);
+
+							const url = new URL(window.location);
+							url.searchParams.set('app_option', filteredSteps[currentStep].name);
+							url.searchParams.set('substep', 0);
+							window.history.replaceState({}, '', url);
+						}
+					}
+				};
+				item._clickHandler = handler;
+				item.addEventListener('click', handler);
+			});
+		}
+
+		// ShowStep function
+		function showStep(step) {
+			if (!steps.length) return;
+
+			// Hide all steps
+			steps.forEach((s, i) => {
+				s.style.display = i === step ? 'block' : 'none';
+			});
+
+			// Update progress indicator
+			updateProgressIndicator(step);
+
+			// Update URL
+			updateURL();
+
+			// Update button states and text
+			updateNavButtons();
+		}
+
+		function updateURL() {
+			const url = new URL(window.location);
+			if (isSubstepMode) {
+				url.searchParams.set('substep', currentStep);
+			} else {
+				url.searchParams.set('app_option', filteredSteps[currentStep].name);
+				url.searchParams.set('substep', 0);
+			}
+			window.history.replaceState({}, '', url);
+		}
+
+		function updateNavButtons() {
+			if (isSubstepMode) {
+				// Update substep navigation buttons
+				const prevBtn = document.getElementById('prevSubstepBtn');
+				const nextBtn = document.getElementById('nextSubstepBtn');
+				const topNextBtn = document.getElementById('nextBtnTop');
+				const stepCounter = document.querySelector('.nav-btns .step-counter');
+
+				if (prevBtn) {
+					if (currentStep === 0) {
+						prevBtn.disabled = true;
+					} else {
+						prevBtn.disabled = false;
+					}
+				}
+
+				if (nextBtn) {
+					if (currentStep === totalSubsteps - 1) {
+						nextBtn.innerHTML = 'Finish <i class="fa-solid fa-angle-right"></i>';
+						nextBtn.disabled = false;
+					} else {
+						nextBtn.innerHTML = 'Next <i class="fa-solid fa-angle-right"></i>';
+						nextBtn.disabled = false;
+					}
+				}
+
+				if (topNextBtn) {
+					if (currentStep === totalSubsteps - 1) {
+						topNextBtn.innerHTML = 'Finish <i class="fa-solid fa-angle-right"></i>';
+					} else {
+						topNextBtn.innerHTML = 'Next <i class="fa-solid fa-angle-right"></i>';
+					}
+				}
+
+				if (stepCounter) {
+					stepCounter.textContent = `Step ${currentStep + 1} of ${totalSubsteps}`;
+				}
+			} else {
+				// Update main step navigation buttons
+				const prevBtn = document.getElementById('prevBtn');
+				const nextBtn = document.getElementById('nextBtn');
+				const topNextBtn = document.getElementById('nextBtnTop');
+				const stepCounter = document.querySelector('.nav-btns .step-counter');
+
+				if (prevBtn) {
+					prevBtn.disabled = currentStep === 0;
+				}
+
+				if (nextBtn) {
+					nextBtn.disabled = currentStep === filteredSteps.length - 1;
+				}
+
+				if (topNextBtn) {
+					topNextBtn.innerHTML = currentStep === filteredSteps.length - 1 ? 'Finish' : 'Next <i class="fa-solid fa-angle-right"></i>';
+				}
+
+				if (stepCounter) {
+					stepCounter.textContent = `Step ${currentStep + 1} of ${filteredSteps.length}`;
+				}
+			}
+		}
+
+		// Navigation for substep pages
+		window.navigateSubstepPage = function (direction) {
+			if (direction === 'next' && currentStep < filteredSteps.length - 1) {
+				currentStep++;
+			} else if (direction === 'prev' && currentStep > 0) {
+				currentStep--;
+			} else {
+				return;
+			}
+
+			// Use showStep to update everything (including progress indicator)
+			showStep(currentStep);
+
+			// Update URL with new substep index
+			updateURL();
+
+			// Update button states
+			updateNavButtons();
+
+			// Scroll to top
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		};
+
+		window.jumpToSubstepPage = function (index) {
+			if (index >= 0 && index < filteredSteps.length) {
+				currentStep = index;
+
+				// Use showStep to update everything
+				showStep(currentStep);
+
+				updateURL();
+
+				// Update button states
+				updateNavButtons();
+
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			}
+		};
+
+		// Handle substep next button
+		window.handleSubstepNext = function () {
+			if (currentStep === totalSubsteps - 1) {
+				// Last substep - go back to previous page
+				goBack();
+			} else {
+				navigateSubstepPage('next');
+			}
+		};
+
+		// Handle substep back button
+		window.handleSubstepBack = function () {
+			if (currentStep === 0) {
+				// First substep - go back to previous page
+				goBack();
+			} else {
+				navigateSubstepPage('prev');
+			}
+		};
+
+		// Handle top back button
+		window.handleTopBack = function () {
+			if (isSubstepMode) {
+				if (currentStep === 0) {
+					// First substep - go back to previous page
+					goBack();
+				} else {
+					// Not first substep - go to previous substep
+					navigateSubstepPage('prev');
+				}
+			} else {
+				// Main step mode
+				if (currentStep === 0) {
+					goBack();
+				} else {
+					prevMainStep();
+				}
+			}
+		};
+
+		// Handle top next button
+		window.handleTopNext = function () {
+			if (isSubstepMode) {
+				if (currentStep === totalSubsteps - 1) {
+					// Last substep - go back to previous page
+					goBack();
+				} else {
+					// Not last substep - go to next substep
+					navigateSubstepPage('next');
+				}
+			} else {
+				// Main step mode
+				if (currentStep === filteredSteps.length - 1) {
+					goBack();
+				} else {
+					nextMainStep();
+				}
+			}
+		};
+
+		// Navigate between main steps
+		window.nextMainStep = function () {
+			if (currentStep < filteredSteps.length - 1) {
+				currentStep++;
+				showStep(currentStep);
+				updateNavButtons();
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			}
+		};
+
+		window.prevMainStep = function () {
+			if (currentStep > 0) {
+				currentStep--;
+				showStep(currentStep);
+				updateNavButtons();
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			}
+		};
+
+		// Override nextStep/prevStep for backward compatibility
+		window.nextStep = handleTopNext;
+		window.prevStep = handleTopBack;
+
+		// get current step
+		function getStep(app_option) {
+			if (isSubstepMode) {
+				return parseInt(substep) || 0;
+			}
+			const step_number = filteredSteps.findIndex(step => step.name === app_option);
+			return step_number === -1 ? 0 : step_number;
+		}
+
+		// Show step
+		let step_number = getStep(app_option);
+		if (!isSubstepMode) {
+			currentStep = step_number;
+		}
+		showStep(currentStep);
+
+		// Update navigation buttons initially
+		setTimeout(() => {
+			updateNavButtons();
+		}, 100);
+
+		window.goBack = function () {
+			// Go back to main options page
+			let url = `help_options.html?page=${page}&device=${device}&version=${getVersion}&app=${app}`;
+			window.location.href = url;
+		};
+
+		// Handle image load errors
+		document.querySelectorAll('.step-image').forEach(img => {
+			img.onerror = function () {
+				this.style.display = 'none';
+				this.insertAdjacentHTML('afterend', '<div class="image-placeholder"><i class="fas fa-image"></i><p>Image not available</p></div>');
+			};
+		});
+
+		// Handle download button click with WeChat detection
+		window.handleDownloadClick = function (downloadUrl) {
+			if (typeof handleWeChatDownload === 'function') {
+				handleWeChatDownload(downloadUrl);
+			} else {
+				// Fallback if function not available
+				window.open(downloadUrl, '_blank');
+			}
+		};		
+
+		window.handleWeChatCheck = function(event, downloadUrl) {
+			// Check if WeChat
+			if (typeof window.isInWeChat === 'function' && window.isInWeChat()) {
+				event.preventDefault();
+				if (typeof showWeChatMessage === 'function') {
+					showWeChatMessage();
+				} else if (typeof window.showWeChatMessage === 'function') {
+					window.showWeChatMessage();
+				}
+				return false;
+			}
+			return true; // Allow normal navigation
+		};
+
+
+		})();
+	</script>
+
+</body>
+
+</html>

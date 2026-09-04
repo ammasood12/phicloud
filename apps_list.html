@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiCloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">
+    <!-- Javascript Functions -->
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/download-links.js"></script>
+    <script src="scripts/wechat-detector.js"></script>
+	<script>
+		window.VERSIONS_READY = loadVersions();
+	</script>
+	
+</head>
+<body>
+    <div class="guide-card" id="guideCard">
+	
+        <!-- Header will be filled by JS -->
+        <div class="header" id="header"></div>
+		
+        <!-- Content will be filled by JS -->
+        <div class="content" id="content"></div>
+    </div>
+
+    <script>
+	(async function () {
+		// Confirm app versions are fetched
+		await window.VERSIONS_READY;
+	
+        // Get device from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const device = urlParams.get('device') || 'android';
+        const version = urlParams.get('version') || '13';
+		const page = urlParams.get('page') || 'home'; 
+		
+        // Device configurations
+        const configs = {
+            android: {
+                name: 'Android',
+                icon: 'fab fa-android',
+                apps: [
+                    { 
+                        title: 'Clash Mi',
+						version: 'android13',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/clashmi/logo.png',
+                        page: 'clashmi',
+                        recommended: true,
+						caption: 'Android 13+'
+                    },
+                    { 
+                        title: 'FL Clash',
+						version: 'android12',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/flclash/logo.png',
+                        page: 'flclash',
+                        recommended: true,
+						// caption: '≤12',
+						caption: 'Android 10+'
+                    },
+                    { 
+                        title: 'Hiddify',
+						version: 'android12',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/hiddify/logo.png',
+                        page: 'hiddify',
+                        recommended: '',
+						caption: 'Android 7+'
+                    },
+                    { 
+                        title: 'Clash Meta',
+						version: 'android12',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/clashmeta/logo.png',
+                        page: 'clashmeta',
+                        recommended: '',
+						caption: 'Android 5+'
+                    },
+                    { 
+                        title: 'Netflix',
+						version: 'android',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/netflix/logo.png',
+                        page: 'netflix',
+                        recommended: '',
+						caption: ''
+                    }
+                ]
+            },
+            ios: {
+                name: 'iOS',
+                icon: 'fab fa-apple',                
+                apps: [
+                    { 
+                        title: 'Clash Mi',
+						version: 'ios',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/clashmi/logo.png',
+                        page: 'clashmi',
+                        recommended: true,
+						caption: 'iOS 15+'
+                    },
+                    { 
+                        title: 'Hiddify',
+						version: 'ios',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/hiddify/logo.png',
+                        page: 'hiddify',
+                        recommended: '',
+						caption: 'iOS 15+'
+                    },
+                    { 
+                        title: 'Shadow Rocket',
+						version: 'ios',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/shadowrocket/logo.png',
+                        page: 'shadowrocket',
+                        recommended: '',
+						caption: 'iOS 13+'
+                    },
+                    { 
+                        title: 'Netflix',
+						version: 'ios',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/netflix/logo.png',
+                        page: 'netflix',
+                        recommended: '',
+						caption: ''
+                    }
+                ]
+            },
+            windows: {
+                name: 'Windows',
+                icon: 'fab fa-windows',                
+                apps: [
+                    { 
+                        title: 'Clash Verge',
+						version: 'windows',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/clashverge/logo.png',
+                        page: 'clashverge',
+                        recommended: true,
+						caption: 'Win 10/11'
+                    },
+                    { 
+                        title: 'Netflix',
+						version: 'windows',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/netflix/logo.png',
+                        page: 'netflix',
+                        recommended: '',
+						caption: ''
+                    },
+                    { 
+                        title: 'ChatGPT',
+						version: 'windows',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/chatgpt/logo.png',
+                        page: 'chatgpt',
+                        recommended: '',
+						caption: ''
+                    }
+                ]
+            },
+            mac: {
+                name: 'MacOS',
+                icon: 'fas fa-laptop',
+                apps: [
+                    { 
+                        title: 'Clash Verge',
+						version: 'apple',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/clashverge/logo.png',
+                        page: 'clashverge',
+                        recommended: true,
+						caption: 'MacOS 11+<br>M-Series'
+                    },
+                    { 
+                        title: 'Clash Verge',
+						version: 'intel',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/clashverge/logo.png',
+                        page: 'clashverge',
+                        recommended: true,
+						caption: 'MacOS 11+<br>Intel'
+                    },
+                    { 
+                        title: 'FlClash',
+						version: 'intel',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/flclash/logo.png',
+                        page: 'flclash_mac',
+                        recommended: false,
+						caption: 'MacOS 10.xx<br>intel'
+                    },
+                    { 
+                        title: 'Netflix',
+						version: 'mac',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/netflix/logo.png',
+                        page: 'netflix',
+                        recommended: '',
+						caption: ''
+                    },
+                    { 
+                        title: 'ChatGPT',
+						version: 'mac',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/chatgpt/logo.png',
+                        page: 'chatgpt',
+                        recommended: '',
+						caption: ''
+                    }
+                ]
+            },
+            linux: {
+                name: 'Linux',
+                icon: 'fab fa-linux',                
+                apps: [
+                    { 
+                        title: 'Clash Verge',
+						version: 'linux',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/clashverge/logo.png',
+                        page: 'clashverge',
+                        recommended: true,
+						caption: 'Ubuntu/Deb'
+                    },
+                    { 
+                        title: 'Netflix',
+						version: 'linux',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/netflix/logo.png',
+                        page: 'netflix',
+                        recommended: '',
+						caption: ''
+                    },
+                    { 
+                        title: 'ChatGPT',
+						version: 'windows',
+						type: 'service',
+						status: 'enabled',
+                        image: 'img/chatgpt/logo.png',
+                        page: 'chatgpt',
+                        recommended: '',
+						caption: ''
+                    }
+                ]
+            },
+            other: {
+                name: '',
+                icon: 'fas fa-globe',                
+                apps: [
+                    { 
+                        title: 'TikTok Mod',
+						version: 'android',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/tiktok/logo.png',
+                        page: 'tiktok',
+                        recommended: '',
+						caption: 'Android'
+                    },
+                    { 
+                        title: 'TikTok Github',
+						version: 'android',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/tiktok/logo.png',
+                        page: 'tiktok2',
+                        recommended: '',
+						caption: 'Android'
+                    },
+                    { 
+                        title: 'APK PURE',
+						version: 'android13',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/apkpure/logo.png',
+                        page: 'apkpure',
+                        recommended: '',
+						caption: 'Android'
+                    },
+                    { 
+                        title: 'ToDesk',
+						version: 'windows',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/todesk/logo.png',
+                        page: 'todesk',
+                        recommended: '',
+						caption: 'Windows'
+                    },
+                    { 
+                        title: 'ToDesk',
+						version: 'mac',
+						type: 'app',
+						status: 'enabled',
+                        image: 'img/todesk/logo.png',
+                        page: 'todesk',
+                        recommended: '',
+						caption: 'MacOS 10+'
+                    }
+                ]
+            }
+        };
+
+	// Function to generate apps HTML for a device
+	function generateDeviceAppsHTML(deviceConfig, deviceKey, showHeader = false) {
+		let html = '';
+		
+		if (showHeader) {
+			html += `
+				<div style="margin: 30px 0 15px 0;">
+					<h2 style="display: flex; align-items: center; gap: 10px; color: #1e293b;">
+						<i class="${deviceConfig.icon}" style="color: #818bff;"></i>
+						${deviceConfig.name} Apps
+					</h2>
+				</div>
+			`;
+		}
+		
+		const filteredApps = deviceConfig.apps.filter(app => app.type === 'app');
+		
+		// enable section-head and share-option for non-download pages
+		if (page !== 'downloads') {
+			html += `
+				<div class="section-title">
+					<div class="section-title-left">
+						<i class="fas fa-info-circle"></i>					
+						<span>Select App <b style="color: #818bff;">
+						${page === 'help' 
+							? 'to Solve Problem' 
+							: 'for Detailed Guide'}
+						</b></span>
+					</div>
+					<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+				</div>`;
+		}
+		
+		html += `<div class="apps-grid">`;
+		filteredApps.forEach(app => {
+			// Determine the link based on deviceKey
+			let link = '';
+			// Generate link based on connectivity app (only downloadable apps excluded)
+			if (deviceKey === 'other') {
+				link = '';
+			} else {
+				link = `app=${app.page}&device=${deviceKey}&version=${app.version || ''}`;
+			}
+			
+			// Get version using bracket notation
+			// const versionNumber = APP_VERSIONS[app.page];
+			//const versionText = versionNumber ? `v${versionNumber}` : `${app.version}`;
+			// const versionText = versionNumber ? `v${versionNumber}` : `–––`;
+			// const versionDisplay = (versionText) 
+				// ? `<span class="device-badge">${versionText}</span>` 
+				// : '';
+			
+			// Get release date
+			// const releaseDate = getReleaseDate(app.page);
+			// const dateText = releaseDate ? `<span class="release-date">📅 ${releaseDate}</span>` : '';
+			// For downloads page, also show release date
+			// const dateDisplay = (releaseDate) 
+				// ? `<div class="release-info">Updated at: ${releaseDate}</div>` 
+				// : '';
+
+			html += `
+				<div>            
+					<div class="device-card ${app.recommended === true ? 'recommended' : ''}" onclick="handleProceed('${link}')" id="card-${app.title}">
+						<div class="card-image-wrapper">
+							<img src="${app.image}" alt="${app.title}" class="app-logo">
+						</div>
+						<span class="device-badge-colored" ${deviceKey === 'mac' ? 'style="color:;"' : ''}> ${app.caption || ''}</span>
+						<h3>${app.title}</h3>
+						${(page === 'downloads' && deviceKey !== 'other') 
+							? `
+								<span class="device-badge">v${getAppVersion(app.page, deviceKey) || '0.0'}</span>
+								<div class="release-info">${deviceKey === 'ios' ? 'Checked at:' : 'Updated at:'} ${getReleaseDate(app.page, deviceKey)}</div>
+							`
+							: ``
+						}
+					</div>
+					${page === 'downloads' 
+						? `	
+							${deviceKey !== 'other' ? 
+							`
+								<a href="${getDownloadLink(app.page, deviceKey, app.version, 'proxy')}" target="_blank">
+									<button class="device-card btn-download-small">Download Link 1</button></a>
+								<a href="${getDownloadLink(app.page, deviceKey, app.version, 'noproxy')}" target="_blank">
+									<button class="device-card btn-download-small">Download Link 2</button></a>
+								<a href="${getWebsiteLink(app.page)}" target="_blank">
+									<button class="device-card btn-website-small website">Website</button></a>
+							` : `
+								<a href="${getDownloadLink(app.page, deviceKey, app.version, 'noproxy')}" target="_blank">
+									<button class="device-card btn-download-small">Download Link</button></a>
+								<a href="${getWebsiteLink(app.page)}" target="_blank">
+									<button class="device-card btn-website-small website">Website</button></a>
+							`}
+						`: ``
+					}
+				</div>
+			`;
+		});
+				
+		// Show other account services
+		const showServices = false;
+		if (page !== 'downloads' && page !== 'guide' && showServices) {
+			const otherServices = deviceConfig.apps.filter(app => app.type === 'service');
+			otherServices.forEach(app => {
+				// Determine the link based on deviceKey
+				let link = `app=${app.page}&device=${deviceKey}&version=${app.version || ''}`;
+
+				html += `
+					<div>            
+						<div class="device-card" onclick="handleProceed('${link}')" id="card-${app.title}">
+							<div class="card-image-wrapper">
+								<img src="${app.image}" alt="${app.title}" class="app-logo">
+							</div>
+							<h3>${app.title}</h3>                                                
+							<span class="device-badge">${deviceConfig.name} ${app.caption || ''}</span>
+						</div>
+					</div>
+				`;
+			});
+		}
+		
+		html += `</div>`;
+		
+		return html;
+	}
+
+	// Determine which devices to show
+	let headerConfig;
+	let contentHtml = '';
+
+	if (page === 'downloads') {
+		// Show all devices
+		headerConfig = {
+			name: 'Downloads',
+			icon: 'fa-solid fa-download'
+		};
+		
+		// Generate sections for each device
+		Object.keys(configs).forEach(deviceKey => {
+			contentHtml += generateDeviceAppsHTML(configs[deviceKey], deviceKey, true);
+		});
+	} else {
+		// Show single device
+		const deviceConfig = configs[device] || configs.android;
+		if (page === 'help') {
+			headerConfig = {
+				name: deviceConfig.name + ' Help',
+				icon: deviceConfig.icon
+			}
+		} else {
+			headerConfig = {
+				name: deviceConfig.name + ' Guide',
+				icon: deviceConfig.icon
+			}
+		};
+		
+		contentHtml = generateDeviceAppsHTML(deviceConfig, device, false);
+	}
+
+	// Set header
+	document.getElementById('header').innerHTML = `
+		<button class="back-btn" onclick="goHome()">
+			${page === 'downloads' 
+				? '<i class="fa-solid fa-home"></i> Home' 
+				: page === 'help' 
+					? '<i class="fa-solid fa-wrench"></i> Help' 
+					:'<i class="fa-solid fa-book-open"></i> Guide'
+			}
+		</button>
+		
+		<div class="header-center">
+			<div class="header-icon"><i class="${headerConfig.icon}"></i></div>
+			<div>
+				<h1>${headerConfig.name}</h1>					
+			</div>
+		</div>
+		
+		<div class="next-btn-placeholder"></div>
+	`;
+
+	// Set content
+	document.getElementById('content').innerHTML = contentHtml;
+
+		
+		window.goHome = function() {
+			let url;
+
+			const homeContent = {			  			
+				downloads: `index.html`,
+				help: `help.html`,
+				guide: `guide.html`,
+				default: `guide.html`
+			};
+
+			url = homeContent[page] || homeContent.default;
+			window.location.href = url;
+		};
+		
+		// Proceed to app page
+		window.handleProceed = function(appDetails) {
+			if (!appDetails) return;
+			let url = '';
+			if (page === 'help') {
+				url += `help_options.html?page=${page}&${appDetails}`;
+			} else {		
+				url += `app_options.html?page=${page}&${appDetails}`;
+			}
+			
+			window.location.href = url;
+		};
+
+        // Handle image load errors
+        document.querySelectorAll('.step-image').forEach(img => {
+            img.onerror = function() {
+                this.style.display = 'none';
+                const placeholder = this.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('image-placeholder')) {
+                    placeholder.style.display = 'block';
+                }
+            };
+        });
+		
+		// Handle download button click with WeChat detection
+		window.handleDownloadClick = function(downloadUrl) {
+			if (typeof handleWeChatDownload === 'function') {
+				handleWeChatDownload(downloadUrl);
+			} else {
+				// Fallback if function not available
+				window.open(downloadUrl, '_blank');
+			}
+		};
+	
+	})();
+    </script>
+</body>
+</html>

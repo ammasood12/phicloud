@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhiCloud</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">
+    <!-- Javascript Functions -->
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/wechat-detector.js"></script>
+</head>
+<body>
+    <div class="guide-card">
+
+        <!-- Header -->
+        <div class="header" id="header">
+            <!-- <div class="header-icon"> -->
+                <!-- <i class="fas fa-cloud"></i> -->
+            <!-- </div> -->
+			<!-- <div class="header-icon"> -->
+				<!-- <img src="img/logo.png" alt="PhiCloud Logo" style="width: 100px; height: 100px; object-fit: contain;"> -->
+			<!-- </div> -->
+            <!-- <h1>PhiCloud Connect v5.4</h1> -->
+            <!-- <p>Choose your device to get started</p> -->
+			<button class="back-btn" onclick="goHome()">
+				<i class="fas fa-home"></i> Home
+			</button>
+			
+			<div class="header-center">
+				<div class="header-icon"><i class="fa-solid fa-wrench"></i></div>
+				<div>
+					<h1>Help</h1>
+					<!-- <p>PhiCloud</p> -->
+				</div>
+			</div>
+					
+			<!-- <button class="next-btn" onclick="nextStep()" id="nextBtnTop">Next →</button> -->
+			<div class="next-btn-placeholder"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="section-title">
+				<div class="section-title-left">
+					<i class="fas fa-mobile-alt"></i>
+					<span>Select device to <b style="color: #818bff;">Solve Problems</b></span>
+				</div>
+				<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
+			</div>
+			
+			<div class="alert-box">
+				<div>
+					<i class="fa-solid fa-triangle-exclamation"></i>
+					<strong>Only contact Support with problem details if you cannot resolve the issue here.</strong>
+				</div>
+			</div>	
+
+            <!-- Device Grid -->
+            <div class="device-grid">
+                <div class="device-card" onclick="selectDevice('android')" id="card-android">
+                    <i class="fab fa-android"></i>
+                    <h3>Android</h3>
+                </div>
+                <div class="device-card" onclick="selectDevice('ios')" id="card-ios">
+                    <i class="fab fa-apple"></i>
+                    <h3>iPhone / iPad</h3>
+                </div>
+                <div class="device-card" onclick="selectDevice('windows')" id="card-windows">
+                    <i class="fab fa-windows"></i>
+                    <h3>Windows</h3>
+                </div>
+                <div class="device-card" onclick="selectDevice('mac')" id="card-mac">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Macbook</h3>
+                </div>
+                <div class="device-card" onclick="selectDevice('linux')" id="card-linux">
+                    <i class="fab fa-linux"></i>
+                    <h3>Linux</h3>
+                </div>
+                <div class="device-card disabled" onclick="selectDevice('')" id="card-linux">
+                    <i class="fa-solid fa-tv"></i>
+                    <h3>Android TV</h3>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+		
+		// State
+		let selectedDevice = null;
+		let androidVersion = null;
+		let macVersion = null;
+		const nextButton = document.getElementById('nextBtn');
+		const nextButtonTop = document.getElementById('nextBtnTop');		
+
+		// Select device
+		window.selectDevice = function(device) {
+			// Remove selected class from all cards
+			document.querySelectorAll('.device-card').forEach(card => {
+				card.classList.remove('selected');
+			});
+			
+			// Add selected class to chosen device
+			document.getElementById(`card-${device}`).classList.add('selected');
+			
+			selectedDevice = device;
+			handleProceed(selectedDevice);
+		};
+
+
+		// Proceed to device guide
+		window.handleProceed = function() {
+			if (!selectedDevice) return;
+			let url = `apps_list.html?page=help&device=${selectedDevice}`;
+			window.location.href = url;
+		};
+
+		window.goHome = function() {
+			window.location.href = 'index.html';
+		};
+
+	</script>
+</body>
+</html>

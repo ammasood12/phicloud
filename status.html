@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <title>PhiCloud · System Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        /* Status Page Specific Styles */
+        .status-overall {
+            background: linear-gradient(135deg, #818bff, #764ba2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .status-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .status-message {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+        
+        .status-update-time {
+            font-size: 0.8rem;
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+        
+        /* Service List */
+        .services-section {
+            margin-bottom: 30px;
+        }
+        
+        .services-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .service-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .service-item:hover {
+            border-color: #818bff;
+            transform: translateX(5px);
+        }
+        
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        .service-icon {
+            width: 45px;
+            height: 45px;
+            background: #eef2ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #818bff;
+        }
+        
+        .service-name h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 3px;
+        }
+        
+        .service-name p {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        
+        .service-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.operational {
+            background: #10b981;
+            box-shadow: 0 0 5px #10b981;
+        }
+        
+        .status-dot.degraded {
+            background: #f59e0b;
+            box-shadow: 0 0 5px #f59e0b;
+        }
+        
+        .status-dot.down {
+            background: #ef4444;
+            box-shadow: 0 0 5px #ef4444;
+        }
+        
+        .status-dot.maintenance {
+            background: #3b82f6;
+            box-shadow: 0 0 5px #3b82f6;
+        }
+        
+        .status-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-text.operational { color: #10b981; }
+        .status-text.degraded { color: #f59e0b; }
+        .status-text.down { color: #ef4444; }
+        .status-text.maintenance { color: #3b82f6; }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Incident/Update List */
+        .incidents-section {
+            margin-top: 30px;
+        }
+        
+        .incident-item {
+            background: #f8fafc;
+            border-left: 4px solid #818bff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .incident-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .incident-type {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        .incident-type.maintenance {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .incident-type.incident {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .incident-type.update {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .incident-title {
+            font-weight: 600;
+            color: #1e293b;
+            flex: 1;
+        }
+        
+        .incident-date {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+        
+        .incident-desc {
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.5;
+            margin-left: 0px;
+        }
+        
+        .subscribe-box {
+            background: #eef2ff;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .subscribe-box p {
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+        
+        .btn-subscribe {
+            background: linear-gradient(135deg, #818bff, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-subscribe:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        
+        .history-toggle {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .btn-history {
+            background: transparent;
+            border: 2px solid #818bff;
+            color: #818bff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-history:hover {
+            background: #818bff;
+            color: white;
+        }
+        
+        .history-list {
+            display: none;
+        }
+        
+        .history-list.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #818bff, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        @media (max-width: 480px) {
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            .status-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-card">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-angle-left"></i> Back
+            </button>
+            <div class="header-center">
+                <div class="header-icon"><i class="fas fa-chart-line"></i></div>
+                <div>
+                    <h1>System Status</h1>
+                    <p>Real-time service updates</p>
+                </div>
+            </div>
+            <div class="next-btn-placeholder"></div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Overall Status --
+            <div class="status-overall" id="overallStatus">
+                <div class="status-badge">
+                    <i class="fas fa-circle" style="font-size: 0.7rem;"></i>
+                    <span id="overallStatusText">All Systems Operational</span>
+                </div>
+                <div class="status-title">
+                    <i class="fas fa-check-circle"></i> Everything is running smoothly
+                </div>
+                <div class="status-message" id="overallMessage">
+                    All PhiCloud services are operating normally.
+                </div>
+                <div class="status-update-time">
+                    <i class="fas fa-clock"></i> Last updated: <span id="lastUpdate">Just now</span>
+                </div>
+            </div>
+            
+            <!-- Services Status -->
+            <div class="services-section">
+                <div class="services-title">
+                    <i class="fas fa-server"></i>
+                    Services Status
+                </div>
+                
+                <div id="servicesList">
+                    <!-- Services will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Active Incidents / Maintenance -->
+            <div id="activeIncidents"></div>
+            
+            <!-- Past Incidents & Updates (Limited View) -->
+            <div class="incidents-section">
+                <div class="services-title">
+                    <i class="fas fa-history"></i>
+                    Past Incidents & Updates
+                </div>
+                
+                <div id="recentHistoryList">
+                    <!-- Recent 3 history items will be populated here -->
+                </div>
+                
+                <div class="history-toggle" id="viewMoreBtn" style="display: none;">
+                    <button class="btn-history" onclick="toggleFullHistory()">
+                        <i class="fas fa-chevron-down"></i> View More History
+                    </button>
+                </div>
+                
+                <div class="history-list" id="fullHistoryList">
+                    <!-- Full history items will be populated here (initially hidden) -->
+                </div>
+            </div>
+            
+            <!-- Subscribe Box -->
+            <div class="subscribe-box">
+                <p><i class="fas fa-bell"></i> Get notified about service updates</p>
+                <button class="btn-subscribe" onclick="copyPageLink()">
+                    <i class="fas fa-share-alt"></i> Share this page
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <button class="back-to-top" id="backToTopBtn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <script>
+        // Status Data - Update this as needed
+        const statusData = {
+            overall: {
+                status: "operational", // operational, degraded, down, maintenance
+                message: "All PhiCloud services are operating normally."
+            },
+            services: [
+                {
+                    id: "vpn",
+                    name: "PhiCloud Service",
+                    description: "",
+                    icon: "fa-cloud",
+                    status: "operational"
+                }
+				/*
+				,
+                {
+                    id: "packages",
+                    name: "Package Orders",
+                    description: "Order Processing & Activation",
+                    icon: "fa-cart-shopping",
+                    status: "operational"
+                },
+                {
+                    id: "streaming",
+                    name: "Streaming Services",
+                    description: "Netflix, Prime Video, etc.",
+                    icon: "fa-film",
+                    status: "operational"
+                },
+                {
+                    id: "chatgpt",
+                    name: "ChatGPT Services",
+                    description: "Plus & Shared Accounts",
+                    icon: "fa-brands fa-openai",
+                    status: "operational"
+                },
+                {
+                    id: "accounts",
+                    name: "Account Services",
+                    description: "Apple ID, MS365, Gemini",
+                    icon: "fa-user",
+                    status: "operational"
+                },
+                {
+                    id: "support",
+                    name: "Technical Support",
+                    description: "Customer Service",
+                    icon: "fa-headset",
+                    status: "operational"
+                }
+				*/
+            ],
+            activeIncidents: [
+                // Add active incidents/maintenance here when needed
+                // Example:
+                // {
+                //     type: "maintenance",
+                //     title: "Scheduled Maintenance",
+                //     date: "April 5, 2026 - 02:00 UTC",
+                //     description: "System upgrade in progress. Some services may be temporarily unavailable."
+                // }
+            ],
+            history: [
+				//maintenance, update, incident, 
+
+                {
+                    type: "maintenance",
+                    title: "Servers Optimization",
+                    date: "March 03, 2026",
+                    description: "Server causing disconnections during Peak Hours"
+                },
+                {
+                    type: "incident",
+                    title: "Servers Down",
+                    date: "March 26, 2026",
+                    description: "Caused by system update, update rolled back"
+                }
+            ]
+        };
+        
+        // Status configuration
+        const statusConfig = {
+            operational: { text: "Operational", icon: "fa-check-circle", color: "#10b981" },
+            degraded: { text: "Degraded Performance", icon: "fa-exclamation-triangle", color: "#f59e0b" },
+            down: { text: "Service Down", icon: "fa-times-circle", color: "#ef4444" },
+            maintenance: { text: "Maintenance", icon: "fa-tools", color: "#3b82f6" }
+        };
+        
+        const typeConfig = {
+            maintenance: { text: "Maintenance", icon: "fa-tools" },
+            incident: { text: "Incident", icon: "fa-exclamation-triangle" },
+            update: { text: "Update", icon: "fa-info-circle" }
+        };
+        
+        let showFullHistory = false;
+        
+        // Render a single history item
+        function renderHistoryItem(incident) {
+            return `
+                <div class="incident-item">
+                    <div class="incident-header">
+                        <span class="incident-type ${incident.type}">
+                            <i class="fas ${typeConfig[incident.type].icon}"></i> ${typeConfig[incident.type].text}
+                        </span>
+                        <span class="incident-title">${incident.title}</span>
+                        <span class="incident-date"><i class="fas fa-calendar"></i> ${incident.date}</span>
+                    </div>
+                    <div class="incident-desc">
+                        ${incident.description}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Render recent history (last 3 items)
+        function renderRecentHistory() {
+            const container = document.getElementById('recentHistoryList');
+            if (!container) return;
+            
+            const recentItems = statusData.history.slice(0, 3);
+            container.innerHTML = recentItems.map(incident => renderHistoryItem(incident)).join('');
+            
+            // Show "View More" button if there are more than 3 items
+            const viewMoreBtn = document.getElementById('viewMoreBtn');
+            if (statusData.history.length > 3) {
+                viewMoreBtn.style.display = 'block';
+            } else {
+                viewMoreBtn.style.display = 'none';
+            }
+        }
+        
+        // Render full history
+        function renderFullHistory() {
+            const container = document.getElementById('fullHistoryList');
+            if (!container) return;
+            
+            container.innerHTML = statusData.history.map(incident => renderHistoryItem(incident)).join('');
+        }
+        
+        // Toggle full history view
+        function toggleFullHistory() {
+            const fullHistoryList = document.getElementById('fullHistoryList');
+            const viewMoreBtn = document.getElementById('viewMoreBtn');
+            const btnText = viewMoreBtn.querySelector('.btn-history');
+            
+            if (!showFullHistory) {
+                fullHistoryList.classList.add('show');
+                btnText.innerHTML = '<i class="fas fa-chevron-up"></i> Show Less';
+                showFullHistory = true;
+            } else {
+                fullHistoryList.classList.remove('show');
+                btnText.innerHTML = '<i class="fas fa-chevron-down"></i> View More History';
+                showFullHistory = false;
+            }
+        }
+        
+        // Render services
+        function renderServices() {
+            const container = document.getElementById('servicesList');
+            if (!container) return;
+            
+            container.innerHTML = statusData.services.map(service => `
+                <div class="service-item">
+                    <div class="service-info">
+                        <div class="service-icon">
+                            <i class="fas ${service.icon}"></i>
+                        </div>
+                        <div class="service-name">
+                            <h4>${service.name}</h4>
+                            <p>${service.description}</p>
+                        </div>
+                    </div>
+                    <div class="service-status">
+                        <div class="status-dot ${service.status}"></div>
+                        <span class="status-text ${service.status}">${statusConfig[service.status].text}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Render active incidents
+        function renderActiveIncidents() {
+            const container = document.getElementById('activeIncidents');
+            if (!container) return;
+            
+            if (statusData.activeIncidents.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="services-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Active Incidents / Maintenance
+                </div>
+                ${statusData.activeIncidents.map(incident => `
+                    <div class="incident-item">
+                        <div class="incident-header">
+                            <span class="incident-type ${incident.type}">
+                                <i class="fas ${typeConfig[incident.type].icon}"></i> ${typeConfig[incident.type].text}
+                            </span>
+                            <span class="incident-title">${incident.title}</span>
+                            <span class="incident-date"><i class="fas fa-calendar"></i> ${incident.date}</span>
+                        </div>
+                        <div class="incident-desc">
+                            ${incident.description}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+        
+        // Update overall status display
+        function updateOverallStatus() {
+            const overallDiv = document.getElementById('overallStatus');
+            const statusText = document.getElementById('overallStatusText');
+            const statusMessage = document.getElementById('overallMessage');
+            const statusTitle = overallDiv.querySelector('.status-title');
+            
+            if (statusData.overall.status === 'operational') {
+                overallDiv.style.background = "linear-gradient(135deg, #10b981, #059669)";
+                statusText.innerHTML = '<i class="fas fa-circle" style="font-size: 0.7rem;"></i> All Systems Operational';
+                statusMessage.innerHTML = statusData.overall.message;
+                statusTitle.innerHTML = '<i class="fas fa-check-circle"></i> Everything is running smoothly';
+            } else if (statusData.overall.status === 'degraded') {
+                overallDiv.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+                statusText.innerHTML = '<i class="fas fa-exclamation-triangle" style="font-size: 0.7rem;"></i> Partial Service Disruption';
+                statusMessage.innerHTML = statusData.overall.message;
+                statusTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Some services affected';
+            } else if (statusData.overall.status === 'down') {
+                overallDiv.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+                statusText.innerHTML = '<i class="fas fa-times-circle" style="font-size: 0.7rem;"></i> Major Service Outage';
+                statusMessage.innerHTML = statusData.overall.message;
+                statusTitle.innerHTML = '<i class="fas fa-times-circle"></i> Service interruption detected';
+            } else if (statusData.overall.status === 'maintenance') {
+                overallDiv.style.background = "linear-gradient(135deg, #3b82f6, #2563eb)";
+                statusText.innerHTML = '<i class="fas fa-tools" style="font-size: 0.7rem;"></i> Maintenance in Progress';
+                statusMessage.innerHTML = statusData.overall.message;
+                statusTitle.innerHTML = '<i class="fas fa-tools"></i> Under maintenance';
+            }
+            
+            // Update last update time
+            const now = new Date();
+            document.getElementById('lastUpdate').innerHTML = now.toLocaleString();
+        }
+        
+        // Scroll to top with smooth animation
+        function scrollToTop() {
+            const startPosition = window.pageYOffset;
+            const duration = 600;
+            let startTime = null;
+            
+            function easeInOutCubic(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t * t + b;
+                t -= 2;
+                return c / 2 * (t * t * t + 2) + b;
+            }
+            
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const run = easeInOutCubic(timeElapsed, startPosition, -startPosition, duration);
+                window.scrollTo(0, run);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
+            
+            requestAnimationFrame(animation);
+        }
+        
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+        
+        function copyPageLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copied to clipboard!', 'success');
+            }).catch(() => {
+                showToast('Failed to copy link', 'error');
+            });
+        }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        // Show/hide back to top button
+        window.addEventListener('scroll', function() {
+            const backToTopBtn = document.getElementById('backToTopBtn');
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+        
+        // Initialize page
+        function init() {
+            renderServices();
+            renderActiveIncidents();
+            renderRecentHistory();
+            renderFullHistory();
+            updateOverallStatus();
+        }
+        
+        init();
+    </script>
+</body>
+</html>
