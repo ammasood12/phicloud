@@ -16,7 +16,7 @@ let APP_RELEASE_DATES = {};
 // ===============================
 
 function loadVersions() {
-    return fetch('https://guide.phicloudapp.com/app_versions.json')
+    return fetch('/app_versions.json')
         .then(res => {
             if (!res.ok) throw new Error('Failed to fetch versions');
             return res.json();
@@ -37,28 +37,28 @@ function loadVersions() {
             // ✅ fallback (safe default)
             APP_VERSIONS = {
                 // Android/Desktop versions (from GitHub)
-                "hiddify": "4.1.1",
-                "clashmi": "1.0.24.1006",
-                "flclash": "0.8.93",
-                "clashmeta": "2.11.30",
-                "clashverge": "2.5.1",
+				"hiddify": "4.1.1",
+				"clashmi": "1.0.29.1503",
+				"flclash": "0.8.96",
+				"clashmeta": "2.11.33",
+				"clashverge": "2.5.2",
                 // iOS versions (from App Store)
-                "hiddify_ios": "4.0",
-                "clashmi_ios": "1.0.24.1006",
-                "shadowrocket_ios": "2.2.88",
-                "tiktok2": "46.4.3"
+				"tiktok2": "46.4.3-mod-fix",
+				"hiddify_ios": "4.0",
+				"clashmi_ios": "1.0.29.1503",
+				"shadowrocket_ios": "2.2.90"
             };
             
             APP_RELEASE_DATES = {
-                "hiddify": "2026-03-06",
-                "clashmi": "2026-05-29",
-                "flclash": "2026-05-29",
-                "clashmeta": "2026-06-06",
-                "clashverge": "2026-05-20",
-                "hiddify_ios": "2026-06-19",
-                "clashmi_ios": "2026-06-19",
-                "shadowrocket_ios": "2026-06-19",
-                "tiktok2": "2026-08-10"
+				"hiddify": "2026-03-06",
+				"clashmi": "2026-09-02",
+				"flclash": "2026-08-17",
+				"clashmeta": "2026-08-16",
+				"clashverge": "2026-07-20",
+				"tiktok2": "2026-08-10",
+				"hiddify_ios": "2026-09-04",
+				"clashmi_ios": "2026-09-04",
+				"shadowrocket_ios": "2026-09-04"
             };
 
             console.warn('Using fallback versions:', APP_VERSIONS);
