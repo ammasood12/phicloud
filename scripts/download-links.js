@@ -16,7 +16,7 @@ let APP_RELEASE_DATES = {};
 // ===============================
 
 function loadVersions() {
-    return fetch('https://guide.phicloudapp.com/app_versions.json')
+    return fetch('/app_versions.json')
         .then(res => {
             if (!res.ok) throw new Error('Failed to fetch versions');
             return res.json();
