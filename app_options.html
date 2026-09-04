@@ -219,14 +219,14 @@
 		// Connect Now Link
 		appsHtml += `
 				<div class="device-grid">
+					<div class="device-card" onclick="handleOption('help')" id="option-help">
+						<i class="fa-solid fa-wrench"></i>
+						<h3>Help</h3>
+					</div>
 					<div class="device-card" onclick="handleOption('connect-now')" id="option-connect">
 						<i class="fa-solid fa-globe"></i>
 						<h3>Download & Connect</h3>
 						<!-- <span class="device-badge">Android</span> -->
-					</div>
-					<div class="device-card" onclick="handleOption('help')" id="option-help">
-						<i class="fa-solid fa-wrench"></i>
-						<h3>Help</h3>
 					</div>
 				</div>					
 				`;
