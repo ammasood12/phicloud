@@ -18,6 +18,17 @@
         #nextBtnTop:hover:not(:disabled) {
             box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7), 0 12px 24px rgba(102, 126, 234, 0.4);
         }
+
+        .version-panel .device-card .selected-text {
+            display: none;
+            margin-left: auto;
+        }
+
+        .version-panel .device-card.selected .selected-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
     <!-- Javascript Functions -->
     <script src="scripts/functions.js"></script>
@@ -101,16 +112,25 @@
             <!-- Android Version Panel -->
             <div id="androidVersionPanel" class="version-panel">
 				<h3 class="section-title-left">
-					<i class="fas fa-laptop" style="color: #818bff;"></i>
+					<i class="fab fa-android" style="color: #818bff; font-size:30px;"></i>
                     <span>Select Android Version & <b style="color: #818bff;">Continue</b></span>
                 </h3>
-                <select id="androidVersionSelect" class="version-select" onchange="handleAndroidVersion()">
-                    <option value="">-- Choose your Android version --</option>
-                    <option value="android13">Android 13 or above</option>
-                    <option value="android12">Android 12 or less</option>
-                    <option value="harmony">HarmonyOS 3 or 4</option>
-                </select>
-                <div class="note-box" style="margin-top:0px;">				
+				<div class="device-grid" style="display:block;">
+					<div class="device-card" style="flex-direction:row; margin: 5px 0px; padding: 10px 15px; align-items: center;" onclick="selectAndroidVer('android13')" id="card-android13">
+						<h3 style="margin:0px;">Android 13 <small>or</small> above</h3>
+						<span class="selected-text"><i class="fas fa-check" style="font-size:2rem;"></i></span>
+					</div>
+					<div class="device-card" style="flex-direction:row; margin: 5px 0px; padding: 10px 15px; align-items: center;" onclick="selectAndroidVer('android12')" id="card-android12">
+						<h3 style="margin:0px;">Android 12 <small>or</small> less</h3>
+						<span class="selected-text" ><i class="fas fa-check" style="font-size:2rem;"></i></span>
+					</div>
+					<div class="device-card" style="flex-direction:row; margin: 5px 0px; padding: 10px 15px; align-items: center;" onclick="selectAndroidVer('harmony')" id="card-harmony">
+						<h3 style="margin:0px;">HarmonyOS 3 <small>or</small> 4</h3>
+						<span class="selected-text"><i class="fas fa-check" style="font-size:2rem;"></i></span>
+					</div>
+				</div>
+
+                <div class="info-box" style="margin-top: 15px;">				
 					<ul class="no-dots-list">
                         <li><strong>How to check:</strong></li>
 						<li>Phone Settings → About phone → Android version</li>
@@ -121,10 +141,10 @@
 					<p style="color: #64748b; margin-bottom: 8px; font-size: 0.9rem;">
 						<i class="fas fa-eye"></i> Example:
 					</p>
-					<img src="img/android/version-check.jpg" 
+					<img src="img/android/version-check.png" 
 						 alt="Android version example" 
-						 style="width: 100%; max-width: 100%; border-radius: 15px; border: 3px solid #e2e8f0; cursor: pointer;"
-						 onclick="openModal('img/android/version-check.jpg')"
+						 style="width: 75%; max-width: 75%; border-radius: 15px; border: 3px solid #e2e8f0; cursor: pointer;"
+						 onclick="openModal('img/android/version-check.png')"
 						 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
 					
 					<!-- Fallback placeholder -->
@@ -141,15 +161,19 @@
 					<i class="fas fa-laptop" style="color: #818bff;"></i>
                     <span>Select MacOS Type & <b style="color: #818bff;">Continue</b></span>
                 </h3>
-				<select id="macVersionSelect" class="version-select" onchange="handleMacVersion()">
-					<option value="">-- Choose your MacOS Type --</option>  <!-- Changed here too -->
-					<option value="apple">M Series (Apple Processor)</option>
-					<option value="intel">Intel Processor</option>
-				</select>
-				<div class="info-box" style="margin-top:0px;">					
+				<div class="device-grid" style="display:block;">
+					<div class="device-card" style="flex-direction:row; margin: 5px 0px; padding: 10px 15px; align-items: center;" onclick="selectMacVer('apple')" id="card-mac-apple">
+						<h3 style="margin:0px;">M Series (Apple Processor)</h3>
+						<span class="selected-text"><i class="fas fa-check" style="font-size:2rem;"></i></span>
+					</div>
+					<div class="device-card" style="flex-direction:row; margin: 5px 0px; padding: 10px 15px; align-items: center;" onclick="selectMacVer('intel')" id="card-mac-intel">
+						<h3 style="margin:0px;">Intel Processor</h3>
+						<span class="selected-text"><i class="fas fa-check" style="font-size:2rem;"></i></span>
+					</div>
+				</div>
+				<div class="info-box" style="margin-top: 15px;">					
 					<ul class="no-dots-list">
-                        <li><strong>How to check:</strong></li>
-						<li><p class="fab fa-apple"></p> → About this Mac → Chip / Processor</li>
+						<li><strong>How to check: </strong><p class="fab fa-apple"></p> → About this Mac → Chip / Processor</li>
 					</ul>
 				</div>				
 				<div style="margin-top: 15px; text-align: center;">
@@ -178,18 +202,18 @@
             </div>
 
             <!-- Quick Links -->
-            <!-- <div class="footer-links"> -->
-                <!-- <i class="fas fa-bolt" style="color: #818bff;"></i> -->
-                <!-- <!-- <i class="fas fa-bolt" style="color: #D4AF37;"></i> -->
-                <!-- Quick Connect: <br/> -->
-                <!-- <a href="app_guide.html?page=home&device=android&version=android13"><i class="fab fa-android"></i> Android 13+</a> -->
-                <!-- <a href="app_guide.html?page=home&device=android&version=android12"><i class="fab fa-android"></i> Android ≤12</a> -->
-                <!-- <a href="app_guide.html?page=home&device=ios"><i class="fab fa-apple"></i> iOS</a> -->
-                <!-- <a href="app_guide.html?page=home&device=windows"><i class="fab fa-windows"></i> Windows</a> -->
-                <!-- <a href="app_guide.html?page=home&device=linux"><i class="fab fa-linux"></i> Linux</a> -->
-                <!-- <a href="app_guide.html?page=home&device=mac&version=apple"><i class="fas fa-laptop"></i> MacOS (M-Series)</a> -->
-                <!-- <a href="app_guide.html?page=home&device=mac&version=intel"><i class="fas fa-laptop"></i> MacOS (intel)</a> -->
-            <!-- </div> -->
+            <!-- <div class="footer-links">
+                <i class="fas fa-bolt" style="color: #818bff;"></i>
+                <i class="fas fa-bolt" style="color: #D4AF37;"></i>
+                Quick Connect: <br/>
+                <a href="app_guide.html?page=home&device=android&version=android13"><i class="fab fa-android"></i> Android 13+</a>
+                <a href="app_guide.html?page=home&device=android&version=android12"><i class="fab fa-android"></i> Android ≤12</a>
+                <a href="app_guide.html?page=home&device=ios"><i class="fab fa-apple"></i> iOS</a>
+                <a href="app_guide.html?page=home&device=windows"><i class="fab fa-windows"></i> Windows</a>
+                <a href="app_guide.html?page=home&device=linux"><i class="fab fa-linux"></i> Linux</a>
+                <a href="app_guide.html?page=home&device=mac&version=apple"><i class="fas fa-laptop"></i> MacOS (M-Series)</a>
+                <a href="app_guide.html?page=home&device=mac&version=intel"><i class="fas fa-laptop"></i> MacOS (intel)</a>
+            </div> -->
         </div>
     </div>
 
@@ -204,9 +228,7 @@
 		
 		// Panel references
 		const androidPanel = document.getElementById('androidVersionPanel');
-		const androidSelect = document.getElementById('androidVersionSelect');
 		const macPanel = document.getElementById('macVersionPanel');
-		const macSelect = document.getElementById('macVersionSelect');
 		
 
         // Modal functions
@@ -236,13 +258,14 @@
 		
 		// Select device
 		window.selectDevice = function(device) {
-			// Remove selected class from all cards
-			document.querySelectorAll('.device-card').forEach(card => {
+			// Remove selected class from top-level device cards
+			document.querySelectorAll('.content > .device-grid > .device-card').forEach(card => {
 				card.classList.remove('selected');
 			});
 			
 			// Add selected class to chosen device
-			document.getElementById(`card-${device}`).classList.add('selected');
+			const devCard = document.getElementById(`card-${device}`);
+			if (devCard) devCard.classList.add('selected');
 			
 			selectedDevice = device;
 
@@ -250,21 +273,23 @@
 			androidPanel.classList.remove('visible');
 			macPanel.classList.remove('visible');
 
+			// Reset version selections and remove selected state from version cards
+			androidVersion = null;
+			macVersion = null;
+			document.querySelectorAll('#androidVersionPanel .device-card').forEach(card => card.classList.remove('selected'));
+			document.querySelectorAll('#macVersionPanel .device-card').forEach(card => card.classList.remove('selected'));
+
 			// Handle Android version panel
 			if (device === 'android') {
 				androidPanel.classList.add('visible');
 				nextButton.disabled = true;
 				nextButtonTop.disabled = true;
-				androidVersion = null;
-				androidSelect.value = '';
 			}
-			// Handle Mac version panel (device is 'mac' not 'macOS')
+			// Handle Mac version panel
 			else if (device === 'mac') {
 				macPanel.classList.add('visible');
 				nextButton.disabled = true;
 				nextButtonTop.disabled = true;
-				macVersion = null;
-				macSelect.value = '';
 			}
 			// Other devices - no panel needed
 			else {
@@ -274,10 +299,17 @@
 		};
 
 		// Handle Android version selection
-		window.handleAndroidVersion = function() {
-			const val = androidSelect.value;
-			if (val) {
-				androidVersion = val;
+		window.selectAndroidVer = function(version) {
+			document.querySelectorAll('#androidVersionPanel .device-card').forEach(card => {
+				card.classList.remove('selected');
+			});
+
+			if (version) {
+				const selectedCard = document.getElementById(`card-${version}`);
+				if (selectedCard) {
+					selectedCard.classList.add('selected');
+				}
+				androidVersion = version;
 				nextButton.disabled = false;
 				nextButtonTop.disabled = false;
 			} else {
@@ -287,11 +319,18 @@
 			}
 		};
 
-		// Handle mac version selection
-		window.handleMacVersion = function() {
-			const val = macSelect.value;
-			if (val) {
-				macVersion = val;
+		// Handle Mac version selection
+		window.selectMacVer = function(version) {
+			document.querySelectorAll('#macVersionPanel .device-card').forEach(card => {
+				card.classList.remove('selected');
+			});
+
+			if (version) {
+				const selectedCard = document.getElementById(`card-mac-${version}`);
+				if (selectedCard) {
+					selectedCard.classList.add('selected');
+				}
+				macVersion = version;
 				nextButton.disabled = false;
 				nextButtonTop.disabled = false;
 			} else {
@@ -302,7 +341,6 @@
 		};
 
 		// Proceed to device guide
-		// app changes at app_guide page
 		window.handleProceed = function() {
 			if (!selectedDevice) return;
 			
