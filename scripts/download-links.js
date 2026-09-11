@@ -107,7 +107,7 @@ const websiteLinks = {
         default: 'https://github.com/KaringX/clashmi/releases/latest'
     },
     shadowrocket: {
-        default: 'https://apps.apple.com/us/app/shadowrocket/id932747118'
+        default: 'https://apps.apple.com/app/shadowrocket/id932747118'
     },
     flclash: {
         default: 'https://github.com/chen08209/FlClash/releases/latest'
@@ -146,13 +146,13 @@ const downloadLinks = {
                 `https://github.com/KaringX/clashmi/releases/download/v${getAppVersion('clashmi', 'android')}/clashmi_${getAppVersion('clashmi', 'android')}_android_arm64-v8a.apk`
         },
         ios: {
-            default: 'https://apps.apple.com/us/app/clash-mi/id6744321968'
+            default: 'https://apps.apple.com/app/clash-mi/id6744321968'
         }
     },
 
     shadowrocket: {
         ios: {
-            default: 'https://apps.apple.com/us/app/shadowrocket/id932747118'
+            default: 'https://apps.apple.com/app/shadowrocket/id932747118'
         }
     },
 
@@ -222,7 +222,7 @@ const downloadLinks = {
                 `https://github.com/hiddify/hiddify-app/releases/download/v${getAppVersion('hiddify', 'android')}/Hiddify-Android-arm64.apk`
         },
         ios: {
-            default: 'https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532'
+            default: 'https://apps.apple.com/app/hiddify-proxy-vpn/id6596777532'
         },
         windows: {
             default: () =>
