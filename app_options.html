@@ -205,12 +205,12 @@
 			<div class="next-btn-placeholder"></div>
 		`;
 
-        // Generate apps HTML with icons
+        // Title
         let appsHtml = `
             <div class="section-title">
 				<div class="section-title-left">
 					<i class="fas fa-info-circle"></i>
-					<span>Select option</span>
+					<span><b style="color: #cb0000;">Solve Problems</b></span>					
 				</div>
 				<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
 			</div>`;
@@ -223,6 +223,21 @@
 						<i class="fa-solid fa-wrench"></i>
 						<h3>Help</h3>
 					</div>
+				</div>					
+				`;
+
+        // Title
+        appsHtml += `
+            <div class="section-title">
+				<div class="section-title-left">
+					<i class="fas fa-info-circle"></i>
+					<span>How to use <b style="color: #818bff;">${config.name}</b></span>
+				</div>				
+			</div>`;
+				
+		// Connect Now Link
+		appsHtml += `
+				<div class="device-grid">
 					<div class="device-card" onclick="handleOption('connect-now')" id="option-connect">
 						<i class="fa-solid fa-globe"></i>
 						<h3>Download & Connect</h3>
@@ -230,7 +245,7 @@
 					</div>
 				</div>					
 				`;
-				
+
 		// Generate apps HTML with icons
         appsHtml += `<div class="device-grid">`;
 		

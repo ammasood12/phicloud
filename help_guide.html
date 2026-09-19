@@ -299,14 +299,16 @@
 			image: '',
 			note: ''
 		};
-	
-		const noteIPv6 = `
+		
+		////// IPv6
+		// not used anywhere
+		const noteCheckIPv6 = `
 				<div class="notice-box">
 					<div>IPv6 servers show <b style="color:#cb0000;">timeout</b> due to non-IPv6 network.
 						<br>Disconnect <i class="fa-solid fa-toggle-off"></i> and Check IPv6 status on <a href="https://testipv6.cn" target="_blank">https://testipv6.cn</a></div>
 				</div>
 				`;
-
+		// used in april-2026 hot fix
 		const testIPV6 = {
 			title: 'IPv6 Status',
 			content: `
@@ -338,6 +340,53 @@
 			`,
 			image: '',
 			note: ``
+		};
+
+		const windowsNetworkAdapters = {
+			title: 'Open Network Settings',
+			content: `										
+				<div class="notice-box">
+					<ul class="no-dots-list">
+						<li>Due to <span style="color: red;">Network restrictions</span>, make sure <b>IPv6 is enable/configured</b> on your OS.</li>
+					</ul>
+				</div>
+								
+				<div class="info-box" style="margin-top: 15px;">
+					<ol class="bold-numbers-list"><li>
+						open <b>RUN</b> (search in windows menu or use shortcut WindowsKey+R)
+					</li><li>
+						write <b>NCPA.CPL</b>
+					</li><li>
+						Press <b>Enter</b> OR click <b>ok</b>
+					</li></ol>
+				</div>
+			`,
+			image: 'img/clashverge/ipv6/ipv6-note-1.png',
+			note: ''
+		};
+
+		const windowsEnableIPv6 = {
+			title: 'Enable IPv6',
+			content: `
+				<div class="info-box">										
+					<ol class="bold-numbers-list">
+						<li>Right Click on your Active Network/Wi-Fi Adapter → Properties</li>
+						<li>Check <b>☑ Internet Protocol Version 6 (TCP/IPv6)</b></li>
+						<!--
+						<li>Select <b>Internet Protocol Version 6 (TCP/IPv6)</b> and Click <b>Properties</b></li>
+						<li>Select following & Click <b>OK</b> to save settings:
+							<ul class="no-dots-list">
+								<li>◉ Obtain an IPv6 address automatically</li>
+								<li>◉ Obtain DNS server address automatically</li>
+							</ul>
+						</li>
+						-->
+						<li>click <b>OK</b></li>
+					</ol>
+				</div>
+			`,
+			image: 'img/clashverge/ipv6/ipv6-note-2.png',
+			note: ''
 		};
 
 		const tiktokDeviceRegionProblem = {
@@ -1026,7 +1075,6 @@
 			image: 'img/flclash/refresh-servers.png',
 			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
 		};
-
 
 		////// ClashMeta
 		const clashmetaUpdateApp = {
@@ -2539,57 +2587,24 @@
 						imageCaption: '',
 						content: '',
 						substeps: [
+							windowsNetworkAdapters,
+							windowsEnableIPv6,							
+							clashvergeChangeServer
+						]
+					},
 
-							// Open Network Settings
-							{
-								title: 'Open Network Settings',
-								content: `										
-									<div class="notice-box">
-										<ul class="no-dots-list">
-											<li>Due to <span style="color: red;">University Wlan Network restrictions</span>, make sure <b>IPv6 is enable/configured</b> on your OS.</li>
-										</ul>
-									</div>
-																									
-									<div class="info-box" style="margin-top: 15px;">
-										<ol class="bold-numbers-list"><li>
-											open <b>RUN</b> (search in windows menu or use shortcut WindowsKey+R)
-										</li><li>
-											write <b>NCPA.CPL</b>
-										</li><li>
-											Press <b>Enter</b> OR click <b>ok</b>
-										</li></ol>
-									</div>
-								`,
-								image: 'img/clashverge/yzu/yzu-note-1.png',
-								note: ''
-							},
-
-							// Enable IPv6 in Windows 
-							{
-								title: 'Enable IPv6',
-								content: `
-									<div class="info-box">										
-										<ol class="bold-numbers-list">
-											<li>Right Click on your Active Network/Wi-Fi Adapter → Properties</li>
-											<li>Check ☑ <b>Internet Protocol Version 6 (TCP/IPv6)</b></li>
-											<!--
-											<li>Select <b>Internet Protocol Version 6 (TCP/IPv6)</b> and Click <b>Properties</b></li>
-											<li>Select following & Click <b>OK</b> to save settings:
-												<ul class="no-dots-list">
-													<li>◉ Obtain an IPv6 address automatically</li>
-													<li>◉ Obtain DNS server address automatically</li>
-												</ul>
-											</li>
-											-->
-											<li>click <b>OK</b></li>
-										</ol>
-									</div>
-								`,
-								image: 'img/clashverge/yzu/yzu-note-2.png',
-								note: ''
-							},
-							
-							clashvergeChangeServer,
+					// Enable IPv6
+					{
+						name: 'enable-ipv6',
+						title: 'Enable IPv6',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							windowsNetworkAdapters,
+							windowsEnableIPv6,							
+							clashvergeChangeServer
 						]
 					},
 

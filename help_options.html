@@ -133,18 +133,21 @@
 				options: [
 					//{ name: '<b>Apri 2026, HOT FIX</b>', action: 'hot-fix' },
 					...(device === 'windows' ? [
-						{ name: 'Note for HIT-SZ students', action: 'note-hitsz' },						
+						{ name: 'Note for HIT-SZ students', action: 'note-hitsz' },
 						{ name: 'Note for Yangzhou University', action: 'note-yzu' }
 					] : []),
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
+					...(device === 'windows' ? [
+						{ name: 'Enable IPv6 servers', action: 'enable-ipv6' }
+					] : []),
 					{ name: 'Unable to update profile', action: 'cant-update' },
 					// { name: 'Some Servers show timeout', action: 'some-timeout' },
 					{ name: 'ChatGPT/Claude not working', action: 'ai-problem' },
+					{ name: 'Google Scholar not working', action: 'scholar-problem' },
 					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
 					{ name: 'Netflix: unable to Login', action: 'netflix-login-problem' },
-					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' },
-					{ name: 'Google Scholar not working', action: 'scholar-problem' }
+					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' }
 				]
             },
 			// netflix
