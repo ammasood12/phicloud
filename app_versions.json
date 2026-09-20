@@ -1,12 +1,12 @@
 {
-    "last_update": 1789736885,
-    "last_update_readable": "2026-09-18 21:08:07",
+    "last_update": 1789915245,
+    "last_update_readable": "2026-09-20 22:40:47",
     "versions": {
         "hiddify": "4.1.1",
-        "clashmi": "1.0.29.1503",
+        "clashmi": "1.0.30.1604",
         "flclash": "0.8.98",
         "clashmeta": "2.11.34",
-        "clashverge": "2.5.2",
+        "clashverge": "2.5.4",
         "tiktok2": "46.4.3-mod-fix",
         "hiddify_ios": "4.0",
         "clashmi_ios": "1.0.29.1503",
@@ -14,13 +14,13 @@
     },
     "release_dates": {
         "hiddify": "2026-03-06",
-        "clashmi": "2026-09-02",
+        "clashmi": "2026-09-16",
         "flclash": "2026-09-14",
         "clashmeta": "2026-09-14",
-        "clashverge": "2026-07-20",
+        "clashverge": "2026-09-20",
         "tiktok2": "2026-08-10",
-        "hiddify_ios": "2026-09-18",
-        "clashmi_ios": "2026-09-18",
-        "shadowrocket_ios": "2026-09-18"
+        "hiddify_ios": "2026-09-20",
+        "clashmi_ios": "2026-09-20",
+        "shadowrocket_ios": "2026-09-20"
     }
 }
