@@ -5,61 +5,70 @@
 const GH_PROXY_PREFIX = 'https://gh-proxy.org/';
 
 // ===============================
-// APP VERSIONS (GLOBAL)
+// LOAD VERSIONS (cascade)
+//   1. /versions.php       (proper website)
+//   2. /app_versions.json  (GitHub Pages)
+//   3. inline fallback     (safety net)
 // ===============================
 
 let APP_VERSIONS = {};
 let APP_RELEASE_DATES = {};
 
-// ===============================
-// LOAD VERSIONS FROM SERVER
-// ===============================
+const FALLBACK_APP_VERSIONS = {
+    // Android/Desktop versions (from GitHub)
+    "hiddify": "4.1.1",
+    "clashmi": "1.0.30.1605",
+    "flclash": "0.8.98",
+    "clashmeta": "2.11.34",
+    "clashverge": "2.5.5",
+    "tiktok2": "46.4.3",
+    // iOS versions (from App Store)
+    "hiddify_ios": "4.0",
+    "clashmi_ios": "1.0.29.1503",
+    "shadowrocket_ios": "2.2.92"
+};
+
+const FALLBACK_APP_RELEASE_DATES = {
+    "hiddify": "2026-03-06",
+    "clashmi": "2026-09-22",
+    "flclash": "2026-09-14",
+    "clashmeta": "2026-09-14",
+    "clashverge": "2026-09-22",
+    "tiktok2": "2026-08-10",
+    "hiddify_ios": "2026-09-24",
+    "clashmi_ios": "2026-09-24",
+    "shadowrocket_ios": "2026-09-24"
+};
 
 function loadVersions() {
-    return fetch('/app_versions.json')
+    return fetch('/versions.php')
         .then(res => {
-            if (!res.ok) throw new Error('Failed to fetch versions');
+            if (!res.ok) throw new Error('versions.php not available');
             return res.json();
+        })
+        .catch(err => {
+            console.warn('versions.php failed, trying app_versions.json:', err.message);
+            return fetch('/app_versions.json')
+                .then(res => {
+                    if (!res.ok) throw new Error('app_versions.json not available');
+                    return res.json();
+                });
         })
         .then(data => {
             console.log('Last_Updated:', data.last_update_readable);
-            
-            APP_VERSIONS = data.versions || {};
-            APP_RELEASE_DATES = data.release_dates || {};
-            
+
+            APP_VERSIONS       = data.versions       || {};
+            APP_RELEASE_DATES  = data.release_dates  || {};
+
             console.log('APP_VERSIONS loaded:', APP_VERSIONS);
             console.log('APP_RELEASE_DATES loaded:', APP_RELEASE_DATES);
         })
         .catch(err => {
             console.error('Error loading versions:', err);
-            
 
             // ✅ fallback (safe default)
-            APP_VERSIONS = {
-                // Android/Desktop versions (from GitHub)
-				"hiddify": "4.1.1",
-				"clashmi": "1.0.30.1605",
-				"flclash": "0.8.98",
-				"clashmeta": "2.11.34",
-				"clashverge": "2.5.5",
-				"tiktok2": "46.4.3",
-                // iOS versions (from App Store)
-				"hiddify_ios": "4.0",
-				"clashmi_ios": "1.0.29.1503",
-				"shadowrocket_ios": "2.2.92"
-            };
-            
-            APP_RELEASE_DATES = {				
-				"hiddify": "2026-03-06",
-				"clashmi": "2026-09-22",
-				"flclash": "2026-09-14",
-				"clashmeta": "2026-09-14",
-				"clashverge": "2026-09-22",
-				"tiktok2": "2026-08-10",
-				"hiddify_ios": "2026-09-24",
-				"clashmi_ios": "2026-09-24",
-				"shadowrocket_ios": "2026-09-24"
-            };
+            APP_VERSIONS = FALLBACK_APP_VERSIONS;
+            APP_RELEASE_DATES = FALLBACK_APP_RELEASE_DATES;
 
             console.warn('Using fallback versions:', APP_VERSIONS);
         });
