@@ -212,16 +212,17 @@
 				</div>								
 			`;
 
-        // Contact Support Message
-		SupportMessage = false;
-        if (SupportMessage === true){
+        // Notice Message
+		NoticeMessage = true;
+        if (NoticeMessage === true){
 			appsHtml += `
-					<div class="alert-box">
-						<div>
-							<i class="fa-solid fa-triangle-exclamation"></i>
-							<strong>Only contact Support with problem details if you cannot resolve the issue here.</strong>
-						</div>
-					</div>						
+				<div class="info-box-alert">
+					<div style="font-size: 20px; line-height: 1.5;">
+						<strong>2026-09-25</strong><br>
+						<strong>Holidays Notice:</strong>
+						Connection quality may vary during public holidays and special periods. If needed, use <strong>IPv6 Group</strong> for better performance.
+					</div>
+				</div>
 				`;
 			}
 		
@@ -267,8 +268,7 @@
 						</button>
 					</div>
 				</div>
-				<div class="info-box-alert">						
-					<i class="fa-solid fa-triangle-exclamation"></i>
+				<div class="info-box-alert">
 					<ol class="bold-numbers-list">
 						<li>Make sure that not any <b>VPN</b> is working in the background </li>
 						<li>
