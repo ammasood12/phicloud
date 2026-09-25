@@ -2805,22 +2805,40 @@
 						name: 'tun-mode', 
                         title: 'Tunnel Mode',  
 						category: 'guide',					
-						image: 'img/clashverge/enable-tun.png',
+						image: 'img/clashverge/enable-tun-new.png',
                         imageCaption: '',
 						content: `	
 								<div class="info-box" style="margin-top: 15px;">
 									<div>
-										<ul class="no-dots-list">
-											<li><b>Enable Tunnel Mode</b></li>
-										</ul>
 										<ol class="bold-numbers-list">											
-											<li>Goto Home</li>
-											<li>Network Settings → Tun Mode</li>
-											<li>Click <i class="fa-solid fa-wrench"></i> to install</li>
+											<li><b>Right-Click</b> on the <b>Clashverge icon</b> and <b>run as administrator</b></li>
+											<li>Home → Network Settings → Tun Mode</li>
 											<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Tun Mode</b></li>
 										</ol>
 									</div>
 								</div>
+								
+								<div class="info-box">
+									<div class="substep-container ">
+										<details class="accordion-item" style="margin: 10px 0;">
+											<summary class="substep-title" style="cursor: pointer; list-style: none;">
+												<i class="fa-solid fa-info-circle"></i> For Clashverge v2.5.2 and older
+												<i style="font-size:14px;">(Click to Open)</i>
+											</summary>
+											<div style="substep-content">
+												<p>&nbsp;</p>
+												<ol class="bold-numbers-list">											
+													<li>Goto Home</li>
+													<li>Network Settings → Tun Mode</li>
+													<li>Click <i class="fa-solid fa-wrench"></i> to install</li>
+													<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Tun Mode</b></li>
+												</ol>
+												<img src="img/clashverge/enable-tun.png" alt="Tunnel Mode" class="step-image" onclick="openModal('img/clashverge/enable-tun.png')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+											</div>
+										</details>
+									</div>
+								</div>
+
 								<div class="notice-box" style="margin-top: 15px;">
 									<i class="fa-solid fa-info-circle"></i>
 									<b>No need to enable System proxy</b> to use Tunnel Mode, but if having problems then also enable <b>System Proxy</b>.
@@ -3631,7 +3649,7 @@
 									<ol class="bold-numbers-list">
 										<li>Make sure that not any <b>VPN</b> is working in the background </li>
 										<li>
-											If you have any <b>internet Protection software installed</b> e.g. RAV point, etc.<br>
+											If you have any <b>internet Protection software</b> installed e.g. RAV point, etc.<br>
 											<strong>Uninstall &amp; restart computer</strong> to prevent connection issues.
 										</li>
 									</ol>

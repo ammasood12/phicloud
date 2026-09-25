@@ -359,6 +359,10 @@ const downloadLinks = {
     tiktok2: {
         other: {
             default: () => 
+                `https://github.com/namecallfilter/tiktokmodcloud/releases/latest`
+        },
+        extra: {
+            default: () => 
                 `https://github.com/namecallfilter/tiktokmodcloud/releases/download/v${getAppVersion('tiktok2', 'android')}-mod-fix/${getAppVersion('tiktok2', 'android')}_universal_fix.apk`
         }
     },
