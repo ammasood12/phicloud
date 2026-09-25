@@ -9,32 +9,35 @@ const GH_PROXY_PREFIX = 'https://gh-proxy.org/';
 // ===============================
 
 const GITHUB_PAGES_HOSTS = [
-    'guide.phihub.shop',
-    'www.guide.phihub.shop',
+    'guide.phicloud.xyz',
+    'www.guide.phicloud.xyz',
 ];
 
 const IS_GITHUB_PAGES =
     GITHUB_PAGES_HOSTS.includes(location.hostname) ||
-    /\.github\.io$/i.test(location.hostname); // safety net for the *.github.io preview URL
+    /\.github\.io$/i.test(location.hostname);
+
+const PRODUCTION_ORIGIN = 'https://guide.phicloud.xyz';
 
 // ===============================
 // LOAD VERSIONS (cascade)
-//   github     : app_versions.json  →  inline fallback
-//   production : versions.php       →  app_versions.json  →  inline fallback
+//   production : /versions.php → /app_versions.json → inline
+//   github     : <prod>/versions.php
+//              → <prod>/app_versions.json
+//              → /app_versions.json            (LOCAL, in repo)
+//              → inline
 // ===============================
 
 let APP_VERSIONS = {};
 let APP_RELEASE_DATES = {};
 
 const FALLBACK_APP_VERSIONS = {
-    // Android/Desktop versions (from GitHub)
     "hiddify": "4.1.1",
     "clashmi": "1.0.30.1605",
     "flclash": "0.8.98",
     "clashmeta": "2.11.34",
     "clashverge": "2.5.5",
     "tiktok2": "46.4.3",
-    // iOS versions (from App Store)
     "hiddify_ios": "4.0",
     "clashmi_ios": "1.0.29.1503",
     "shadowrocket_ios": "2.2.92"
@@ -52,70 +55,79 @@ const FALLBACK_APP_RELEASE_DATES = {
     "shadowrocket_ios": "2026-09-24"
 };
 
+// Helper: try a URL, throw if it isn't valid JSON
+function fetchJson(url) {
+    return fetch(url).then(res => {
+        if (!res.ok) throw new Error(url + ' not available');
+        return res.json();
+    });
+}
+
 function loadVersions() {
-    // On GitHub Pages, skip versions.php entirely (PHP isn't executed there).
-    const primaryUrl  = IS_GITHUB_PAGES ? '/app_versions.json' : '/versions.php';
-    const fallbackUrl = IS_GITHUB_PAGES ? null                 : '/app_versions.json';
+    const base = IS_GITHUB_PAGES ? PRODUCTION_ORIGIN : '';
+
+    // Build the ordered cascade
+    const sources = IS_GITHUB_PAGES
+        ? [
+            { url: base + '/versions.php',        label: 'PHP (versions.php, production)' },
+            { url: base + '/app_versions.json',   label: 'STATIC (app_versions.json, production)' },
+            { url: '/app_versions.json',          label: 'STATIC (app_versions.json, local GitHub repo)' },
+          ]
+        : [
+            { url: '/versions.php',               label: 'PHP (versions.php)' },
+            { url: '/app_versions.json',          label: 'STATIC (app_versions.json)' },
+          ];
 
     console.log(
         `[versions] ENV: ${IS_GITHUB_PAGES ? 'GitHub Pages' : 'Production'} ` +
-        `(host=${location.hostname}) → primary source: ${primaryUrl}`
+        `(host=${location.hostname})`
     );
+    console.log('[versions] Cascade order:');
+    sources.forEach((s, i) => console.log(`  ${i + 1}. ${s.label}  →  ${s.url}`));
 
-    return fetch(primaryUrl)
-        .then(res => {
-            if (!res.ok) throw new Error(primaryUrl + ' not available');
-            return res.json();
+    // Try each source sequentially
+    return sources.reduce(
+        (promise, src) => promise.catch(err => {
+            console.warn(`[versions] ❌ ${src.label} failed: ${err.message}`);
+            console.warn(`[versions] → trying next source…`);
+            return fetchJson(src.url).then(data => {
+                data.__source = src;
+                return data;
+            });
+        }),
+        // Prime the chain by trying the first source
+        fetchJson(sources[0].url).then(data => {
+            data.__source = sources[0];
+            return data;
         })
-        .catch(err => {
-            if (!fallbackUrl) throw err; // GitHub Pages: nothing left to try
-            console.warn(`[versions] ${primaryUrl} failed, trying ${fallbackUrl}:`, err.message);
-            return fetch(fallbackUrl)
-                .then(res => {
-                    if (!res.ok) throw new Error(fallbackUrl + ' not available');
-                    return res.json();
-                })
-                .then(data => {
-                    // Mark which source succeeded for the final log
-                    data.__source = fallbackUrl;
-                    return data;
-                });
-        })
-        .then(data => {
-            // Tag the primary-source path too (only if not already tagged by fallback)
-            const source = data.__source || primaryUrl;
-            delete data.__source;
+    )
+    .then(data => {
+        const src = data.__source;
+        delete data.__source;
 
-            const SOURCE_LABEL =
-                source.includes('versions.php')     ? 'PHP (versions.php)' :
-                source.includes('app_versions.json')? 'STATIC (app_versions.json)' :
-                'UNKNOWN';
+        console.log(`[versions] ✅ Loaded from: ${src.label}`);
+        console.log(`[versions] URL: ${src.url}`);
+        console.log(`[versions] Last_Updated: ${data.last_update_readable}`);
 
-            console.log(`[versions] ✅ Loaded from: ${SOURCE_LABEL}  (${source})`);
-            console.log(`[versions] Last_Updated: ${data.last_update_readable}`);
+        APP_VERSIONS       = data.versions       || {};
+        APP_RELEASE_DATES  = data.release_dates  || {};
 
-            APP_VERSIONS       = data.versions       || {};
-            APP_RELEASE_DATES  = data.release_dates  || {};
+        console.log('[versions] APP_VERSIONS loaded:', APP_VERSIONS);
+        console.log('[versions] APP_RELEASE_DATES loaded:', APP_RELEASE_DATES);
 
-            console.log('[versions] APP_VERSIONS loaded:', APP_VERSIONS);
-            console.log('[versions] APP_RELEASE_DATES loaded:', APP_RELEASE_DATES);
+        window.__VERSIONS_SOURCE__ = src.label;
+    })
+    .catch(err => {
+        console.error('[versions] ❌ All remote + local sources failed:', err);
 
-            // Optional: expose source globally for UI/debugging
-            window.__VERSIONS_SOURCE__ = SOURCE_LABEL;
-        })
-        .catch(err => {
-            console.error('[versions] ❌ All remote sources failed:', err);
+        APP_VERSIONS      = FALLBACK_APP_VERSIONS;
+        APP_RELEASE_DATES = FALLBACK_APP_RELEASE_DATES;
 
-            // ✅ fallback (safe default)
-            APP_VERSIONS = FALLBACK_APP_VERSIONS;
-            APP_RELEASE_DATES = FALLBACK_APP_RELEASE_DATES;
+        console.warn('[versions] ⚠️ Using INLINE FALLBACK versions (hardcoded in JS)');
+        console.warn('[versions] APP_VERSIONS:', APP_VERSIONS);
 
-            console.warn('[versions] ⚠️ Using INLINE FALLBACK versions (hardcoded in JS)');
-            console.warn('[versions] APP_VERSIONS:', APP_VERSIONS);
-
-            // Optional: expose source globally for UI/debugging
-            window.__VERSIONS_SOURCE__ = 'INLINE FALLBACK';
-        });
+        window.__VERSIONS_SOURCE__ = 'INLINE FALLBACK';
+    });
 }
 
 // ===============================
