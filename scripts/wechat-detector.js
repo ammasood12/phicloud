@@ -1,6 +1,8 @@
 // wechat-detector.js
 
 // ===== TESTING CONFIGURATION =====
+// ===== TESTING CONFIGURATION =====
+const FORCE_WECHAT_MODE = false; // Turn off testing mode
 // const FORCE_WECHAT_MODE = true; // Turn on testing mode
 
 
