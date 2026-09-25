@@ -9,8 +9,8 @@ const GH_PROXY_PREFIX = 'https://gh-proxy.org/';
 // ===============================
 
 const GITHUB_PAGES_HOSTS = [
-    'guide.phicloud.xyz',
-    'www.guide.phicloud.xyz',
+    'guide.phihub.shop',
+    'www.guide.phihub.shop',
 ];
 
 const IS_GITHUB_PAGES =
