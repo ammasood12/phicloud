@@ -96,14 +96,14 @@ function buildSources() {
 
     if (IS_GITHUB_PAGES) {
         return [
-            { url: `${base}/app_versions.json`, label: 'aapanel · static JSON' },
-            { url: `/app_versions.json`,        label: 'GitHub repo · local JSON' },
+            { url: `${base}/app_versions.json`, label: 'Production: static JSON' },
+            { url: `/app_versions.json`,        label: 'GitHub: local JSON' },
         ];
     }
 
     return [
-        { url: `/versions.php`,        label: 'aapanel · live PHP' },
-        { url: `/app_versions.json`,   label: 'aapanel · static JSON' },
+        { url: `/versions.php`,        label: 'Production: live PHP' },
+        { url: `/app_versions.json`,   label: 'Production: static JSON' },
     ];
 }
 
@@ -117,7 +117,7 @@ function buildSources() {
  * page still renders usable data.
  */
 function loadVersions() {
-    const envLabel = IS_GITHUB_PAGES ? 'GitHub Pages' : 'Production (aapanel)';
+    const envLabel = IS_GITHUB_PAGES ? 'GitHub Pages' : 'Production';
     const sources  = buildSources();
 
     // ---------- Startup banner ----------
@@ -150,7 +150,7 @@ function loadVersions() {
             delete data.__source;
 
             console.log(`[versions] ✓ Loaded from: ${src.label}`);
-            console.log(`[versions]   URL:          ${src.url}`);
+            // console.log(`[versions]   URL:          ${src.url}`);
             console.log(`[versions]   Last updated: ${data.last_update_readable || '(unknown)'}`);
 
             APP_VERSIONS      = data.versions      || {};
