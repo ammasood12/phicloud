@@ -1,12 +1,48 @@
 // wechat-detector.js
 
 // ===== TESTING CONFIGURATION =====
-// ===== TESTING CONFIGURATION =====
 const FORCE_WECHAT_MODE = false; // Turn off testing mode
 // const FORCE_WECHAT_MODE = true; // Turn on testing mode
 
-
 let isWeChat = false;
+
+// ===== GENERAL NOTICE =====
+const SHOW_HOLIDAY_NOTICE = true; // Set to false to hide the holiday notice
+// const SHOW_HOLIDAY_NOTICE = false; // Set to false to hide the holiday notice
+
+function createInfoBoxAlert() {
+    if (!SHOW_HOLIDAY_NOTICE) return;
+    if (document.getElementById('websiteGeneralNotice')) return;
+
+    const alertBox = document.createElement('div');
+    alertBox.id = 'websiteGeneralNotice';
+    alertBox.className = 'general-notice-box';
+    alertBox.innerHTML = `        
+        <div style="font-size: 15px; line-height: 1.5;">
+            <i class="fa-solid fa-triangle-exclamation"></i> <strong>Holidays Notice (2026-09-25)</strong>
+        </div>
+        <div style="font-size: 15px; line-height: 1.5;">
+            Connection quality may vary during public holidays and special periods. If needed, use <strong>IPv6 Group</strong> for better performance.
+        </div>
+    `;
+
+    // Find all header elements (works with or without id="header")
+    const headers = document.querySelectorAll('.header');
+    const guideCard = document.querySelector('.guide-card');
+
+    if (headers.length > 0) {
+        // Insert after the LAST header, so the notice sits below all headers
+        const lastHeader = headers[headers.length - 1];
+        lastHeader.parentNode.insertBefore(alertBox, lastHeader.nextSibling);
+    } else if (guideCard) {
+        // Fallback: at the top of the guide card
+        guideCard.insertBefore(alertBox, guideCard.firstChild);
+    } else {
+        // Last fallback: top of body
+        document.body.insertBefore(alertBox, document.body.firstChild);
+    }
+}
+
 
 // ===== Inject Styles =====
 function injectWeChatStyles() {
@@ -61,7 +97,34 @@ function injectWeChatStyles() {
         }
         .wechat-banner:hover .wechat-banner-arrow { transform: translateX(3px); }
 
-        /* ===== Modal Overlay ===== */
+		/* ===== General Notice Box (always shown) ===== */
+		.general-notice-box {
+			background: #fee2e2;
+			padding: 10px;
+			border-radius: 10px;
+			display: block;
+			gap: 12px;
+			align-items: center;
+			border-left: 4px solid #cb0000;
+			margin: 15px 10px 0px;
+			color: #b91c1c;
+		}
+
+		.general-notice-box i {
+			color: #cb0000;
+			font-size: 1.2rem;
+			flex-shrink: 0;
+		}
+
+		.general-notice-box img {
+			height: 40px;
+		}
+
+		.general-notice-box strong {
+			color: #991b1b;
+		}
+		
+		/* ===== Modal Overlay ===== */
         .wechat-modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -553,6 +616,7 @@ window.openInBrowser = function() {
 // Run detection when page loads
 document.addEventListener('DOMContentLoaded', function() {
     injectWeChatStyles();
+	createInfoBoxAlert();
     detectWeChat();
     console.log('Wechat Detection active');
 });

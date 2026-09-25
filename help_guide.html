@@ -675,12 +675,8 @@
 			content: `
 				<div class="info-box" style="margin-top: 15px;">
 					<ul class="bold-numbers-list">
-						<li>
-							Disconnect <i class="fa-solid fa-toggle-off"></i>
-						</li>
-						<li>
-							Go to <b>Core Settings</b> and enable <b>IPv6</b>.
-						</li>
+						<li>Make sure, you are <b>Disconnected</b> <i class="fa-solid fa-toggle-off"></i></li>
+						<li>Go to <b>Core Settings</b> and enable <b>IPv6</b>.</li>
 					</ul>
 				</div>
 			`,
@@ -1016,18 +1012,12 @@
 			title: 'Basic Settings',
 			content: `
 			<div class="info-box">
-				<ol class="bold-numbers-list"><li>
-					Go to <i class="fas fa-tools"></i> <b>Tools</b>
-				</li>
-				<li>
-					Open <i class="fas fa-wrench"></i> <b>Advance Configuration</b>
-				</li>
-				<li>
-					Open <i class="fa-solid fa-server"></i> <b>DNS</b>
-				</li>
-				<li>
-					enable <i class="fa-solid fa-toggle-on"></i> <b>Override DNS</b>
-				</li></ol>
+				<ol class="bold-numbers-list">
+					<li>Go to <i class="fas fa-tools"></i> <b>Tools</b></li>
+					<li>Open <i class="fas fa-wrench"></i> <b>Advance Configuration</b></li>
+					<li>Open <i class="fa-solid fa-server"></i> <b>DNS</b></li>
+					<li>enable <i class="fa-solid fa-toggle-on"></i> <b>Override DNS</b></li>
+				</ol>
 			</div>
 			`,
 			image: 'img/flclash/startup-settings.png',
@@ -1037,15 +1027,12 @@
 			title: 'Enable Ipv6',
 			content: `
 			<div class="info-box">
-				<ol class="bold-numbers-list"><li>
-					Go to <i class="fas fa-tools"></i> <b>Tools</b>
-				</li>
-				<li>
-					Open <i class="fa-solid fa-pencil"></i> <b>Basic Configuration</b>
-				</li>
-				<li>
-					enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b>
-				</li></ol>
+				<ol class="bold-numbers-list">
+					<li>Make sure, you are <b>Disconnected</b> <i class="fa-solid fa-toggle-off"></i></li>
+					<li>Go to <i class="fas fa-tools"></i> <b>Tools</b></li>
+					<li>Open <i class="fa-solid fa-pencil"></i> <b>Basic Configuration</b></li>
+					<li>enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b></li>
+				</ol>
 			</div>
 			`,
 			image: 'img/flclash/enable-ipv6.png',
@@ -1734,7 +1721,7 @@
 						name: 'all-timeout',
 						title: 'All/Some Servers - timeout',
 						category: 'connect',
-						image: 'img/template/slow.jpg',
+						image: '',
 						imageCaption: 'Speed optimization',
 						content: 'Steps to improve app performance',
 						substeps: [	
@@ -1744,6 +1731,21 @@
 							clashmiUpdateProfile,
 							clashmiChangeServer,
 							genericContactSupport
+
+						]
+					},
+
+					// IPv6 show timeout
+					{
+						name: 'enable-ipv6',
+						title: 'Enable IPv6',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [	
+							clashmiEnableIPV6,
+							genericFullTroubleshooting
 
 						]
 					},
@@ -2105,10 +2107,10 @@
 					{
 						name: 'all-timeout',
 						title: 'All/Some Servers - timeout',
-						category: 'connect',
-						image: 'img/template/slow.jpg',
-						imageCaption: 'Speed optimization',
-						content: 'Steps to improve app performance',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
 						substeps: [
 							flclashUpdateApp,
 							flclashBasicSettings,
@@ -2116,6 +2118,21 @@
 							flclashUpdateProfile,
 							flclashChangeServer,
 							genericFullTroubleshooting
+						]
+					},
+					
+					// IPv6 show timeout
+					{
+						name: 'enable-ipv6',
+						title: 'Enable IPv6',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [	
+							flclashEnableIpv6,
+							genericFullTroubleshooting
+
 						]
 					},
 

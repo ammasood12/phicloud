@@ -1,4 +1,4 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -41,6 +41,7 @@
 					//{ name: '<b>Apri 2026, HOT FIX</b>', action: 'hot-fix' },
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
+					{ name: 'IPv6 servers show timeout', action: 'enable-ipv6' },
 					{ name: 'Unable to update profile', action: 'cant-update' },
 					// ...(device === 'ios' ? [{ name: 'Cant find on appstore', action: 'cant-find' }] : []),
 					// { name: 'Some Servers show timeout', action: 'some-timeout' },
@@ -63,8 +64,9 @@
 					// { name: '<b>Apri 2026, HOT FIX</b>', action: 'hot-fix' },
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
+					{ name: 'IPv6 servers show timeout', action: 'enable-ipv6' },
 					{ name: 'Unable to update profile', action: 'cant-update' },
-					{ name: 'Some Servers show timeout', action: 'some-timeout' },
+					// { name: 'Some Servers show timeout', action: 'some-timeout' },
 					{ name: 'Tiktok Problems', action: 'tiktok-problem' },
 					{ name: 'Youtube/Facebook/Instagram', action: 'social-problem' },
 					{ name: 'ChatGPT/Claude not working', action: 'ai-problem' },
@@ -213,7 +215,7 @@
 			`;
 
         // Notice Message
-		NoticeMessage = true;
+		const NoticeMessage = false;
         if (NoticeMessage === true){
 			appsHtml += `
 				<div class="info-box-alert">
