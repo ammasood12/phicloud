@@ -134,8 +134,10 @@
 									<li>&nbsp;</li>
 									<li><b>⚙️SmartSelect</b> –– Auto find working Server <b style="color:green;">(recommended)</b></li>	
 									<li><b>♻️AutoSelect</b> ––– Auto select fast server</li>
+									<li><b>📶IPv6 Only</b> –––– only connect IPv6 servers</li>
 									<li><b>Country Group</b> –– Connect server only in specific country</li>
 									<li><b>Country Server</b> –– only connect with one server</li>		
+									<li><b>Information Servers</b> –– only to show Profile details</li>		
 									<li>&nbsp;</li>
 									<li><b>Important Notes:</b></li>
 									<li><b>Manually selected server</b> will <b style="color:#cb0000;">not change</b> automatically.</li>
@@ -1667,7 +1669,7 @@
 								title: 'Install',  
 								category: 'connect',
 								image: device === 'mac' 
-										? 'img/flclash/macos/install.png'  
+										? 'img/flclash/macos/install-all.png'  
 										: device === 'windows' 
 											? 'img/flclash/windows/install.jpg'  
 											: device === 'linux' 
@@ -1676,23 +1678,20 @@
 								imageCaption:  '',
 								content: device === 'mac' 
 										? `	<div class="info-box">
-												<ol class="bold-numbers-list"><li>
-													Double-click the downloaded .dmg file
-												</li><li>
-													Drag the <b>FL Clash</b> icon to the <b>Applications</b> folder
-												</li><li>
-													Open <b>Launchpad</b>, find and open FL Clash app from there.
-												</li></ol>
+												<ol class="bold-numbers-list">
+													<li>Double-click the downloaded .dmg file</li>
+													<li>Drag the <b>FL Clash</b> icon to the <b>Applications</b> folder</li>
+													<li>Open <b>Launchpad</b>, find and open FL Clash app from there.</li>
+													<li>Set <b>Permissions</b></li>
+												</ol>
 											</div>`
 										: device === 'linux' 
 											? `	<div class="info-box">
-													<ol class="bold-numbers-list"><li>
-														Open Terminal
-													</li><li>
-														Goto Path of Downloaded .deb file
-													</li><li>
-														RUN <i>sudo apt install -y ./FlClash_x.x.x-_xxx.deb</i>
-													</li></ol>
+													<ol class="bold-numbers-list">
+														<li>Open Terminal</li>
+														<li>Goto Path of Downloaded .deb file</li>
+														<li>RUN <i>sudo apt install -y ./FlClash_x.x.x-_xxx.deb</i></li>
+													</ol>
 												</div>
 												<div class="info-box">
 													<i class="fas fa-shield-alt" style="color: #818bff;"></i>
@@ -1700,26 +1699,17 @@
 												</div>`  
 											:  `
 												<div class="info-box">
-													<ol class="bold-numbers-list"><li>
-														Double-click the .exe file to start installation
-													</li><li>
-														Follow the installation wizard instructions
-													</li></ol>
+													<ol class="bold-numbers-list">
+														<li>Double-click the .exe file to start installation</li>
+														<li>Follow the installation wizard instructions</li>
+													</ol>
 												</div>
 												<div class="info-box">
 													<i class="fas fa-shield-alt" style="color: #818bff;"></i>
 													<div>Click <b>Yes</b> if UAC prompts</div>
 												</div>
 												`,							
-									substeps: 
-										[
-											{
-												title: 'Error while opening app?',
-												content: ``,
-												image: 'img/flclash/macos/permissions-all.png',
-												note: ''
-											}
-									]
+									substeps: []
 							}
 						] : [
 
@@ -1729,58 +1719,38 @@
 					// Settings
 					{ 
 						name: 'settings',
-                        title: 'Startup Settings',  
+                        title: 'DNS Settings',  
 						category: 'connect',
-						image: '',
-                        imageCaption:  '', 
-						content:  `
-									<div class="info-box"">
-										<i class="fas fa-shield-alt""></i>
-										<div>Only required once</div>
+						image: 'img/flclash/startup-settings.png',
+						imageCaption: 'click on image to open',
+						content:  `<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Go to <i class="fas fa-tools""></i> <b>Tools</b></li>
+											<li>Open <i class="fas fa-wrench""></i> <b>Advance Configuration</b></li>
+											<li>Open <i class="fa-solid fa-server"></i> <b>DNS</b></li>
+											<li>enable <i class="fa-solid fa-toggle-on"></i> <b>Override DNS</b></li>
+										</ol>
 									</div>`,
-                        substeps: 
-						[
-                            {
-                                title: 'DNS Settings', 
-                                content: `
-										<div class="info-box">
-											<ol class="bold-numbers-list"><li>
-												Go to <i class="fas fa-tools""></i> <b>Tools</b>
-											</li>
-											<li>
-												Open <i class="fas fa-wrench""></i> <b>Advance Configuration</b>
-											</li>
-											<li>
-												Open <i class="fa-solid fa-server"></i> <b>DNS</b>
-											</li>
-											<li>
-												enable <i class="fa-solid fa-toggle-on"></i> <b>Override DNS</b>
-											</li></ol>
-										</div>`,
-                                image: 'img/flclash/startup-settings.png',
-                                note: 'click on image to open'
-                            },
-                            {
-                                title: 'Enable IPv6', 
-                                content: `
-										<div class="info-box">
-											<ol class="bold-numbers-list"><li>
-												Go to <i class="fas fa-tools"></i> <b>Tools</b>
-											</li>
-											<li>
-												Open <i class="fa-solid fa-pencil"></i> <b>Basic Configuration</b>
-											</li>
-											<li>
-												enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b>
-											</li></ol>
-										</div>`,
-                                image: 'img/flclash/enable-ipv6.png',
-                                note: 'click on image to open'
-                            }
-						
-                        ]
-                    },                    
+                        substeps:[]
+                    }, 
 					
+					// Settings
+					{ 
+						name: 'enable-ipv6',
+                        title: 'Enable IPv6',  
+						category: 'connect',
+						image: 'img/flclash/enable-ipv6.png',
+						imageCaption: 'click on image to open',
+						content:  `<div class="info-box">
+										<ol class="bold-numbers-list">
+											<li>Go to <i class="fas fa-tools"></i> <b>Tools</b></li>
+											<li>Open <i class="fa-solid fa-pencil"></i> <b>Basic Configuration</b></li>
+											<li>enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b></li>
+										</ol>
+									</div>`,
+                        substeps:[]
+                    }, 
+
 					// Import Profile
                     { 
 						name: 'import-profile', 
@@ -2665,7 +2635,7 @@
 										<li>Open <b>🚀Global</b> Group</li>
 										<li>Select Group/Server with numbers accordingly</li>
 									</ol>
-								</div>									
+								</div>
 								${changeServerNotesHTML}
 								`,
                         substeps: [
@@ -2990,7 +2960,7 @@
                         title: 'Install',  
 						category: 'connect',
 						image: device === 'mac' 
-								? 'img/flclash/macos/install.png'  
+								? 'img/flclash/macos/install-all.png'  
 								: device === 'windows' 
 									? 'img/flclash/windows/install.jpg'  
 									: device === 'linux' 
@@ -2999,23 +2969,19 @@
                         imageCaption:  '',
 						content: device === 'mac' 
 								? `	<div class="info-box">
-										<ol class="bold-numbers-list"><li>
-											Double-click the downloaded .dmg file
-										</li><li>
-											Drag the <b>FL Clash</b> icon to the <b>Applications</b> folder
-										</li><li>
-											Open <b>Launchpad</b>, find and open FL Clash app from there.
-										</li></ol>
+										<ol class="bold-numbers-list">
+											<li>Double-click the downloaded .dmg file</li>
+											<li>Drag the <b>FL Clash</b> icon to the <b>Applications</b> folder</li>
+											<li>Open <b>Launchpad</b>, find and open FL Clash app from there.</li>
+										</ol>
 									</div>`
 								: device === 'linux' 
 									? `	<div class="info-box">
-											<ol class="bold-numbers-list"><li>
-												Open Terminal
-											</li><li>
-												Goto Path of Downloaded .deb file
-											</li><li>
-												RUN <i>sudo apt install -y ./FlClash_x.x.x-_xxx.deb</i>
-											</li></ol>
+											<ol class="bold-numbers-list">
+												<li>Open Terminal</li>
+												<li>Goto Path of Downloaded .deb file</li>
+												<li>RUN <i>sudo apt install -y ./FlClash_x.x.x-_xxx.deb</i></li>
+											</ol>
 										</div>
 										<div class="info-box">
 											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
@@ -3023,11 +2989,10 @@
 										</div>`  
 									:  `
 										<div class="info-box">
-											<ol class="bold-numbers-list"><li>
-												Double-click the .exe file to start installation
-											</li><li>
-												Follow the installation wizard instructions
-											</li></ol>
+											<ol class="bold-numbers-list">
+												<li>Double-click the .exe file to start installation</li>
+												<li>Follow the installation wizard instructions</li>
+											</ol>
 										</div>
 										<div class="info-box">
 											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
@@ -3214,25 +3179,14 @@
                         imageCaption: '',
 						content: `								
 								<div class="info-box">
-									<ol class="bold-numbers-list"><li>										
-										Open <b>Proxies</b> Tab
-									</li><li>
-										Make sure <b>Rule</b> mode is selected
-									</li><li>
-										Open <b>🚀Global</b> Group
-									</li><li>
-										Select any <b>Server / Group</b>
-									</li></ol>
+									<ol class="bold-numbers-list">
+										<li>Open <b>Proxies</b> Tab</li>
+										<li>Make sure <b>Rule</b> mode is selected</li>
+										<li>Open <b>🚀Global</b> Group</li>
+										<li>Select any <b>Server / Group</b></li>
+									</ol>
 								</div>	
-								<div class="substep-note">
-									<b>Notes</b>: <br>
-									<br>
-									<b>♻️AutoSelect</b> ––– Auto select best available server <b style="color:green;">(recommended)</b><br>
-									<b>Country Server</b> –– only connect with one server<br>
-									<br>
-									<b>ChatGPT</b> or <b>TikTok</b> are <b style="color:#cb0000;">not available</b> in <b>HongKong</b>.<br>
-									<b>Manually selected</b> server will not automatically change.
-								</div>
+								${changeServerNotesHTML}
 								`,
                         substeps: [
                             
