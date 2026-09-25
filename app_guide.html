@@ -2411,6 +2411,8 @@
 											<ol class="bold-numbers-list">
 												<li><b>Open .exe</b> file & <b>select language</b></li>
 												<li>Follow the installation & Click <b>Finish</b></li>
+												<br>
+												<b>IF ASKED:</b>
 												<li>Check <i class="fa-regular fa-square-check"></i> <b>Private Network</b> & <b>Public Network</b></li>
 												<li>Click <b>Allow Access</b></li>
 											</ol>
@@ -2443,39 +2445,96 @@
 						substeps: []
                     }] : []),
 
-					// Settings
+					// Settings (Change Language, set DNS)
                     { 
 						name: 'settings',
 						title: 'Basic Settings', 
 						category: 'connect',
-						image: 'img/clashverge/settings-1.png',
+						image: 'img/clashverge/language-ipv6-settings.png',
                         imageCaption: '',
-						content: `
+						content: `								
 								<div class="info-box">
-									<ol class="bold-numbers-list">
-										<li>Open <i class="fa-solid fa-gear"></i> Settings</li>
-										<li>enable <b>DNS Overwrite</b></li>
-										<li>enable <b>IPv6</b></li>
-										<li>enable <b>Unified Delay</b></li>
-									</ol>
-								</div>`,
-                        substeps: [
-							{
-								title: 'Change Language',
-								image: 'img/clashverge/settings-language.png',
-								content: `
-									<b>if showing Chinese language:</b>
-									<div class="info-box">
+									<ul class="no-dots-list">
+										<li><b>if showing Chinese language:</b></li>
 										<ol class="bold-numbers-list">
 											<li>Open <i class="fa-solid fa-gear"></i> Settings</li>
 											<li>Change Language</li>
 										</ol>
-									</div>`,
-								note: ''
-							}
-                        ]
+									</ul>
+								</div>
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<li>Open <i class="fa-solid fa-gear"></i> Settings</li>
+										<!-- <li>enable <b>DNS Overwrite</b></li> -->
+										<li>Make sure following are enabled:</li>
+										<ul class="bold-dots-list">
+											<li>enable <b>IPv6</b></li>
+											<li>enable <b>Unified Delay</b></li>
+										</ul>
+									</ol>
+								</div>`,
+                        substeps: []
                     },
+
+					// Language Settings
+					...(device === 'TEST' ? [
+                    { 
+						name: 'change-language',
+						title: 'Language', 
+						category: 'connect',
+						image: 'img/clashverge/settings-language.png',
+                        imageCaption: '',
+						content: `
+								<div class="info-box">
+									<ol class="bold-numbers-list">
+										<b>if showing Chinese language:</b>
+										<li>Open <i class="fa-solid fa-gear"></i> Settings</li>
+										<li>Change Language</li>
+									</ol>
+								</div>`
+                    }] : []),
                     
+					// Enable IPv6
+					...(device === 'windows' ? [
+                    { 
+						name: 'enable-ipv6',
+						title: 'Enable IPv6',
+						category: 'connect',
+						image: 'img/clashverge/ipv6/enable-ipv6.jpg',
+						imageCaption: '',
+						content: `										
+							<div class="notice-box">
+								<ul class="no-dots-list">
+									<li>Due to <span style="color: red;">Network restrictions</span>, make sure <b>IPv6 is enable/configured</b> on your OS.</li>
+								</ul>
+							</div>
+											
+							<div class="info-box" style="margin-top: 15px;">
+									<ol class="bold-numbers-list"><li>
+										open <b>RUN</b> (search in windows menu or use shortcut WindowsKey+R)
+									</li><li>
+										write <b>NCPA.CPL</b>
+									</li><li>
+										Press <b>Enter</b> OR click <b>ok</b>
+									</li>
+									<li>Right Click on your Active Network/Wi-Fi Adapter → Properties</li>
+									<li>Check <b>☑ Internet Protocol Version 6 (TCP/IPv6)</b></li>
+									<!--
+									<li>Select <b>Internet Protocol Version 6 (TCP/IPv6)</b> and Click <b>Properties</b></li>
+									<li>Select following & Click <b>OK</b> to save settings:
+										<ul class="no-dots-list">
+											<li>◉ Obtain an IPv6 address automatically</li>
+											<li>◉ Obtain DNS server address automatically</li>
+										</ul>
+									</li>
+									-->
+									<li>click <b>OK</b></li>
+								</ol>
+							</div>
+						`,
+						substeps: []
+                    }] : []),	
+
 					// Import Profile
                     { 
 						name: 'import-profile', 
@@ -2816,8 +2875,7 @@
 									<i class="fa-solid fa-info-circle"></i>
 									Check the following notes for your University.
 								</div>
-								${HitszNotesHTML}
-								${YangzhouNotesHTML}
+								${HitszNotesHTML}								
 							`,
 						substeps: []
                     }] : []),	
@@ -3569,11 +3627,14 @@
 						${device === 'windows'
 							?`
 							<div class="info-box-alert">						
-									<i class="fa-solid fa-triangle-exclamation"></i>
-									<div>
-									If you have any <b>VPN</b> or <b>internet Protection software installed</b> e.g. RAV point, etc.<br>
-									<strong>Uninstall & restart computer</strong> to prevent connection issues.
-									</div>
+									<i class="fa-solid fa-triangle-exclamation"></i>									
+									<ol class="bold-numbers-list">
+										<li>Make sure that not any <b>VPN</b> is working in the background </li>
+										<li>
+											If you have any <b>internet Protection software installed</b> e.g. RAV point, etc.<br>
+											<strong>Uninstall &amp; restart computer</strong> to prevent connection issues.
+										</li>
+									</ol>
 							</div>`
 							:``}
 							
@@ -3614,7 +3675,7 @@
 								style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
 								onclick="return handleWeChatCheck(event, '${config.download}')">
 									<i class="fas fa-download"></i> Download Link 2
-							</a>							
+							</a>					
 							` : ``}
 						</div>
 					` : ''}

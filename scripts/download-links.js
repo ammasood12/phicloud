@@ -38,27 +38,27 @@ function loadVersions() {
             APP_VERSIONS = {
                 // Android/Desktop versions (from GitHub)
 				"hiddify": "4.1.1",
-				"clashmi": "1.0.29.1503",
-				"flclash": "0.8.96",
-				"clashmeta": "2.11.33",
-				"clashverge": "2.5.2",
-                // iOS versions (from App Store)
+				"clashmi": "1.0.30.1605",
+				"flclash": "0.8.98",
+				"clashmeta": "2.11.34",
+				"clashverge": "2.5.5",
 				"tiktok2": "46.4.3-mod-fix",
+                // iOS versions (from App Store)
 				"hiddify_ios": "4.0",
 				"clashmi_ios": "1.0.29.1503",
-				"shadowrocket_ios": "2.2.90"
+				"shadowrocket_ios": "2.2.92"
             };
             
-            APP_RELEASE_DATES = {
+            APP_RELEASE_DATES = {				
 				"hiddify": "2026-03-06",
-				"clashmi": "2026-09-02",
-				"flclash": "2026-08-17",
-				"clashmeta": "2026-08-16",
-				"clashverge": "2026-07-20",
+				"clashmi": "2026-09-22",
+				"flclash": "2026-09-14",
+				"clashmeta": "2026-09-14",
+				"clashverge": "2026-09-22",
 				"tiktok2": "2026-08-10",
-				"hiddify_ios": "2026-09-04",
-				"clashmi_ios": "2026-09-04",
-				"shadowrocket_ios": "2026-09-04"
+				"hiddify_ios": "2026-09-24",
+				"clashmi_ios": "2026-09-24",
+				"shadowrocket_ios": "2026-09-24"
             };
 
             console.warn('Using fallback versions:', APP_VERSIONS);
@@ -259,8 +259,8 @@ const downloadLinks = {
 
     todesk: {
         other: {
-            windows: 'https://dl.todesk.com/irrigation/ToDesk_4.9.7.1.exe',
-            mac: 'https://dl.todesk.com/macos/ToDesk_4.9.7.2.pkg'
+            windows: 'https://dl.todesk.com/irrigation/ToDesk_5.1.2.0.exe',
+            mac: 'https://dl.todesk.com/macos/ToDesk_5.1.2.0.pkg'
         }
     }
 };

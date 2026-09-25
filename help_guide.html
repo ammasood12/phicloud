@@ -160,6 +160,7 @@
 									<li>&nbsp;</li>
 									<li><b>⚙️SmartSelect</b> –– Auto find working Server <b style="color:green;">(recommended)</b></li>	
 									<li><b>♻️AutoSelect</b> ––– Auto select fast server</li>
+									<li><b>📶IPv6 Only</b> –––– only connect IPv6 servers</li>
 									<li><b>Country Group</b> –– Connect server only in specific country</li>
 									<li><b>Country Server</b> –– only connect with one server</li>		
 									<li><b>Information Servers</b> –– only to show Profile details</li>		
@@ -309,7 +310,7 @@
 				</div>
 				`;
 		// used in april-2026 hot fix
-		const testIPV6 = {
+		const testIPv6 = {
 			title: 'IPv6 Status',
 			content: `
 				<div class="info-box">
@@ -342,6 +343,27 @@
 			note: ``
 		};
 
+		const checkCurrentIPv6 = {
+			title: 'IPv6 Status',
+			content: `
+				<div class="info-box">
+					<ol class="bold-numbers-list">
+						<p><b>Check IPv6</b> status by:</p>
+						<br>
+						<li>Disconnect <i class="fa-solid fa-toggle-off"></i></li>
+						<li>Open <a href="https://testipv6.cn" target="_blank">https://testipv6.cn</a> & confirm if IPv6 is available</li>
+						<b>Example:</b> Your IPv6 address on the public Internet appears to be <span style="color:green;">fd12:3456:7890:1::1</span>
+						<p>
+						<b>Note:</b> if IPv6 is not available, your network doesn't support IPv6.
+						</p>
+					</ol>
+				</div>
+			`,
+			image: '',
+			note: ``
+		};
+		
+		// not used
 		const windowsNetworkAdapters = {
 			title: 'Open Network Settings',
 			content: `										
@@ -367,9 +389,21 @@
 
 		const windowsEnableIPv6 = {
 			title: 'Enable IPv6',
-			content: `
-				<div class="info-box">										
-					<ol class="bold-numbers-list">
+			content: `										
+				<div class="notice-box">
+					<ul class="no-dots-list">
+						<li>Due to <span style="color: red;">Network restrictions</span>, make sure <b>IPv6 is enable/configured</b> on your OS.</li>
+					</ul>
+				</div>
+								
+				<div class="info-box" style="margin-top: 15px;">
+						<ol class="bold-numbers-list"><li>
+							open <b>RUN</b> (search in windows menu or use shortcut WindowsKey+R)
+						</li><li>
+							write <b>NCPA.CPL</b>
+						</li><li>
+							Press <b>Enter</b> OR click <b>ok</b>
+						</li>
 						<li>Right Click on your Active Network/Wi-Fi Adapter → Properties</li>
 						<li>Check <b>☑ Internet Protocol Version 6 (TCP/IPv6)</b></li>
 						<!--
@@ -385,7 +419,7 @@
 					</ol>
 				</div>
 			`,
-			image: 'img/clashverge/ipv6/ipv6-note-2.png',
+			image: 'img/clashverge/ipv6/enable-ipv6.jpg',
 			note: ''
 		};
 
@@ -508,6 +542,7 @@
 			// ? getDownloadLink('app', 'ios')
 			// : getDownloadLink('app', 'android', getVersion === 'android13' ? 'version13' : 'version12');
 		const targetDownload = getDownloadLink(app, device, getVersion);
+		const targetDownloadProxy = getDownloadLink(app, device, getVersion, 'proxy');
 		const targetApp_version = getAppVersion(app, device) || '0.0';
 		const targetApp_update = getReleaseDate(app, device) || '0.0';
 
@@ -524,11 +559,25 @@
 				<!-- <span class="step-title" style="color:red;">Required: ${targetRequired}</span> -->
 				<a  class="btn btn-primary" 
 					style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
-					href="${targetDownload}" 
+					href="${targetDownloadProxy}" 
 					target="_blank" 
-					onclick="return handleWeChatCheck(event, '${targetDownload}')">
+					onclick="return handleWeChatCheck(event, '${targetDownloadProxy}')">
 						<i class="fas fa-download"></i> Download v${targetApp_version}
 				</a>
+
+				<!-- Direct Download Link -->
+				${device !== 'ios' ? `
+				<i class="step-title" style="color: #cb0000; text-align: center;">if above link is not working, <br>use Download Link 2.</i>
+				<a href="${targetDownload}" 
+					target="_blank" 
+					class="btn btn-primary" 
+					style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+					onclick="return handleWeChatCheck(event, '${targetDownload}')">
+						<i class="fas fa-download"></i> Download Link 2
+				</a>					
+				` : ``}
+
+
 				<!--
 				<span class="device-badge" style="text-align: center;">
 					${device === 'ios' ? 'Checked at:' : 'Updated at:'} ${targetApp_update}
@@ -1671,6 +1720,7 @@
 						content: '',
 						substeps: [
 							clashmiUpdateApp,
+							clashmiEnableIPV6,
 							clashmiConnectSettings,
 							clashmiUpdateProfile,
 							clashmiChangeServer,
@@ -1689,6 +1739,7 @@
 						content: 'Steps to improve app performance',
 						substeps: [	
 							clashmiUpdateApp,
+							clashmiEnableIPV6,
 							clashmiConnectSettings,		
 							clashmiUpdateProfile,
 							clashmiChangeServer,
@@ -2507,7 +2558,7 @@
 							clashvergeAppUpdate,
 
 							// Check Basic Settings
-							clashvergeClashSettings,
+							// clashvergeClashSettings,
 
 							// Check Profile
 							clashvergeCheckProfile,
@@ -2522,7 +2573,7 @@
 							clashvergeChangeServer,
 
 							// Check IPv6 Status
-							testIPV6
+							testIPv6
 						]
 					},
 
@@ -2578,7 +2629,7 @@
 						]
 					},
 
-					// Note for Yangzhou University
+					// Note for Yangzhou University (Enable IPv6)
 					{
 						name: 'note-yzu',
 						title: 'Note for Yangzhou University',
@@ -2587,8 +2638,7 @@
 						imageCaption: '',
 						content: '',
 						substeps: [
-							windowsNetworkAdapters,
-							windowsEnableIPv6,							
+							windowsEnableIPv6,
 							clashvergeChangeServer
 						]
 					},
@@ -2602,8 +2652,7 @@
 						imageCaption: '',
 						content: '',
 						substeps: [
-							windowsNetworkAdapters,
-							windowsEnableIPv6,							
+							windowsEnableIPv6,
 							clashvergeChangeServer
 						]
 					},
@@ -2618,7 +2667,7 @@
 						content: '',
 						substeps: [
 							genericInternetStatus,
-							clashvergeClashSettings,
+							// clashvergeClashSettings,
 							clashvergeAppUpdate,
 							clashvergeConnectionSettings,
 							clashvergeUpdateProfile,
@@ -2637,7 +2686,7 @@
 						content: '',
 						substeps: [			
 							genericInternetStatus,			
-							clashvergeClashSettings,
+							// clashvergeClashSettings,
 							clashvergeAppUpdate,
 							clashvergeConnectionSettings,
 							clashvergeUpdateProfile,
@@ -2959,7 +3008,7 @@
 							clashvergeAppUpdate,
 
 							// Check Basic Settings
-							clashvergeClashSettings,
+							// clashvergeClashSettings,
 
 							// Check Connection Settings
 							clashvergeConnectionSettings,

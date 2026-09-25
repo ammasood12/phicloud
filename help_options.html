@@ -139,7 +139,7 @@
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
 					...(device === 'windows' ? [
-						{ name: 'Enable IPv6 servers', action: 'enable-ipv6' }
+						{ name: 'IPv6 servers show timeout', action: 'enable-ipv6' }
 					] : []),
 					{ name: 'Unable to update profile', action: 'cant-update' },
 					// { name: 'Some Servers show timeout', action: 'some-timeout' },
@@ -266,6 +266,16 @@
 							How to Update
 						</button>
 					</div>
+				</div>
+				<div class="info-box-alert">						
+					<i class="fa-solid fa-triangle-exclamation"></i>
+					<ol class="bold-numbers-list">
+						<li>Make sure that not any <b>VPN</b> is working in the background </li>
+						<li>
+							If you have any <b>internet Protection software installed</b> e.g. RAV point, etc.<br>
+							<strong>Uninstall &amp; restart computer</strong> to prevent connection issues.
+						</li>
+					</ol>
 				</div>`;
 		}
 		

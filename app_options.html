@@ -157,6 +157,9 @@
 					{ icon: 'fa-solid fa-download', name: 'Download', action: 'download' },
 					{ icon: 'fa-solid fa-gears', name: 'Install', action: 'install' },
 					{ icon: 'fa-solid fa-gear', name: 'Settings', action: 'settings' },
+					...(device === 'windows' ? [
+						{ icon: 'fa-solid fa-network-wired', name: 'Enable IPv6', action: 'enable-ipv6' }
+					] : []),
 					{ icon: 'fa-solid fa-file-import', name: 'Import Profile', action: 'import-profile' },
 					{ icon: 'fa-solid fa-toggle-on', name: 'Connect', action: 'connect' },
 					{ icon: 'fa-solid fa-arrow-rotate-right', name: 'Refresh Servers', action: 'refresh-servers' },
