@@ -18,14 +18,34 @@ function createInfoBoxAlert() {
     alertBox.id = 'websiteGeneralNotice';
     alertBox.className = 'general-notice-box';
     alertBox.innerHTML = `        
-        <div style="font-size: 15px; line-height: 1.5;">
-            <i class="fa-solid fa-triangle-exclamation"></i> <strong>Holidays Notice (2026-09-25)</strong>
-        </div>
-        <div style="font-size: 15px; line-height: 1.5;">
-            Connection quality may vary during public holidays and special periods. <br>
-			Enable and Use <strong>IPv6 Group</strong> for better performance.  <br>
-			<a href="guide.html" style="color:inherit">Check <b style="color:#b91c1c;">September 2026, Hot Fix</b> settings in <b style="color:#b91c1c;">Help Section </b> to resolve connection issues.</a>
-        </div>
+
+
+<div style="font-size: 15px; line-height: 1.5;">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <strong>Holiday Notice (September 25, 2026)</strong>
+</div>
+
+<div style="font-size: 15px; line-height: 1.5;">
+    Connection quality may vary during public holidays and special periods.
+    <strong>Select IPv6 server or IPv6 Group </strong>to help resolve connection issues.<br>
+
+    <div style="margin-top:10px;">
+	
+		<strong style="font-size:14px;">(Click below → Select Device → App → Help → Sep 2026 HOT FIX)</strong><br>
+        <a href="guide.html"
+           style="display:inline-block;
+                  padding:8px 14px;
+                  background:#b91c1c;
+                  color:#fff;
+                  text-decoration:none;
+                  border-radius:5px;
+                  font-weight:bold;">
+            CHECK SEP-2026 HOT FIX →<br>
+        </a>
+    </div>
+</div>
+
+
     `;
 
     // Find all header elements (works with or without id="header")

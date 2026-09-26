@@ -311,32 +311,32 @@
 				`;
 		// used in april-2026 hot fix
 		const testIPv6 = {
-			title: 'IPv6 Status',
+			title: 'Check IPv6',
 			content: `
-				<div class="info-box">
-					<ol class="bold-numbers-list">
-						<p>if <b>ChinaMobile</b> or <b>IPv6</b> servers still show <b style="color:#cb0000;">timeout</b>, your <b style="color:#cb0000;">network doesn't have IPv6</b></p>
-						<br>
-						<li>Disconnect <i class="fa-solid fa-toggle-off"></i></li>
-						<li>Open <a href="https://testipv6.cn" target="_blank">https://testipv6.cn</a> </li>
-						<li>Check if IPv6 is available</li>
-					</ol>
+				<div class="info-box">					
+						<ul class="no-dots-list">
+							<ol class="bold-numbers-list">						
+								<li>Disconnect <i class="fa-solid fa-toggle-off"></i></li>
+								<li>Open <a href="https://testipv6.cn" target="_blank">https://testipv6.cn</a> </li>
+								<li>Check if IPv6 is available</li>
+							</ol>
+						</ul>
 				</div>
 				<div class="substep-note">
 					<ul class="no-dots-list">
-						<li><b>Solutions</b> if <b style="color:#cb0000;">IPv6 is not available</b></li>
+						<li><b style="color:#cb0000;">if IPv6 is not available, then your Network doesn't support IPv6</b></li>
 						<li><b>Solution 1:</b> use other <b>network with IPv6 support</b></li>
-						<li><b>Solution 2:</b> use <b>♻️AutoSelect</b> or <b>⚙️SmartSelect</b></li>
-						<li><b>Solution 3:</b> use <b>Mobile Hotspot</b> (enable "5Ghz preffered" if available)</li>
+						<li><b>Solution 2:</b> use <b>Mobile Data</b> or <b>Mobile Hotspot</b> (enable "5Ghz preffered" if available)</li>						
+						<!-- <li><b>Solution 3:</b> use <b>♻️AutoSelect</b> or <b>⚙️SmartSelect</b></li> -->
 					</ul>
 				</div>
 			`,
-			image: '',
+			image: 'img/testipv6/ipv6-check.png',
 			note: ``
 		};
 
 		const checkCurrentIPv6 = {
-			title: 'IPv6 Status',
+			title: 'Current IPv6',
 			content: `
 				<div class="info-box">
 					<ol class="bold-numbers-list">
@@ -380,7 +380,7 @@
 		};
 
 		const windowsEnableIPv6 = {
-			title: 'Enable IPv6',
+			title: 'Windows IPv6',
 			content: `										
 				<div class="notice-box">
 					<ul class="no-dots-list">
@@ -920,6 +920,25 @@
 			image: 'img/hiddify/refresh-servers.png',
 			note: 'Refreshing servers repeatedly can cause <strong style="color: #cb0000;">timeout</strong>.'
 		};
+
+		const hiddifyResetRegionHotFix = {
+			title: 'Region Settings',
+			content: `
+			<div class="info-box">
+				<ol class="bold-numbers-list">
+					<li><b>Diconnect</b></li>
+					<li>Open <b>Settings</b></li>
+					<li>Click on <b>three dots</b></li>
+					<li>Click <b>Reset Options</b></li>
+					<li>Open <b>Routing</b></li>
+					<li>Change to <b>China</b></li>
+				</ol>
+			</div>
+			`,
+			image: 'img/hiddify/reset-region-hotfix.png',
+			note: ''
+		};
+
 
 		////// Flclash
 		const flclashUpdateApp = {
@@ -1695,6 +1714,7 @@
 						imageCaption: '',
 						content: '',
 						substeps: [
+							testIPv6,
 							clashmiEnableIPV6,
 							clashmiConnectSettings,
 							clashmiChangeServer
@@ -1875,6 +1895,21 @@
 				version: getVersion === 'android13' ? '13+' : '≤12',
 				download: 'https://example.com/template/download',
 				steps: [
+
+					// Setptember 2026, hot fix
+					{
+						name: 'hot-fix',
+						title: 'Septemeber 2026, Hot Fix',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							testIPv6,
+							hiddifyResetRegionHotFix,
+							hiddifyChangeServer
+						]
+					},
 
 					// Problem while Connecting
 					{
@@ -2098,10 +2133,12 @@
 						content: '',
 						substeps: [
 							
+							testIPv6,
 							flclashBasicSettings,
 							flclashEnableIpv6,
 							flclashCheckConnectionSettings,
 							flclashChangeServer
+							
 						]
 					},
 
@@ -2592,10 +2629,10 @@
 						content: '',
 						substeps: [														
 							...(device === 'windows' ? [windowsEnableIPv6] : []),
+							testIPv6,
 							clashvergeClashSettings,
 							clashvergeConnectionSettings,
-							clashvergeChangeServer,
-							testIPv6
+							clashvergeChangeServer
 						]
 					},
 
