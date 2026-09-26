@@ -319,23 +319,15 @@
 						<br>
 						<li>Disconnect <i class="fa-solid fa-toggle-off"></i></li>
 						<li>Open <a href="https://testipv6.cn" target="_blank">https://testipv6.cn</a> </li>
-						<li>Check IPv6 is available</li>
+						<li>Check if IPv6 is available</li>
 					</ol>
 				</div>
 				<div class="substep-note">
 					<ul class="no-dots-list">
-						<li>
-							<b>Solutons</b> if <b style="color:#cb0000;">IPv6 is not available</b>
-						</li>
-						<li>
-							<b>Solution 1:</b> use other <b>network with IPv6 support</b>
-						</li>
-						<li>
-							<b>Solution 2:</b> use <b>♻️AutoSelect</b> or <b>⚙️SmartSelect</b>
-						</li>
-						<li>
-							<b>Solution 3:</b> use <b>Mobile Hotspot</b> (enable "5Ghz preffered" if available)
-						</li>
+						<li><b>Solutions</b> if <b style="color:#cb0000;">IPv6 is not available</b></li>
+						<li><b>Solution 1:</b> use other <b>network with IPv6 support</b></li>
+						<li><b>Solution 2:</b> use <b>♻️AutoSelect</b> or <b>⚙️SmartSelect</b></li>
+						<li><b>Solution 3:</b> use <b>Mobile Hotspot</b> (enable "5Ghz preffered" if available)</li>
 					</ul>
 				</div>
 			`,
@@ -1461,18 +1453,15 @@
 			title: 'Clash Settings',
 			content: `
 				<div class="info-box">
-					<ol class="bold-numbers-list"><li>
-						Open <i class="fa-solid fa-gear"></i> Settings
-					</li><li>
-						Enable <i class="fa-solid fa-toggle-on"></i> <b>DNS Overwrite</b>
-					</li><li>
-						Enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b>
-					</li><li>
-						Enable <i class="fa-solid fa-toggle-on"></i> <b>Unified Delay</b>
-					</li></ol>
+					<ol class="bold-numbers-list">
+						<li>Open <i class="fa-solid fa-gear"></i> Settings</li>
+						<!-- <li>Enable <i class="fa-solid fa-toggle-on"></i> <b>DNS Overwrite</b></li> -->
+						<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>IPv6</b></li>
+						<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Unified Delay</b></li>
+					</ol>
 				</div>
 				`,
-			image: 'img/clashverge/settings-1.png',
+			image: 'img/clashverge/settings-ipv6.png',
 			note: ``
 		};
 		const clashvergeConnectionSettings = {
@@ -1696,6 +1685,21 @@
 				version: getVersion === 'android13' ? '13+' : '≤12',
 				download: 'https://example.com/template/download',
 				steps: [
+
+					// Setptember 2026, hot fix
+					{
+						name: 'hot-fix',
+						title: 'Septemeber 2026, Hot Fix',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							clashmiEnableIPV6,
+							clashmiConnectSettings,
+							clashmiChangeServer
+						]
+					},
 
 					// Not Working / Slow Speed (Complete Troubleshooting)
 					{
@@ -2083,6 +2087,23 @@
 				version: getVersion === 'android13' ? '13+' : '≤12',
 				download: 'https://example.com/template/download',
 				steps: [
+
+					// Setptember 2026, hot fix
+					{
+						name: 'hot-fix',
+						title: 'Septemeber 2026, Hot Fix',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							
+							flclashBasicSettings,
+							flclashEnableIpv6,
+							flclashCheckConnectionSettings,
+							flclashChangeServer
+						]
+					},
 
 					// Not Working / Slow Speed
 					{
@@ -2564,32 +2585,16 @@
 					// April 2026, Hot Fix
 					{
 						name: 'hot-fix',
-						title: 'April 2026, Hot Fix',
+						title: 'Septemeber 2026, Hot Fix',
 						category: '',
 						image: '',
 						imageCaption: '',
 						content: '',
-						substeps: [
-
-							// Check App Update
-							clashvergeAppUpdate,
-
-							// Check Basic Settings
-							// clashvergeClashSettings,
-
-							// Check Profile
-							clashvergeCheckProfile,
-
-							// Update Profile
-							clashvergeUpdateProfile,
-
-							// Check Connection Settings
+						substeps: [														
+							...(device === 'windows' ? [windowsEnableIPv6] : []),
+							clashvergeClashSettings,
 							clashvergeConnectionSettings,
-
-							// Change Server
 							clashvergeChangeServer,
-
-							// Check IPv6 Status
 							testIPv6
 						]
 					},

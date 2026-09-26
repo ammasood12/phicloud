@@ -352,10 +352,10 @@
 				<div class="section-title">
 					<div class="section-title-left">
 						<i class="fas fa-info-circle"></i>					
-						<span>Select App <b style="color: #818bff;">
+						<span>Select App
 						${page === 'help' 
-							? 'to Solve Problem' 
-							: 'for Detailed Guide'}
+							? `<b style="color: #818bff;"> to Solve Problem</b>`
+							: ` for <b style="color: #818bff;"> Guide</b> or <b style="color: #b91c1c;">Help</b>`}
 						</b></span>
 					</div>
 					<i class="fas fa-share-alt share-icon" onclick="copyPageLink()" title="Copy link to this page"></i>
