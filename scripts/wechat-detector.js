@@ -22,7 +22,9 @@ function createInfoBoxAlert() {
             <i class="fa-solid fa-triangle-exclamation"></i> <strong>Holidays Notice (2026-09-25)</strong>
         </div>
         <div style="font-size: 15px; line-height: 1.5;">
-            Connection quality may vary during public holidays and special periods. If needed, use <strong>IPv6 Group</strong> for better performance.
+            Connection quality may vary during public holidays and special periods. <br>
+			Enable and Use <strong>IPv6 Group</strong> for better performance.  <br>
+			<a href="guide.html" style="color:inherit">Check <b style="color:#b91c1c;">September 2026, Hot Fix</b> settings in <b style="color:#b91c1c;">Help Section </b> to resolve connection issues.</a>
         </div>
     `;
 
