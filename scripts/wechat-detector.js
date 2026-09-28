@@ -22,27 +22,31 @@ function createInfoBoxAlert() {
 
 <div style="font-size: 15px; line-height: 1.5;">
     <i class="fa-solid fa-triangle-exclamation"></i>
-    <strong>Holiday Notice (September 25, 2026)</strong>
+    <strong>Important Notices</strong>
 </div>
 
 <div style="font-size: 15px; line-height: 1.5;">
-    Connection quality may vary during public holidays and special periods.
-    <strong>Select IPv6 server or IPv6 Group </strong>to help resolve connection issues.<br>
+    <ul class="no-dots-list">
+        <li><strong>2026-09-28: </strong> Debugging Facebook app issue.</li>
+        <li>
+            <strong>2026-09-25: </strong>Connection quality may vary during public holidays and special periods.
+            <strong>Select IPv6 server or IPv6 Group </strong>to help resolve connection issues.    
+        </li>
+        <div style="margin-top:5px;">
+            <strong style="font-size:14px;">(Click below → Select Device → App → Help → Sep 2026 HOT FIX)</strong><br>
+            <a href="guide.html"
+            style="display:inline-block;
+                    padding:8px 14px;
+                    background:#b91c1c;
+                    color:#fff;
+                    text-decoration:none;
+                    border-radius:5px;
+                    font-weight:bold;">
+                CHECK SEP-2026 HOT FIX →<br>
+            </a>
+        </div>
 
-    <div style="margin-top:10px;">
-	
-		<strong style="font-size:14px;">(Click below → Select Device → App → Help → Sep 2026 HOT FIX)</strong><br>
-        <a href="guide.html"
-           style="display:inline-block;
-                  padding:8px 14px;
-                  background:#b91c1c;
-                  color:#fff;
-                  text-decoration:none;
-                  border-radius:5px;
-                  font-weight:bold;">
-            CHECK SEP-2026 HOT FIX →<br>
-        </a>
-    </div>
+    </ul>
 </div>
 
 
