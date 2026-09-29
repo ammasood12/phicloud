@@ -27,7 +27,7 @@ function createInfoBoxAlert() {
 
 <div style="font-size: 15px; line-height: 1.5;">
     <ul class="no-dots-list">
-        <li><strong>2026-09-28: </strong> Debugging Facebook app issue.</li>
+        <li><strong>2026-09-28: </strong> Debugging Facebook app issue. (FIXED)</li>
         <li>
             <strong>2026-09-25: </strong>Connection quality may vary during public holidays and special periods.
             <strong>Select IPv6 server or IPv6 Group </strong>to help resolve connection issues.    
