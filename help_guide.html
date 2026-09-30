@@ -160,7 +160,7 @@
 									<li>&nbsp;</li>
 									<li><b>⚙️SmartSelect</b> –– Auto find working Server <b style="color:green;">(recommended)</b></li>	
 									<li><b>♻️AutoSelect</b> ––– Auto select fast server</li>
-									<li><b>📶IPv6 Only</b> –––– only connect IPv6 servers</li>
+									<li><b>📶IPv6 Group</b> ––– only connect IPv6 servers</li>
 									<li><b>Country Group</b> –– Connect server only in specific country</li>
 									<li><b>Country Server</b> –– only connect with one server</li>		
 									<li><b>Information Servers</b> –– only to show Profile details</li>		
@@ -675,6 +675,41 @@
 			image: 'img/clashmi/enable-ipv6.png',
 			note: ''
 		}
+		const clashmiSettingsIPv6noDNS = {
+			title: 'Basic Settings',
+			content: `
+				<div class="info-box" style="margin-top: 15px;">
+					<ul class="bold-numbers-list">
+						<h3>Enable IPv6 & Disable DNS</h3>
+						<li>Make sure, you are <b>Disconnected</b> <i class="fa-solid fa-toggle-off"></i></li>
+						<li>Go to <b>Core Settings</b></li>
+						<li>Scroll down and <b>enable IPv6</b>.</li>
+						<li>Scroll down and <b>open DNS</b>.</li>
+						<li><i class="fa-solid fa-toggle-off"></i> <b>Disable DNS Overwrite</b>.</li>
+					</ul>
+				</div>
+			`,
+			image: 'img/clashmi/settings-ipv6-no-dns.png',
+			note: ''
+		}
+		const clashmiSettingsIPv6noDOH = {
+			title: 'Basic Settings',
+			content: `
+				<div class="info-box" style="margin-top: 15px;">
+					<ul class="bold-numbers-list">
+						<h3>Enable IPv6 & Disable DoH H3</h3>
+						<li>Make sure, you are <b>Disconnected</b> <i class="fa-solid fa-toggle-off"></i></li>
+						<li>Go to <b>Core Settings</b></li>
+						<li>Scroll down and <b>enable IPv6</b>.</li>
+						<li>Scroll down and <b>open DNS</b>.</li>
+						<li>Make sure <b>DNS Overwrite</b> is enabled <i class="fa-solid fa-toggle-on"></i> </li>
+						<li><i class="fa-solid fa-toggle-off"></i> <b>Disable Prefer DoH H3</b>.</li>
+					</ul>
+				</div>
+			`,
+			image: 'img/clashmi/settings-ipv6-no-doh.png',
+			note: ''
+		}
 
 		const clashmiChangeServer = {
 			title: 'Change Server',
@@ -708,6 +743,24 @@
 					${changeServerNotesAi}
 					`,
 			image: 'img/clashmi/groups/change-server-ai.png',
+			note: ''
+		};
+
+		const clashmiSelectIPv6Group = {
+			title: 'IPv6 Group',
+			content: `
+					<div class="info-box">
+						<ol class="bold-numbers-list">
+							<li>Make sure you are <b>Connected</b> <i class="fa-solid fa-toggle-on"></i></li>
+							<li>Open <b>Proxy Tab</b></li>
+							<li>Press <i class="fa-solid fa-bolt-lightning"></i> to <b>Refresh Servers</b> <i style="font-size:15px;">(Optional)</i></li>
+							<li>Open <b>🚀Global (PhiCloud)</b> Group</li>
+							<li>Select <b>📶IPv6 Group</b> or Server with <b>IPv6 or Dual tag</b> in the name</li>
+						</ol>
+					</div>
+					${changeServerNotesHTML}
+					`,
+			image: 'img/clashmi/refresh-change-server.png',
 			note: ''
 		};
 
@@ -1716,6 +1769,8 @@
 						substeps: [
 							testIPv6,
 							clashmiEnableIPV6,
+							// clashmiSettingsIPv6noDNS,
+							// clashmiSettingsIPv6noDOH,
 							clashmiConnectSettings,
 							clashmiChangeServer
 						]

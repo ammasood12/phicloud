@@ -2333,10 +2333,25 @@
 						category: 'connect',
 						image: 'img/clashverge/clashverge-logo.jpg',
                         imageCaption: '',
-						content: '',
-                        substeps: [
-                           
-                        ]
+						content: device === 'windows' ? `
+							<div class="info-box-notice">
+								<div class="substep-container ">
+									<details class="accordion-item" style="margin: 10px 0;">
+										<summary class="substep-title" style="cursor: pointer; list-style: none;">
+											<i class="fa-solid fa-triangle-exclamation"></i> Check if Download Error in Browser
+											<i style="font-size:14px;">(Click to Open)</i>
+										</summary>
+										<div style="substep-content">
+											<ul class="no-dots-list">
+												<li>&nbsp;</li>
+											</ul>
+										</div>
+										<img src="img/clashverge/windows/error-download-keep.png" alt="Download App" class="step-image" onclick="openModal('img/clashverge/windows/error-download-keep.png')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+									</details>
+								</div>
+							</div>	
+						` : ``,
+                        substeps: []
                     },
 					
 					// Install
@@ -2380,6 +2395,7 @@
 										<div class="info-box">
 											<ol class="bold-numbers-list">
 												<li><b>Open .exe</b> file & <b>select language</b></li>
+												<li>Click <b>Yes</b> if UAC prompts</li>
 												<li>Follow the installation & Click <b>Finish</b></li>
 												<br>
 												<b>IF ASKED:</b>
@@ -2387,10 +2403,22 @@
 												<li>Click <b>Allow Access</b></li>
 											</ol>
 										</div>
-										<div class="info-box">
-											<i class="fas fa-shield-alt" style="color: #818bff;"></i>
-											<div>Click <b>Yes</b> if UAC prompts</div>
-										</div>
+										<div class="notice-box">
+											<div class="substep-container ">
+												<details class="accordion-item" style="margin: 10px 0;">
+													<summary class="substep-title" style="cursor: pointer; list-style: none;">
+														<i class="fa-solid fa-triangle-exclamation"></i> Check if Blue error screen appears
+														<i style="font-size:14px;">(Click to Open)</i>
+													</summary>
+													<div style="substep-content">
+														<ul class="no-dots-list">
+															<li>&nbsp;</li>
+														</ul>
+													</div>
+													<img src="img/clashverge/windows/error-install-safety.png" alt="Download App" class="step-image" onclick="openModal('img/clashverge/windows/error-install-safety.png')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+												</details>
+											</div>
+										</div>	
 										`
                     },
              
@@ -3607,6 +3635,15 @@
 											<strong>Uninstall &amp; restart computer</strong> to prevent connection issues.
 										</li>
 									</ol>
+							</div>`
+							:``}
+						
+						<!-- MacOS note for download -->
+						${device === 'mac'
+							?`
+							<div class="info-box-alert">						
+									<i class="fa-solid fa-triangle-exclamation"></i>									
+									<div>Make sure that not any <b>VPN</b> is working in the background </div>
 							</div>`
 							:``}
 							

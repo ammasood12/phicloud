@@ -447,6 +447,22 @@ body.scrolled .startup-card > .header:first-of-type {
     font-size: 1.2rem;
 }
 
+.info-box-notice {
+    background: #fef9e3;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    border-left: 4px solid #f59e0b;
+    margin: 15px 0px;
+}
+
+.info-box-notice i {
+    color: #f59e0b;
+    font-size: 1.2rem;
+}
+
 
 /* red colored */		
 .info-box-alert {
