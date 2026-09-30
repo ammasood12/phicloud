@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Route Builder — from .list files</title>
+<style>
+  *{box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:#0f172a;color:#e2e8f0;padding:1.25rem;min-height:100vh;display:flex;flex-direction:column;gap:1rem}
+
+  h1{font-size:1.35rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+  h1 .tag{background:#3b82f6;color:#fff;padding:.15rem .7rem;border-radius:40px;font-size:.72rem;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+  .sub{color:#94a3b8;font-size:.82rem;border-left:3px solid #3b82f6;padding-left:.8rem;line-height:1.5}
+  .sub code{background:#1e293b;padding:.05rem .4rem;border-radius:4px;font-size:.78rem;color:#cbd5e1}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+  button{background:#1e293b;border:1px solid #334155;color:#e2e8f0;padding:.5rem 1rem;border-radius:40px;font-size:.82rem;font-weight:500;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:.35rem}
+  button:hover:not(:disabled){background:#334155;border-color:#475569;transform:translateY(-1px)}
+  button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  button.primary{background:#3b82f6;border-color:#3b82f6;color:#fff;box-shadow:0 4px 12px rgba(59,130,246,.25)}
+  button.primary:hover:not(:disabled){background:#2563eb}
+  button.danger{background:#7f1d1d;border-color:#991b1b}
+  button.danger:hover:not(:disabled){background:#991b1b}
+
+  .final-outbound{display:flex;align-items:center;gap:.4rem;background:#1e293b;border:1px solid #334155;padding:.35rem .5rem .35rem 1rem;border-radius:40px;font-size:.78rem}
+  .final-outbound label{color:#94a3b8;font-weight:500}
+  .final-outbound select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:20px;padding:.25rem .6rem;font-size:.75rem;cursor:pointer;outline:none;font-weight:600}
+  .final-outbound select:focus{border-color:#3b82f6}
+  .final-outbound select.forced{color:#fbbf24;border-color:#f59e0b}
+
+  .stats{display:flex;gap:1rem;background:#1e293b;padding:.35rem 1rem;border-radius:40px;border:1px solid #334155;font-size:.78rem;margin-left:auto;flex-wrap:wrap}
+  .stats strong{color:#f1f5f9;font-weight:600}
+  .stats .sep{color:#475569}
+
+  .layout{display:grid;grid-template-columns:360px 1fr;gap:1rem;flex:1;min-height:0}
+  @media(max-width:960px){.layout{grid-template-columns:1fr}}
+
+  .panel{background:#1e293b;border:1px solid #334155;border-radius:14px;display:flex;flex-direction:column;min-height:0;overflow:hidden;box-shadow:0 10px 30px -12px rgba(0,0,0,.6)}
+  .panel-header{padding:.7rem 1rem;background:#0b1120;border-bottom:1px solid #334155;font-weight:600;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+  .panel-header .status{font-size:.72rem;color:#94a3b8;font-weight:400}
+  .panel-body{padding:.8rem;overflow-y:auto;flex:1;min-height:0}
+  .panel-body::-webkit-scrollbar{width:8px}
+  .panel-body::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}
+  .panel-body::-webkit-scrollbar-track{background:transparent}
+
+  .search{width:100%;background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:20px;padding:.45rem .9rem;font-size:.8rem;margin-bottom:.6rem;outline:none;transition:.15s}
+  .search:focus{border-color:#3b82f6}
+
+  .group-title{font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:#64748b;margin:.7rem 0 .25rem;padding-left:.5rem;font-weight:600}
+  .group-title:first-child{margin-top:0}
+
+  .service-row{display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem;border-radius:8px;font-size:.78rem;transition:.1s}
+  .service-row:hover{background:#0f172a}
+  .service-row.missing{opacity:.5}
+  .service-row label{flex:1;cursor:pointer;display:flex;align-items:center;gap:.5rem;min-width:0}
+  .service-row label span.name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .service-row input[type=checkbox]{accent-color:#3b82f6;cursor:pointer;flex-shrink:0}
+  .service-row select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:20px;padding:.2rem .5rem;font-size:.72rem;cursor:pointer;flex-shrink:0;outline:none}
+  .service-row select:focus{border-color:#3b82f6}
+  .service-row .count{color:#64748b;font-size:.68rem;min-width:56px;text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0}
+  .badge-miss{color:#ef4444;font-size:.65rem;font-weight:600;background:#450a0a;padding:.1rem .4rem;border-radius:10px}
+  .badge-cdn{font-size:.6rem;color:#60a5fa;background:#1e3a8a;padding:.05rem .35rem;border-radius:8px}
+  .badge-local{font-size:.6rem;color:#34d399;background:#064e3b;padding:.05rem .35rem;border-radius:8px}
+
+  textarea{width:100%;background:#0b1120;border:1px solid #334155;color:#e2e8f0;border-radius:10px;padding:.9rem;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:.72rem;line-height:1.5;resize:none;flex:1;min-height:200px;outline:none;transition:.15s;tab-size:2}
+  textarea:focus{border-color:#3b82f6}
+
+  .out-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}
+  .hint{font-size:.7rem;color:#64748b;margin-top:.5rem;line-height:1.5}
+
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#3b82f6;color:#fff;padding:.7rem 1.4rem;border-radius:40px;font-size:.82rem;font-weight:500;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:1000;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .toast.show{opacity:1;transform:translateY(0)}
+  .toast.err{background:#dc2626}
+
+  .spinner{display:inline-block;width:11px;height:11px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-1px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .progress{height:3px;background:#1e293b;border-radius:2px;overflow:hidden;margin-top:.3rem}
+  .progress .bar{height:100%;background:#3b82f6;width:0;transition:width .15s}
+</style>
+</head>
+<body>
+
+<h1>Route Builder <span class="tag">geosite → JSON</span></h1>
+<div class="sub">
+  Reads <code>lists/*.list</code> first, falls back to <code>jsDelivr CDN</code>.<br>
+  Output is packed-style: multiple array items per line, wrapped at ~100 chars.
+</div>
+
+<div class="toolbar">
+  <button id="reloadBtn" class="primary">🔄 Reload lists</button>
+  <button id="loadFullBtn">📦 route_full preset</button>
+  <button id="loadHkBtn">🇭🇰 route_hk preset</button>
+  <button id="clearBtn" class="danger">🗑 Clear selection</button>
+
+  <div class="final-outbound" title="Controls the catch-all block's outbound. 'auto' = majority of selected blocks wins.">
+    <label for="finalOutbound">Final outbound:</label>
+    <select id="finalOutbound">
+      <option value="auto">auto</option>
+      <option value="direct">direct</option>
+      <option value="exit-proxy">exit-proxy</option>
+    </select>
+  </div>
+
+  <div class="stats">
+    <span>Services <strong id="svcCount">0</strong></span>
+    <span class="sep">·</span>
+    <span>Suffixes <strong id="sufCount">0</strong></span>
+    <span class="sep">·</span>
+    <span>Domains <strong id="domCount">0</strong></span>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <div class="panel-header">
+      <span>Services</span>
+      <span class="status" id="loadStatus">idle</span>
+    </div>
+    <div class="panel-body">
+      <input class="search" id="searchBox" placeholder="Filter services… (Ctrl+K)" autocomplete="off">
+      <div id="serviceList"></div>
+      <div class="progress" id="progressWrap" style="display:none"><div class="bar" id="progressBar"></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <span>Generated JSON</span>
+      <span class="status" id="outBadge">—</span>
+    </div>
+    <div class="panel-body" style="display:flex;flex-direction:column">
+      <textarea id="output" readonly placeholder="Select services on the left, then click Build…"></textarea>
+      <div class="out-actions">
+        <button id="buildBtn" class="primary">⚙️ Build</button>
+        <button id="copyBtn">📋 Copy</button>
+        <button id="dlFullBtn">⬇️ route_full.json</button>
+        <button id="dlHkBtn">⬇️ route_hk_full.json</button>
+        <button id="dlNoCommentBtn">⬇️ .nocomment.json</button>
+      </div>
+      <div class="hint">
+        Blocks are OR'd — first match wins. Catch-all auto-appended last.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+ *  Config
+ * ========================================================= */
+const CDN_BASE = "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite";
+
+const ALL_SERVICES = [
+  "google","google-gemini","youtube","github","openai","anthropic","reddit",
+  "wikimedia","twitter","twitch","cloudflare","stackexchange","telegram",
+  "instagram","facebook","discord","signal","dropbox","onedrive","mozilla",
+  "duckduckgo","bing","npmjs","apple","microsoft","category-scholar-!cn",
+  "whatsapp","threads","linkedin","xai","perplexity","huggingface",
+  "cursor","deepseek","gitlab","docker","python","jsdelivr","vercel",
+  "netflix","spotify","vimeo","soundcloud","imgur","medium","quora",
+  "notion","figma","slack","zoom","archive","speedtest",
+  "tiktok","line","pixiv","niconico","steam","disney","hbo","primevideo","amazon",
+];
+
+const GROUPS = [
+  { title: "Core",   names: ["google","google-gemini","youtube","github","openai","anthropic","reddit","wikimedia","twitter","twitch","cloudflare","stackexchange","telegram","instagram","facebook","discord","signal","dropbox","onedrive","mozilla","duckduckgo","bing","npmjs","apple","microsoft","category-scholar-!cn"] },
+  { title: "Tier 1", names: ["whatsapp","threads","linkedin","xai","perplexity","huggingface","cursor","deepseek","gitlab","docker","python","jsdelivr","vercel"] },
+  { title: "Tier 2", names: ["netflix","spotify","vimeo","soundcloud","imgur","medium","quora","notion","figma","slack","zoom","archive","speedtest"] },
+  { title: "Tier 3", names: ["tiktok","line","pixiv","niconico","steam","disney","hbo","primevideo","amazon"] },
+];
+const ORDERED_NAMES = GROUPS.flatMap(g => g.names);
+
+const FULL_DIRECT = [
+  ...GROUPS[0].names,
+  "whatsapp","threads","linkedin","xai","perplexity","huggingface",
+  "cursor","deepseek","gitlab","docker","python","jsdelivr","vercel",
+  "imgur","medium","quora","notion","figma","slack","zoom","archive",
+  "soundcloud","speedtest",
+  "steam","line","pixiv",
+];
+
+const HK_PROXY = [
+  "openai","anthropic","google-gemini","tiktok","perplexity","xai","huggingface",
+];
+
+/* =========================================================
+ *  State
+ * ========================================================= */
+const state = {
+  loaded: {},
+  source: {},
+  selected: new Set(),
+  outbound: {},
+  // Final catch-all outbound. "auto" = majority of selected blocks.
+  // Any other value forces the catch-all to that outbound.
+  finalOutbound: "auto",
+};
+
+/* =========================================================
+ *  DOM
+ * ========================================================= */
+const serviceListEl   = document.getElementById("serviceList");
+const searchBox       = document.getElementById("searchBox");
+const outputEl        = document.getElementById("output");
+const toastEl         = document.getElementById("toast");
+const svcCountEl      = document.getElementById("svcCount");
+const sufCountEl      = document.getElementById("sufCount");
+const domCountEl      = document.getElementById("domCount");
+const loadStatusEl    = document.getElementById("loadStatus");
+const outBadgeEl      = document.getElementById("outBadge");
+const progressWrap    = document.getElementById("progressWrap");
+const progressBar     = document.getElementById("progressBar");
+const reloadBtn       = document.getElementById("reloadBtn");
+const finalOutboundEl = document.getElementById("finalOutbound");
+
+function toast(msg, isErr) {
+  toastEl.textContent = msg;
+  toastEl.classList.toggle("err", !!isErr);
+  toastEl.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toastEl.classList.remove("show"), 1800);
+}
+
+/* =========================================================
+ *  Parser
+ * ========================================================= */
+function parseList(text) {
+  const suffixes = [];
+  const domains  = [];
+  const seenS = new Set(), seenD = new Set();
+  const pushS = v => { if (v && !seenS.has(v)) { seenS.add(v); suffixes.push(v); } };
+  const pushD = v => { if (v && !seenD.has(v)) { seenD.add(v); domains.push(v); } };
+
+  const t = text.replace(/^\uFEFF/, "").trim();
+  if (!t) return { domain_suffix: suffixes, domain: domains };
+
+  if (t.startsWith("{") || t.startsWith("[")) {
+    try {
+      const j = JSON.parse(t);
+      const rules = j.rules || (Array.isArray(j) ? j : []);
+      for (const r of rules) {
+        if (Array.isArray(r.domain_suffix)) r.domain_suffix.forEach(pushS);
+        if (Array.isArray(r.domain))        r.domain.forEach(pushD);
+      }
+      if (Array.isArray(j.domain_suffix)) j.domain_suffix.forEach(pushS);
+      if (Array.isArray(j.domain))        j.domain.forEach(pushD);
+      return { domain_suffix: suffixes, domain: domains };
+    } catch { /* fall through */ }
+  }
+
+  for (const raw of t.split(/\r?\n/)) {
+    let line = raw.trim();
+    if (!line || line.startsWith("#") || line.startsWith("//")) continue;
+    line = line.replace(/\s*#.*$/, "").replace(/\s*\/\/.*$/, "").trim();
+    if (!line) continue;
+    if (/^(keyword|regexp):/i.test(line)) continue;
+
+    const pref = line.match(/^(domain|suffix|full):(.+)$/i);
+    if (pref) {
+      const kind = pref[1].toLowerCase();
+      const val  = pref[2].trim().replace(/^['"]|['"]$/g, "");
+      if (kind === "full") pushD(val); else pushS(val);
+      continue;
+    }
+    if (line.startsWith("+.")) { pushS(line.slice(2)); continue; }
+    if (line.startsWith("+"))  { pushS(line.slice(1)); continue; }
+    pushD(line);
+  }
+  return { domain_suffix: suffixes, domain: domains };
+}
+
+/* =========================================================
+ *  Fetcher
+ * ========================================================= */
+function looksLikeErrorPage(txt) {
+  const t = txt.trimStart();
+  if (!t) return true;
+  if (t.startsWith("<")) return true;
+  if (t.startsWith("{")) {
+    const head = t.slice(0, 300);
+    if (/"message"\s*:|"error"\s*:|"Not Found"|"not_found"/i.test(head)) {
+      if (!/"rules"\s*:|"domain_suffix"\s*:|"domain"\s*:/.test(t)) return true;
+    }
+  }
+  if (!/[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}/i.test(t)) return true;
+  return false;
+}
+
+async function fetchOne(name) {
+  const file = encodeURIComponent(name) + ".list";
+  try {
+    const r = await fetch(`lists/${file}`, { cache: "force-cache" });
+    if (r.ok) {
+      const txt = await r.text();
+      if (!looksLikeErrorPage(txt)) return { text: txt, src: "local" };
+    }
+  } catch { /* fall through */ }
+  try {
+    const r = await fetch(`${CDN_BASE}/${file}`, { cache: "force-cache" });
+    if (r.ok) {
+      const txt = await r.text();
+      if (!looksLikeErrorPage(txt)) return { text: txt, src: "cdn" };
+    }
+  } catch { /* fall through */ }
+  return null;
+}
+
+async function loadAllLists() {
+  reloadBtn.disabled = true;
+  reloadBtn.innerHTML = '<span class="spinner"></span> Loading…';
+  loadStatusEl.textContent = "loading…";
+  progressWrap.style.display = "block";
+  progressBar.style.width = "0%";
+
+  state.loaded = {};
+  state.source = {};
+
+  let done = 0;
+  const total = ALL_SERVICES.length;
+
+  await Promise.all(ALL_SERVICES.map(async (name) => {
+    const res = await fetchOne(name);
+    if (res) {
+      state.loaded[name] = parseList(res.text);
+      state.source[name] = res.src;
+    } else {
+      state.loaded[name] = null;
+      state.source[name] = "missing";
+    }
+    done++;
+    progressBar.style.width = Math.round((done / total) * 100) + "%";
+  }));
+
+  const localN = Object.values(state.source).filter(s => s === "local").length;
+  const cdnN   = Object.values(state.source).filter(s => s === "cdn").length;
+  const missN  = Object.values(state.source).filter(s => s === "missing").length;
+
+  loadStatusEl.textContent = `${localN} local · ${cdnN} cdn · ${missN} missing`;
+  progressWrap.style.display = "none";
+
+  reloadBtn.disabled = false;
+  reloadBtn.innerHTML = "🔄 Reload lists";
+
+  renderServiceList();
+  build();
+  toast(`Loaded ${localN + cdnN}/${total} lists`, missN === total);
+}
+
+/* =========================================================
+ *  Render service list
+ * ========================================================= */
+function renderServiceList() {
+  const filter = searchBox.value.trim().toLowerCase();
+  serviceListEl.innerHTML = "";
+
+  for (const g of GROUPS) {
+    const visible = g.names.filter(n => !filter || n.toLowerCase().includes(filter));
+    if (!visible.length) continue;
+
+    const title = document.createElement("div");
+    title.className = "group-title";
+    title.textContent = g.title;
+    serviceListEl.appendChild(title);
+
+    for (const name of visible) {
+      const data = state.loaded[name];
+      const src  = state.source[name];
+
+      const row = document.createElement("div");
+      row.className = "service-row" + (data ? "" : " missing");
+
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = state.selected.has(name);
+      cb.disabled = !data;
+      cb.addEventListener("change", () => {
+        if (cb.checked) state.selected.add(name);
+        else state.selected.delete(name);
+        if (cb.checked && !state.outbound[name]) {
+          state.outbound[name] = HK_PROXY.includes(name) ? "exit-proxy" : "direct";
+        }
+        renderServiceList();
+        build();
+      });
+
+      const label = document.createElement("label");
+      label.appendChild(cb);
+      const span = document.createElement("span");
+      span.className = "name";
+      span.textContent = name;
+      label.appendChild(span);
+
+      if (!data) {
+        const miss = document.createElement("span");
+        miss.className = "badge-miss";
+        miss.textContent = "missing";
+        label.appendChild(miss);
+      } else if (src === "cdn") {
+        const tag = document.createElement("span");
+        tag.className = "badge-cdn";
+        tag.textContent = "cdn";
+        label.appendChild(tag);
+      } else if (src === "local") {
+        const tag = document.createElement("span");
+        tag.className = "badge-local";
+        tag.textContent = "local";
+        label.appendChild(tag);
+      }
+
+      const count = document.createElement("span");
+      count.className = "count";
+      if (data) {
+        const s = data.domain_suffix.length, d = data.domain.length;
+        count.textContent = `${s}+${d}`;
+        count.title = `${s} suffixes · ${d} exact domains`;
+      } else {
+        count.textContent = "—";
+      }
+
+      const sel = document.createElement("select");
+      sel.innerHTML = `<option value="direct">direct</option><option value="exit-proxy">exit-proxy</option>`;
+      sel.value = state.outbound[name] || (HK_PROXY.includes(name) ? "exit-proxy" : "direct");
+      sel.disabled = !cb.checked;
+      sel.addEventListener("change", () => {
+        state.outbound[name] = sel.value;
+        build();
+      });
+
+      row.appendChild(label);
+      row.appendChild(count);
+      row.appendChild(sel);
+      serviceListEl.appendChild(row);
+    }
+  }
+}
+
+/* =========================================================
+ *  Presets
+ * ========================================================= */
+function applyFullPreset() {
+  state.selected.clear();
+  state.outbound = {};
+  for (const n of FULL_DIRECT) {
+    if (state.loaded[n]) {
+      state.selected.add(n);
+      state.outbound[n] = "direct";
+    }
+  }
+  renderServiceList();
+  build();
+  toast("route_full preset applied");
+}
+
+function applyHkPreset() {
+  state.selected.clear();
+  state.outbound = {};
+  for (const n of HK_PROXY) {
+    if (state.loaded[n]) {
+      state.selected.add(n);
+      state.outbound[n] = "exit-proxy";
+    }
+  }
+  renderServiceList();
+  build();
+  toast("route_hk preset applied");
+}
+
+/* =========================================================
+ *  Packed formatter
+ * ========================================================= */
+const WRAP_COLS = 100;
+
+function formatStringArray(key, arr, indentStr) {
+  const itemIndent = indentStr + "  ";
+  const prefix = `${indentStr}"${key}": [`;
+  const lines = [];
+  let cur = itemIndent;
+
+  for (let i = 0; i < arr.length; i++) {
+    const item = `"${arr[i]}"`;
+    const sep = i === 0 ? "" : ", ";
+    const addition = (cur === itemIndent ? item : sep + item);
+    if (cur.length + addition.length + 2 > WRAP_COLS && cur !== itemIndent) {
+      lines.push(cur + ",");
+      cur = itemIndent + item;
+    } else {
+      cur += addition;
+    }
+  }
+  if (cur !== itemIndent) lines.push(cur);
+
+  let out = prefix + "\n";
+  for (let i = 0; i < lines.length; i++) {
+    const isLast = i === lines.length - 1;
+    let line = lines[i];
+    if (isLast && line.endsWith(",")) line = line.slice(0, -1);
+    out += line + "\n";
+  }
+  out += indentStr + "]";
+  return out;
+}
+
+function formatOutput(blocks) {
+  const parts = [];
+  for (const b of blocks) {
+    const lines = [];
+    lines.push("  {");
+
+    const keys = [];
+    if (Array.isArray(b.domain_suffix) && b.domain_suffix.length) keys.push("domain_suffix");
+    if (Array.isArray(b.domain) && b.domain.length)              keys.push("domain");
+    keys.push("outbound");
+
+    for (let i = 0; i < keys.length; i++) {
+      const k = keys[i];
+      const isLast = i === keys.length - 1;
+      let line;
+      if (k === "outbound") {
+        line = `    "outbound": "${b.outbound}"`;
+      } else {
+        line = formatStringArray(k, b[k], "    ");
+      }
+      if (!isLast) line += ",";
+      lines.push(line);
+    }
+
+    lines.push("  }");
+    parts.push(lines.join("\n"));
+  }
+  return "[\n" + parts.join(",\n\n") + "\n]";
+}
+
+/* =========================================================
+ *  Build
+ * ========================================================= */
+function build() {
+  const blocks = [];
+  let totalSuffix = 0, totalDomain = 0;
+
+  for (const name of ORDERED_NAMES) {
+    if (!state.selected.has(name)) continue;
+    const data = state.loaded[name];
+    if (!data) continue;
+
+    const block = {};
+    if (data.domain_suffix.length) block.domain_suffix = [...data.domain_suffix];
+    if (data.domain.length)        block.domain        = [...data.domain];
+    if (!block.domain_suffix && !block.domain) continue;
+    block.outbound = state.outbound[name] || "direct";
+    blocks.push(block);
+
+    totalSuffix += data.domain_suffix.length;
+    totalDomain += data.domain.length;
+  }
+
+  // Catch-all outbound:
+  //   - if state.finalOutbound is "auto"  -> majority of selected blocks wins
+  //   - otherwise -> force to the selected value
+  let catchAll;
+  if (state.finalOutbound === "auto") {
+    const directN = blocks.filter(b => b.outbound === "direct").length;
+    const proxyN  = blocks.filter(b => b.outbound === "exit-proxy").length;
+    catchAll = directN >= proxyN ? "exit-proxy" : "direct";
+  } else {
+    catchAll = state.finalOutbound;
+  }
+
+  blocks.push({ outbound: catchAll });
+
+  outputEl.value = formatOutput(blocks);
+
+  svcCountEl.textContent = blocks.length - 1;
+  sufCountEl.textContent = totalSuffix;
+  domCountEl.textContent = totalDomain;
+
+  if (state.finalOutbound === "auto") {
+    outBadgeEl.textContent = `catch-all → ${catchAll} (auto)`;
+  } else {
+    outBadgeEl.textContent = `catch-all → ${catchAll} (forced)`;
+  }
+}
+
+/* =========================================================
+ *  Download
+ * ========================================================= */
+function download(filename, text) {
+  const blob = new Blob([text], { type: "application/json" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* =========================================================
+ *  Wiring
+ * ========================================================= */
+reloadBtn.addEventListener("click", loadAllLists);
+document.getElementById("loadFullBtn").addEventListener("click", applyFullPreset);
+document.getElementById("loadHkBtn").addEventListener("click", applyHkPreset);
+document.getElementById("clearBtn").addEventListener("click", () => {
+  state.selected.clear();
+  state.outbound = {};
+  renderServiceList();
+  build();
+});
+
+// Final-outbound selector
+finalOutboundEl.addEventListener("change", () => {
+  state.finalOutbound = finalOutboundEl.value;
+  finalOutboundEl.classList.toggle("forced", state.finalOutbound !== "auto");
+  build();
+  toast(`Final outbound: ${state.finalOutbound}`);
+});
+
+document.getElementById("buildBtn").addEventListener("click", () => { build(); toast("Built"); });
+
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  if (!outputEl.value) return;
+  try {
+    await navigator.clipboard.writeText(outputEl.value);
+    toast("Copied");
+  } catch {
+    outputEl.select();
+    document.execCommand("copy");
+    toast("Copied");
+  }
+});
+
+document.getElementById("dlFullBtn").addEventListener("click", () => {
+  if (!outputEl.value) build();
+  download("route_full.json", outputEl.value);
+});
+
+document.getElementById("dlHkBtn").addEventListener("click", () => {
+  if (!outputEl.value) build();
+  download("route_hk_full.json", outputEl.value);
+});
+
+document.getElementById("dlNoCommentBtn").addEventListener("click", () => {
+  if (!outputEl.value) build();
+  const stripped = outputEl.value
+    .split("\n")
+    .filter(l => !l.trim().startsWith("//"))
+    .join("\n");
+  download("route_full.nocomment.json", stripped);
+});
+
+searchBox.addEventListener("input", renderServiceList);
+
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    searchBox.focus();
+    searchBox.select();
+  }
+});
+
+/* =========================================================
+ *  Boot
+ * ========================================================= */
+loadAllLists();
+</script>
+</body>
+</html>

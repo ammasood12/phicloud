@@ -39,6 +39,9 @@
 				logo: 'img/clashmi/logo.png',		
 				options: [
 					{ name: '<b>Sep 2025, HOT FIX</b>', action: 'hot-fix' },
+					...(device === 'android' ? [
+					{ name: 'Check Android Settings', action: 'check-android-settings' },
+					] : []),
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
 					{ name: 'IPv6 servers show timeout', action: 'enable-ipv6' },
@@ -57,11 +60,15 @@
 					// { name: 'App close automatically after sometime ', action: 'background-problem' }
 				]
             },
-            flclash: {
+
+			flclash: {
                 name: 'FL Clash',
 				logo: 'img/flclash/logo.png',		
 				options: [
 					{ name: '<b>Sep 2025, HOT FIX</b>', action: 'hot-fix' },
+					...(device === 'android' ? [
+					{ name: 'Check Android Settings', action: 'check-android-settings' },
+					] : []),
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
 					{ name: 'IPv6 servers show timeout', action: 'enable-ipv6' },
@@ -75,11 +82,15 @@
 					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
 				]
             },
-            hiddify: {
+
+			hiddify: {
                 name: 'Hiddify',
 				logo: 'img/hiddify/logo.png',		
 				options: [
 					{ name: '<b>Sep 2025, HOT FIX</b>', action: 'hot-fix' },
+					...(device === 'android' ? [
+					{ name: 'Check Android Settings', action: 'check-android-settings' },
+					] : []),
 					{ name: 'Error while Connecting', action: 'error-connecting' },
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All/Some Servers show timeout', action: 'all-timeout' },
@@ -93,11 +104,15 @@
 					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
 				]
             },
-            clashmeta: {
+
+			clashmeta: {
                 name: 'Clash Meta',
 				logo: 'img/clashmeta/logo.png',		
 				options: [
 					{ name: '<b>Sep 2025, HOT FIX (NOT REQUIRED)</b>', action: '' },
+					...(device === 'android' ? [
+					{ name: 'Check Android Settings', action: 'check-android-settings' },
+					] : []),
 					{ name: 'Not Working / Slow Speed', action: 'not-working' },
 					{ name: 'All-Some Servers show timeout', action: 'all-timeout' },
 					{ name: 'Unable to update profile', action: 'cant-update' },
@@ -110,8 +125,9 @@
 					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
 				]
             },
+			
 			// iOS
-            shadowrocket: {
+			shadowrocket: {
                 name: 'Shadow Rocket',
 				logo: 'img/shadowrocket/logo.png',		
 				options: [
@@ -128,6 +144,7 @@
 					{ name: 'Netflix: Date & Time Error', action: 'netflix-date-error' }
 				]
             },
+			
 			// desktop
             clashverge: {
                 name: 'Clash Verge',
@@ -152,6 +169,7 @@
 					{ name: 'Netflix: Movie/Series Not available', action: 'netflix-unavailable' }
 				]
             },
+			
 			// netflix
             netflix: {
                   name: 'Netflix',
@@ -167,6 +185,7 @@
 						  { name: 'Movie/Series Not available', action: 'not-available' }
 						]
             },
+			
 			// ChatGPT
             chatgpt: {
                 name: 'ChatGPT',

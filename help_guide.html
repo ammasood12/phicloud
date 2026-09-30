@@ -123,7 +123,6 @@
 				</div>
 			</div>`;
 
-
 		const changeServerNotesHTML_old = `
 				<div class="substep-note">
 					<ul class="no-dots-list">
@@ -526,6 +525,25 @@
 			image: '',
 			note: ''
 		};
+
+		const androidCheckDNS = {
+			title: 'Check DNS',
+			content: `
+					<div class="info-box" style="margin-top: 15px;">
+						<div>
+							<ol class="bold-numbers-list">
+								<li>Open <b>Settings</b></li>
+								<li>Search <b>DNS</b></li>
+								<li>Make sure <b>Private DNS</b> is set to <b>Off</b></li>
+							</ol>							
+						</div>
+					</div>
+				`,
+			image: 'img/android/check-dns.png',
+			note: ''
+		};
+
+		////// Check Android Settings
 
 		// App Update
 		const targetVersion = getVersion === 'android13' ? '13+' : '≤12';
@@ -1776,6 +1794,20 @@
 						]
 					},
 
+					// Check Android Settings
+					{
+						name: 'check-android-settings',
+						title: 'Check Android Settings',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							androidCheckDNS,
+							genericFullTroubleshooting
+						]
+					},
+
 					// Not Working / Slow Speed (Complete Troubleshooting)
 					{
 						name: 'not-working',
@@ -1963,6 +1995,20 @@
 							testIPv6,
 							hiddifyResetRegionHotFix,
 							hiddifyChangeServer
+						]
+					},
+					
+					// Check Android Settings
+					{
+						name: 'check-android-settings',
+						title: 'Check Android Settings',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							androidCheckDNS,
+							genericFullTroubleshooting
 						]
 					},
 
@@ -2196,6 +2242,20 @@
 							
 						]
 					},
+					
+					// Check Android Settings
+					{
+						name: 'check-android-settings',
+						title: 'Check Android Settings',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							androidCheckDNS,
+							genericFullTroubleshooting
+						]
+					},
 
 					// Not Working / Slow Speed
 					{
@@ -2383,6 +2443,20 @@
 							clashmetaBasicSettings,
 							clashmetaUpdateProfile,	
 							clashmetaChangeServer,
+							genericFullTroubleshooting
+						]
+					},
+					
+					// Check Android Settings
+					{
+						name: 'check-android-settings',
+						title: 'Check Android Settings',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							androidCheckDNS,
 							genericFullTroubleshooting
 						]
 					},
