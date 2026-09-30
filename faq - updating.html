@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-    <title>PhiCloud</title>
+    <title>PhiCloud - FAQ</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Stylesheet -->
@@ -22,7 +22,6 @@
                 <div class="header-icon"><i class="fas fa-circle-question"></i></div>
                 <div>
                     <h1>FAQ</h1>
-                    <!-- <p>Find answers to common questions</p> -->
                 </div>
             </div>
             <div class="next-btn-placeholder"></div>
@@ -32,6 +31,11 @@
         <div class="content">
             <div class="effective-date">
                 <i class="far fa-calendar-alt"></i> Last updated: April 05, 2026
+            </div>
+
+            <div class="footer-note" style="margin:10px 0 15px 0;">
+                <i class="fas fa-info-circle" style="color:#818bff;"></i> 
+                <b>Tip:</b> You can check current package details and pricing at the <a href="packages.html">Packages Page</a>.
             </div>
             
             <!-- General -->
@@ -63,14 +67,14 @@
                                 <p>To get started:</p>
                                 <ol class="bold-numbers-list">
                                     <li>Visit our <a href="packages.html">Packages page</a> and choose a plan</li>
-                                    <li>Complete your purchase (currently only available via wechat)</li>
+                                    <li>Complete your purchase (currently only available via WeChat)</li>
                                     <li>Go to the <a href="connect_now.html">Connect page</a> for setup instructions</li>
                                 </ol>
                             </div>
                         </div>
                     </div>
                 
-                    <!-- How do I get started? -->
+                    <!-- Difference between paid and free -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What is difference between paid and free service?</h3>
@@ -80,7 +84,8 @@
                             <div class="faq-answer-content">
                                 <table class="comparison-table">
                                     <thead>
-                                        <tr><th>Feature</th><th>Paid Service</th><th>Free Service</th></thead>
+                                        <tr><th>Feature</th><th>Paid Service</th><th>Free Service</th></tr>
+                                    </thead>
                                     <tbody>
                                         <tr><td><strong>Technical Support</strong></td><td><span class="badge-success">Yes (English)</span></td><td><span class="badge-danger">Not available</span></td></tr>
                                         <tr><td><strong>Server Type</strong></td><td>New type</td><td>Old type</td></tr>
@@ -102,15 +107,166 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">
-								<p>Technical support is provided as a <strong>courtesy service</strong> and is not included in your subscription. We do our best to help, but response times may vary (typically 24-72 hours). For immediate assistance, please refer to our comprehensive guides at <a href="guide.html" target="">Guide Page</a>.</p>
+                                <p>Technical support is provided as a <strong>courtesy service</strong> and is not included in your subscription. However, We still try to do our best to help only if the issue persists after following the comprehensive guide and troubleshooting at <a href="guide.html">Guide Page</a>.</p>
                                 <p>You will get reply on priority basis.</p>
                                 <p><strong>Contact:</strong> WeChat ID: <strong>Phi-Link</strong></p>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Yearly Plans -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>Do you offer yearly plans?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>No, we do not sell yearly plans. Available durations are monthly and 6-month (and 3-month for some packages). Please check the <a href="packages.html">Packages Page</a> for current options.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discounts -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>Do you offer any discounts?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>No, we do not offer discounts. Prices are fixed as shown on the <a href="packages.html">Packages Page</a>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload / AI Restrictions -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>Are there any restrictions on uploading YouTube videos or using AI services?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>No, there are <strong>no restrictions</strong> on uploading videos (including YouTube) or using AI services such as ChatGPT, Claude, Gemini, and Copilot.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dedicated AI Group -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>Is there a dedicated group for AI services?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Yes, we have a dedicated group to control GPT, Claude, Gemini, and Copilot services. Contact us on WeChat (<strong>Phi-Link</strong>) for access details.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Network Issues / Backup -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>What if the network suddenly stops working for a few days?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>We have <strong>backup protocols</strong> in place to minimize downtime. If an issue persists, please contact support on WeChat (<strong>Phi-Link</strong>) and we will assist you as a courtesy.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- What is "no reset" -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>What does "no reset" mean?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>No reset</strong> means the data is <strong>permanent</strong> — you can use it until the data is over or your subscription expires. There is no monthly data reset for these packages (Nano and Micro).</p>
+                                <p>For example, Micro gives 1500 GB for 6 months. You can use that 1500 GB at any pace until it runs out or the 6 months end.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-device support -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>Can I use the service on multiple devices (Android, iPhone, MacBook, Windows)?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Supported Devices:</strong> Android, iOS, Windows, macOS, Linux.</p>
+                                <p><strong>macOS:</strong> Version 11+ is required.</p>
+                                <p><strong>iOS/iPhone:</strong> A non-Chinese Apple ID is required to download apps. Verify by downloading NETFLIX from the App Store.</p>
+                                <p><strong>Device Limit:</strong> Basic, Super, and Max support 2–3 devices ideally. Nano and Micro have no device limit.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Which package for 5-6 devices with monthly reset -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>Which package is best for 5–6 devices with monthly data reset?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Basic, Super, and Max support 2–3 devices ideally and have monthly data reset.</p>
+                                <p>Nano and Micro have <strong>no device limit</strong> but <strong>no monthly reset</strong> (permanent data).</p>
+                                <p>If you need monthly reset and many devices, you may need multiple subscriptions or contact support on WeChat (<strong>Phi-Link</strong>) for advice.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- How to buy or renew -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>How do I buy or renew?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Send <strong>Package + Duration + Payment (Red Packet)</strong> on WeChat to <strong>Phi-Link</strong>.</p>
+                                <p><strong>Payment is required before your order can be processed.</strong></p>
+                                <p>Check packages at the <a href="packages.html">Packages Page</a>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Renewal Policy -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>What is the renewal policy?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Please <strong>renew before expiry</strong>. Your subscription will be extended, and the data allowance will reset monthly (for Basic, Super, and Max).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Free Trial & Money Back -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <h3>Do you offer a free trial or money-back guarantee?</h3>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p><strong>Proxy Service:</strong> No free trial currently.</p>
+                                <p><strong>Wi-Fi Router:</strong> 7-day money-back guarantee.</p>
+                            </div>
+                        </div>
+                    </div>
             
                 </div>
-				
             </div>
        
             <!-- Category 2: Technical Questions -->
@@ -118,7 +274,7 @@
                 <h2><i class="fas fa-microchip"></i> Technical Questions</h2>
                 <div class="faq-container">
                     
-                    <!-- FAQ 5: Connection Speed (from second version) -->
+                    <!-- Connection Speed -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>How good is Connection speed?</h3>
@@ -126,13 +282,13 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">
-                                <p><strong>As of December-2025:</strong></p>
+                                <p><strong>As of April-2026:</strong></p>
                                 <ul>
-                                    <li><strong>Basic:</strong> 10-30 Mbps</li>
-                                    <li><strong>Super:</strong> 30-50 Mbps</li>
-                                    <li><strong>Max:</strong> 50-100 Mbps</li>
-                                    <li><strong>Nano:</strong> 50-100 Mbps</li>
-                                    <li><strong>Micro:</strong> 50-100 Mbps</li>
+                                    <li><strong>Basic:</strong> 30 Mbps</li>
+                                    <li><strong>Super:</strong> 50 Mbps</li>
+                                    <li><strong>Max:</strong> 100 Mbps</li>
+                                    <li><strong>Nano:</strong> 100 Mbps</li>
+                                    <li><strong>Micro:</strong> 100 Mbps</li>
                                 </ul>
                                 <div class="note-box-faq">
                                     <i class="fas fa-info-circle"></i> <strong>Notes:</strong>
@@ -142,7 +298,7 @@
                         </div>
                     </div>
                     
-                    <!-- FAQ 6: Ping Rate (from second version) -->
+                    <!-- Ping Rate -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What is Ping rate (numbers in front of servers)?</h3>
@@ -152,13 +308,13 @@
                             <div class="faq-answer-content">
                                 <p>Ping Rate is technically based on the distance between your location and the server.</p>
                                 <p>
-									<span class="badge-success">Green (Good)</span> 
-										<i class="fa-solid fa-greater-than"></i> 
-									<span class="badge-blue">Blue</span> 
-										<i class="fa-solid fa-greater-than"></i> 
-									<span class="badge-warning">Yellow</span>
-										<i class="fa-solid fa-greater-than"></i>
-									<span class="badge-danger">Red (Timeout or no connection)</span></p>
+                                    <span class="badge-success">Green (Good)</span> 
+                                        <i class="fa-solid fa-greater-than"></i> 
+                                    <span class="badge-blue">Blue</span> 
+                                        <i class="fa-solid fa-greater-than"></i> 
+                                    <span class="badge-warning">Yellow</span>
+                                        <i class="fa-solid fa-greater-than"></i>
+                                    <span class="badge-danger">Red (Timeout or no connection)</span></p>
                                 <p>Ping rate does not define your actual Download/Upload speed.</p>
                                 <div class="note-box-faq">
                                     <i class="fas fa-info-circle"></i> <strong>Notes:</strong>
@@ -168,7 +324,7 @@
                         </div>
                     </div>
                     
-                    <!-- FAQ 7: Servers Available (from second version) -->
+                    <!-- Servers Available -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>How many Servers or Countries available?</h3>
@@ -178,12 +334,12 @@
                             <div class="faq-answer-content">
                                 <p>Only servers/countries with good connections are available and number of servers may vary time to time.</p>
                                 <p><strong>As of April-2026:</strong></p>
-                                    HongKong, Japan, Singapore, Taiwan, US, Vietnam, Thailand, Philippines
+                                HongKong, Japan, Singapore, Taiwan, US, Vietnam, Thailand, Philippines
                             </div>
                         </div>
                     </div>
                     
-                    <!-- FAQ 8: How many devices (from second version) -->
+                    <!-- How many devices -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>How many devices OR Which devices can connect?</h3>
@@ -191,8 +347,9 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">
-                                <p><strong>Supported Devices:</strong> Android, iOS, Windows, MacOS, Linux</p>
-                                <p><strong>Device Limit:</strong> Ideal limit is 2~3 devices at the same time.</p>
+                                <p><strong>Supported Devices:</strong> Android, iOS, Windows, macOS, Linux</p>
+                                <p><strong>macOS:</strong> Version 11+ required.</p>
+                                <p><strong>Device Limit:</strong> Ideal limit is 2~3 devices at the same time for Basic, Super, and Max. Nano and Micro have no device limit.</p>
                                 <div class="note-box-faq">
                                     <i class="fas fa-exclamation-triangle"></i> More devices will cause issues with speed and latency, and eventually your account being blocked.
                                 </div>
@@ -200,7 +357,7 @@
                         </div>
                     </div>
                     
-                    <!-- FAQ 9: Which App/Software (from second version) -->
+                    <!-- Which App/Software -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>Which App/Software can be used to get connected?</h3>
@@ -208,13 +365,13 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">
-                                <p>A subscription link provided that can be used with any compatible software. Recommended to use apps/software via <a href="connect_now.html" target="">Connect Page</a></p> for optimized experience</p>
-								<p>Check Compatible Apps/software at <a href="guide.html" target="">Guide Page</a></p>
+                                <p>A subscription link provided that can be used with any compatible software. Recommended to use apps/software via <a href="connect_now.html">Connect Page</a> for optimized experience.</p>
+                                <p>Check Compatible Apps/software at <a href="guide.html">Guide Page</a>.</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- FAQ 10: Expiry Date & Remaining Data (from second version) -->
+                    <!-- Expiry Date & Remaining Data -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>How to check "Expiry Date" & "Remaining Traffic/Data"?</h3>
@@ -222,21 +379,19 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">
-								<strong>Methods</strong>
-                                <ul class="no-dots-list"><li>
-									Check the confirmation message sent after your purchase
-								</li><li>
-									<strong>OR</strong> Check Profile tab
-								</li><li>
-									<strong>OR</strong> Check servers list for Expiry date and Remaining Data
-								</li></ul>
+                                <strong>Methods</strong>
+                                <ul class="no-dots-list">
+                                    <li>Check the confirmation message sent after your purchase</li>
+                                    <li><strong>OR</strong> Check Profile tab</li>
+                                    <li><strong>OR</strong> Check servers list for Expiry date and Remaining Data</li>
+                                </ul>
                                 <p><strong>Clash Mi / Clash Meta / Hiddify:</strong><br>When connected, it will show the package details (Expiry date and Remaining Data)</p>
                                 <p><strong>Clash Verge:</strong><br>Check your profile in Profiles tab.</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- FAQ 11: Package Change / Update / Renew (from second version) -->
+                    <!-- Package Change / Update / Renew -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>How to Package Change / Update / Renew?</h3>
@@ -244,12 +399,12 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">                                
-                                <p>Check Packages at <a href="packages.html" target="">Packages Page</a></p>
-								<p>Send Package-Name & Payment (🧧Red-Packet) on wechat <i class="fa-brands fa-weixin" style="color:green;"></i></p>
+                                <p>Check Packages at <a href="packages.html">Packages Page</a>.</p>
+                                <p>Send Package-Name & Payment (🧧Red-Packet) on WeChat <i class="fa-brands fa-weixin" style="color:green;"></i></p>
                                 <div class="note-box-faq-yellow">
-									<i class="fas fa-calendar-check"></i>
-									<strong>Renewal Policy:</strong> Kindly renew before your expiry date. Remaining days will be added to your new subscription, and your data limit will reset on a monthly basis.
-								</div>
+                                    <i class="fas fa-calendar-check"></i>
+                                    <strong>Renewal Policy:</strong> Kindly renew before your expiry date. Remaining days will be added to your new subscription, and your data limit will reset on a monthly basis (for Basic, Super, and Max).
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -262,7 +417,7 @@
                 <h2><i class="fas fa-tag"></i> Packages & Pricing</h2>
                 <div class="faq-container">
                     
-                    <!-- FAQ 12: Difference between packages (from first and second version combined) -->
+                    <!-- Difference between packages -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What is difference between packages?</h3>
@@ -271,11 +426,11 @@
                         <div class="faq-answer">
                             <div class="faq-answer-content">
                                 <ul>
-                                    <li><strong><i class="fas fa-globe"></i> Basic</strong> — 500GB/Month (for basic usage, social media etc.)</li>
-                                    <li><strong><i class="fas fa-rocket"></i> Super</strong> — 1000GB/Month 🔥 (for high-quality streaming)</li>
-                                    <li><strong><i class="fas fa-gauge-high"></i> Max</strong> — unlimited/Month (High speed, watch 4k videos without buffering, gaming, etc.)</li>
-                                    <li><strong><i class="fas fa-n"></i> Nano</strong> — 500GB permanent data, 100Mbps - no monthly reset, no device limit</li>
-                                    <li><strong><i class="fas fa-m"></i> Micro</strong> — 1000GB permanent data, 100Mbps - no monthly reset, no device limit</li>
+                                    <li><strong><i class="fas fa-globe"></i> Basic</strong> — 500 GB/Month (for basic usage, social media etc.)</li>
+                                    <li><strong><i class="fas fa-rocket"></i> Super</strong> — 1000 GB/Month 🔥 (for high-quality streaming)</li>
+                                    <li><strong><i class="fas fa-gauge-high"></i> Max</strong> — 2000 GB/Month (High speed, watch 4k videos without buffering, gaming, etc.)</li>
+                                    <li><strong><i class="fas fa-n"></i> Nano</strong> — 750 GB permanent data, 100 Mbps - no monthly reset, no device limit</li>
+                                    <li><strong><i class="fas fa-m"></i> Micro</strong> — 1500 GB permanent data, 100 Mbps - no monthly reset, no device limit</li>
                                 </ul>
                                 <div class="note-box-faq">
                                     <i class="fas fa-info-circle"></i> <strong>Note:</strong> You can either get Large Traffic/Data or High Speed, both can't be in the same package together.
@@ -285,7 +440,7 @@
                         </div>
                     </div>
                     
-                    <!-- FAQ 13: Wi-Fi Package (from second version) -->
+                    <!-- Wi-Fi Package -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What is Wi-Fi package?</h3>
@@ -294,9 +449,9 @@
                         <div class="faq-answer">
                             <div class="faq-answer-content">
                                 <ul>
-                                    <li><strong><i class="fas fa-wifi"></i> Wi-Fi (Old Device – Modified Version):</strong> 799¥</li>
-                                    <li><strong><i class="fas fa-wifi"></i> Wi-Fi (New Device):</strong> 1200¥</li>
-                                    <li><strong>Yearly Renewal:</strong> 400¥-500¥</li>
+                                    <li><strong><i class="fas fa-wifi"></i> Wi-Fi (New Device):</strong> ¥1199</li>
+                                    <li><strong><i class="fas fa-wifi"></i> Wi-Fi (Modified/Old Device):</strong> ¥799</li>
+                                    <li><strong>Yearly Renewal:</strong> ¥400-500</li>
                                 </ul>
                                 <p><strong>Includes:</strong> 1-Year Max Package & Wi-Fi Device</p>
                                 <p><strong>Requirements:</strong> Working Wi-Fi internet with personal device</p>
@@ -317,7 +472,7 @@
                         </div>
                     </div>
                     
-                    <!-- FAQ 14: What payment methods do you accept? (from first version) -->
+                    <!-- Payment methods -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What payment methods do you accept?</h3>
@@ -330,7 +485,7 @@
                         </div>
                     </div>
                     
-                    <!-- FAQ 15: Can I get a refund? (from first version) -->
+                    <!-- Refund -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>Can I get a refund?</h3>
@@ -343,7 +498,7 @@
                         </div>
                     </div>
                     
-                    <!-- FAQ 16: Data Limit Exceeded (from second version) -->
+                    <!-- Data Limit Exceeded -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What if Data Limit is exceeded?</h3>
@@ -351,21 +506,7 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">
-                                <p>Contact admin for package renewal.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- FAQ 17: Free Trial & Money Back (from second version) -->
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <h3>Do you offer a free trial or money-back guarantee?</h3>
-                            <i class="fas fa-chevron-down faq-icon"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <div class="faq-answer-content">
-                                <s><p><strong>Proxy Service:</strong> One day free trial (with technical support)</p></s>
-                                <p><strong>Wi-Fi Router:</strong> 7-Days money back Guarantee.</p>
+                                <p>Contact admin for package renewal. For Nano and Micro, data is permanent until over or expired.</p>
                             </div>
                         </div>
                     </div>
@@ -378,7 +519,7 @@
                 <h2><i class="fa-brands fa-openai"></i> ChatGPT Services</h2>
                 <div class="faq-container">
                     
-                    <!-- FAQ 18: Plus, Shared, and Team plans --
+                    <!-- Difference between Plus, Shared, Team -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What's the difference between Plus, Shared, and Team plans?</h3>
@@ -386,16 +527,15 @@
                         </div>
                         <div class="faq-answer">
                             <div class="faq-answer-content">
-                                <p><strong>Plus (Personal):</strong> ¥40/month - Upgrade your own account, no data loss, renewal available.</p>
-                                <p><strong>Plus (Shared):</strong> ¥15/month - Shared official account with 2-3 users, one device only.</p>
+                                <p><strong>Plus (Personal):</strong> ¥20-60/month - Upgrade your own account, no data loss, renewal available. Warranty varies by tier.</p>
+                                <p><strong>Plus (Shared):</strong> ¥25/month - Shared official account with 2-3 users, one device only.</p>
                                 <p><strong>Team (High Risk):</strong> ¥15-30/month - Activated on your email, but accounts are being banned rapidly by OpenAI. Purchase at your own risk.</p>
                                 <p><strong>Pro (Shared):</strong> ¥80/month (currently unavailable) - Pro features with shared access.</p>
                             </div>
                         </div>
                     </div>
-					-->
                     
-                    <!-- FAQ 19: Transfer ChatGPT Team data -->
+                    <!-- Transfer ChatGPT Team data -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>Can I transfer my ChatGPT Team data?</h3>
@@ -419,7 +559,7 @@
                 <h2><i class="fas fa-user"></i> Account Services</h2>
                 <div class="faq-container">
                     
-                    <!-- FAQ 20: Apple ID accounts -->
+                    <!-- Apple ID -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>How do Apple ID accounts work?</h3>
@@ -430,11 +570,12 @@
                                 <p>We offer two options:</p>
                                 <p><strong>Complete:</strong> Apple ID + password with active linked email. You can authenticate with your own phone number.</p>
                                 <p><strong>Self-Setup:</strong> Only Apple ID and password provided.</p>
+                                <p><strong>Note:</strong> A non-Chinese Apple ID is required to download apps on iOS. Verify by downloading NETFLIX from the App Store.</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- FAQ 21: MS365 and Gemini services -->
+                    <!-- MS365 and Gemini -->
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFaq(this)">
                             <h3>What is included with MS365 and Gemini services?</h3>
