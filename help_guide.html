@@ -141,9 +141,13 @@
 
 		const serverChangeBottomNoteText = `
 			<p>				
-				Note: <br>
-				<b>TikTok</b>, <b>ChatGPT</b>, and <b>Claude</b> are <b style="color:#cb0000;">Not available</b> in <b>Hong Kong</b> <br>
+				Notes: <br>
+				<b>TikTok</b> and <b>Ai services</b> <i style="font-size:15px;">(ChatGPT, Claude, Gemeini, etc.)</i> are <b style="color:#cb0000;">Not available</b> in <b>Hong Kong</b> <br>
 			</p>
+		`;
+
+		const serverChangeAiNoteText = `
+			<p> </p>
 		`;
 
 		const changeServerNotesHTML = `
@@ -1640,7 +1644,53 @@
 			image: 'img/clashverge/offline-profile-2.png',
 			note: ``
 		};
-				
+
+		const clashvergeTunnelMode = {
+			title: 'Tunnel Mode',
+			content: `
+					<div class="info-box" style="margin-top: 15px;">
+						<div>
+							<ol class="bold-numbers-list">											
+								<li><b>Right-Click</b> on the <b>Clashverge icon</b> and <b>run as administrator</b></li>
+								<li>Open <b>Home</b> tab</li>
+								<li>Network Settings → System Proxy  → Disable</li>
+								<li>Network Settings → Tun Mode</li>
+								<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Tun Mode</b></li>
+							</ol>
+						</div>
+					</div>
+					
+					<div class="info-box">
+						<div class="substep-container ">
+							<details class="accordion-item" style="margin: 10px 0;">
+								<summary class="substep-title" style="cursor: pointer; list-style: none;">
+									<i class="fa-solid fa-info-circle"></i> For Clashverge v2.5.2 and older
+									<i style="font-size:14px;">(Click to Open)</i>
+								</summary>
+								<div style="substep-content">
+									<p>&nbsp;</p>
+									<ol class="bold-numbers-list">											
+										<li>Goto Home</li>
+										<li>Network Settings → System Proxy  → Disable</li>
+										<li>Network Settings → Tun Mode</li>
+										<li>Click <i class="fa-solid fa-wrench"></i> to install</li>
+										<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Tun Mode</b></li>
+									</ol>
+									<img src="img/clashverge/enable-tun.png" alt="Tunnel Mode" class="step-image" onclick="openModal('img/clashverge/enable-tun.png')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+								</div>
+							</details>
+						</div>
+					</div>
+
+					<div class="notice-box" style="margin-top: 15px;">
+						<i class="fa-solid fa-info-circle"></i>
+						<b style="color:#cb0000;">Disable System proxy</b> if you want to <b style="color:green;">Enable Tunnel Mode</b>.
+					</div>
+				`,
+			image: 'img/clashverge/enable-tun-new.png',
+			note: ``
+		};
+		
 		////// Netflix
 		const netflixVideoNotAvailable = {
 			title: 'Change Server',
@@ -2908,6 +2958,22 @@
 						substeps: [
 							clashvergeConnectionSettings,
 							clashvergeChangeServerAi,
+							genericFullTroubleshooting
+
+						]
+					},
+
+					// Codex/ClaudeCode/Gemini not working
+					{
+						name: 'ai-app-problem',
+						title: 'Codex/ClaudeCode/AntiGravity not working',
+						category: '',
+						image: '',
+						imageCaption: '',
+						content: '',
+						substeps: [
+							clashvergeTunnelMode,
+							clashvergeChangeServer,
 							genericFullTroubleshooting
 
 						]
