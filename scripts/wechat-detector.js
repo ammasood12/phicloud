@@ -7,11 +7,11 @@ const FORCE_WECHAT_MODE = false; // Turn off testing mode
 let isWeChat = false;
 
 // ===== GENERAL NOTICE =====
-const SHOW_HOLIDAY_NOTICE = true; // Set to false to hide the holiday notice
-// const SHOW_HOLIDAY_NOTICE = false; // Set to false to hide the holiday notice
+// const SHOW_MAIN_NOTICE = true; // Set to false to hide the main notice
+const SHOW_MAIN_NOTICE = false; // Set to false to hide the main notice
 
 function createInfoBoxAlert() {
-    if (!SHOW_HOLIDAY_NOTICE) return;
+    if (!SHOW_MAIN_NOTICE) return;
     if (document.getElementById('websiteGeneralNotice')) return;
 
     const alertBox = document.createElement('div');

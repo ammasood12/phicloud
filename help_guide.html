@@ -600,6 +600,29 @@
 			</div>
 			`;
 
+		const restartSocialApp = {
+			title: (device === 'windows' || device === 'mac') ? 'Refresh Page' : 'Restart App',
+			content: (device === 'windows' || device === 'mac') ? `
+						<div class="info-box">
+							<div>
+								<ul class="no-dots-list">
+									<li>Press <b>F5</b> or <i class="fa-solid fa-sync-alt"></i> to Refresh website page </li>
+								</ul>
+							</div>
+						</div>
+						` : `	
+						<div class="info-box">
+							<div>
+								<ul class="no-dots-list">
+									<li>Close Facebook, Youtube, instagram etc. App & Open again</li>
+								</ul>
+							</div>
+						</div>						
+						`,	
+			image: '',
+			note: ''
+		};
+
 
 		////// ClashMi
 		const clashmiUpdateApp = {
@@ -1815,6 +1838,8 @@
 			note: ``
 		};
 
+
+		////// All Configs
 		const configs = {
 
 			// Clash Mi
@@ -1966,6 +1991,7 @@
 						content: '',
 						substeps: [
 							clashmiChangeServer,
+							restartSocialApp,
 							genericFullTroubleshooting
 
 						]
@@ -2193,6 +2219,7 @@
 						content: '',
 						substeps: [
 							hiddifyChangeServer,
+							restartSocialApp,
 							genericContactSupport
 
 						]
@@ -2398,6 +2425,7 @@
 						content: '',
 						substeps: [
 							flclashChangeServer,
+							restartSocialApp,
 							genericFullTroubleshooting
 						]
 					},
@@ -2567,6 +2595,7 @@
 						content: '',
 						substeps: [
 							clashmetaChangeServer,
+							restartSocialApp,
 							genericFullTroubleshooting
 						]
 					},
@@ -2718,6 +2747,7 @@
 						content: '',
 						substeps: [
 							shadowrocketChangeServer,
+							restartSocialApp,
 							genericFullTroubleshooting
 						]
 					},
@@ -3040,6 +3070,7 @@
 						content: '',
 						substeps: [
 							clashvergeChangeServer,
+							restartSocialApp,
 							genericFullTroubleshooting
 						]
 					},
