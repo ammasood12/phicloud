@@ -555,7 +555,7 @@
 		// const targetDownload = device === 'ios' 
 			// ? getDownloadLink('app', 'ios')
 			// : getDownloadLink('app', 'android', getVersion === 'android13' ? 'version13' : 'version12');
-		const targetDownload = getDownloadLink(app, device, getVersion);
+		const targetDownload = getDownloadLink(app, device, getVersion, 'noproxy');
 		const targetDownloadProxy = getDownloadLink(app, device, getVersion, 'proxy');
 		const targetApp_version = getAppVersion(app, device) || '0.0';
 		const targetApp_update = getReleaseDate(app, device) || '0.0';
@@ -570,26 +570,40 @@
 									: '<b>Download installation</b> file'}
 			</div>
 			<div class="download-actions">
-				<!-- <span class="step-title" style="color:red;">Required: ${targetRequired}</span> -->
-				<a  class="btn btn-primary" 
-					style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
-					href="${targetDownloadProxy}" 
-					target="_blank" 
-					onclick="return handleWeChatCheck(event, '${targetDownloadProxy}')">
-						<i class="fas fa-download"></i> Download v${targetApp_version}
-				</a>
-
-				<!-- Direct Download Link -->
 				${device !== 'ios' ? `
-				<i class="step-title" style="color: #cb0000; text-align: center;">if above link is not working, <br>use Download Link 2.</i>
-				<a href="${targetDownload}" 
-					target="_blank" 
-					class="btn btn-primary" 
-					style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
-					onclick="return handleWeChatCheck(event, '${targetDownload}')">
-						<i class="fas fa-download"></i> Download Link 2
-				</a>					
-				` : ``}
+					<!-- <span class="step-title" style="color:red;">Required: ${targetRequired}</span> -->
+					
+					<!-- Proxied Download Link -->
+					<a  class="btn btn-primary" 
+						style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+						href="${targetDownloadProxy}" 
+						target="_blank" 
+						onclick="return handleWeChatCheck(event, '${targetDownloadProxy}')">
+							<i class="fas fa-download"></i> Download v${targetApp_version}
+					</a>
+
+					<!-- Direct Download Link -->
+					<i class="step-title" style="color: #cb0000; text-align: center;">if above link is not working, <br>use Download Link 2.</i>
+					<a href="${targetDownload}" 
+						target="_blank" 
+						class="btn btn-primary" 
+						style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+						onclick="return handleWeChatCheck(event, '${targetDownload}')">
+							<i class="fas fa-download"></i> Download Link 2
+					</a>							
+				` : 
+				`					
+					<!-- <span class="step-title" style="color:red;">Required: ${targetRequired}</span> -->
+					
+					<!-- for iOS: Direct Download Link -->
+					<a  class="btn btn-primary" 
+						style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; text-decoration: none; margin: 0 auto;"
+						href="${targetDownload}" 
+						target="_blank" 
+						onclick="return handleWeChatCheck(event, '${targetDownload}')">
+							<i class="fas fa-download"></i> Download v${targetApp_version}
+					</a>
+				`}
 
 
 				<!--
