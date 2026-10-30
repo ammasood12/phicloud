@@ -1718,17 +1718,16 @@
                     
 					// Settings
 					{ 
-						name: 'settings',
-                        title: 'DNS Settings',  
+						name: 'startup-settings',
+                        title: 'Startup',  
 						category: 'connect',
-						image: 'img/flclash/startup-settings.png',
+						image: 'img/flclash/disclaimer.png',
 						imageCaption: 'click on image to open',
 						content:  `<div class="info-box">
 										<ol class="bold-numbers-list">
-											<li>Go to <i class="fas fa-tools""></i> <b>Tools</b></li>
-											<li>Open <i class="fas fa-wrench""></i> <b>Advance Configuration</b></li>
-											<li>Open <i class="fa-solid fa-server"></i> <b>DNS</b></li>
-											<li>enable <i class="fa-solid fa-toggle-on"></i> <b>Override DNS</b></li>
+											<li>Click <b>Agree</b></li>
+											<li><b>Copy & Paste</b> the Statement</li>
+											<li>Press <b>Confirm</b></li>
 										</ol>
 									</div>`,
                         substeps:[]
@@ -1738,7 +1737,7 @@
 					{ 
 						name: 'enable-ipv6',
                         title: 'Enable IPv6',  
-						category: 'connect',
+						category: '',
 						image: 'img/flclash/enable-ipv6.png',
 						imageCaption: 'click on image to open',
 						content:  `<div class="info-box">
@@ -1770,11 +1769,13 @@
 									</div>										
 									<div class="info-box">
 										<ol class="bold-numbers-list">
-											<li><li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li></li>
+											<li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li>
 											<li>Open <b>Profiles</b> tab</li>
-											<li>Click <b>URL</b></li>
-											<li>Click on ➕ <b>sign</b></li>
+											<li>Press on <i class="fa-solid fa-circle-plus"></i> <b>Add Profile</b></li>
+											<li>Press <b>Link or URL</b></li>
 											<li>Paste <b>YOUR PROFILE LINK</b></li>
+											<li>Press <i class="fa-solid fa-check"></i> to import profile</li>
+											<span style="color: #cb0000;"><b>Note: if there is an error while importing, use Backup Link to import profile.</b></span>
 										</ol>
 									</div>`,
                         substeps: []
@@ -1804,19 +1805,16 @@
 					{ 
 						name: 'refresh-servers', 
                         title: 'Refresh Servers',  
-						category: 'guide',				
-						image: 'img/flclash/refresh-servers.png',
+						category: 'guide',
+						image: 'img/flclash/change-server-1.png',
                         imageCaption: '',
 						content: `								
 								<div class="info-box">
-									<ol class="bold-numbers-list"><li>
-										Connect <i class="fa-solid fa-toggle-on"></i>
-									</li><li>
-										Open <b>Proxies Tab</b>
-									</li>
-									</li><li>
-										Click <i class="fa-solid fa-arrow-trend-up"></i> to refresh all servers
-									</li></ol>
+									<ol class="bold-numbers-list">
+										<li>Connect <i class="fa-solid fa-toggle-on"></i></li>
+										<li>Open <b>Proxies Tab</b></li>
+										<li>Click <i class="fa-solid fa-bolt"></i> to refresh all servers</li>
+									</ol>
 								</div>
 								<div class="substep-note">
 									<i class="fas fa-triangle-exclamation" style="color: orange;"></i>
@@ -1831,7 +1829,7 @@
 					{ 
 						name: 'change-server', 
                         title: 'Change Server',  
-						category: 'connect',				
+						category: 'connect',
 						image: 'img/flclash/change-server-1.png',
                         imageCaption: '',
 						content: `
@@ -1897,61 +1895,35 @@
 						name: 'check-expiry', 
                         title: 'Check Expiry & Data Usage',  
 						category: 'guide',
-						image: '',
+						image: 'img/flclash/check-expiry.png',
                         imageCaption: '',
 						content: `
-								`,
-                        substeps: [
-							{
-								title: 'App Homepage',
-                                content: ``,
-								image: 'img/flclash/check-expiry-1.png',
-                                note: ''
-							},
-							{
-								title: 'Servers List',
-                                content: `
 									<div class="info-box">
-										<ol class="bold-numbers-list"><li>
-											Open <strong>Proxy</strong> tab
-										</li><li>
-											Check <strong>Expiry</strong> date in the 🚀 <b>Gloabl</b> group
-										</li></ol>
+										<div>											
+											<ol class="bold-numbers-list">
+												<b>Profiles Page</b>
+												<li>Open <strong>Profiles</strong> tab</li>
+												<li>Check details of your profile</li>
+											</ol>
+											&nbsp;
+											<ol class="bold-numbers-list">
+												<b>Servers List</b>
+												<li>Open <strong>Proxy</strong> tab</li>
+												<li>Check <strong>Expiry</strong> & <strong>Traffic</strong> in the 🚀 <b>Gloabl</b> group</li>
+											</ol>
+										</div>
 									</div>
-									`,
-								image: 'img/flclash/check-expiry-2.png',
-                                note: ''
-							}
-                        ]
+								`,
+                        substeps: []
                     },
 					
 					// Update App
 					{ 
 						name: 'update-app', 
                         title: 'Update App',  
-						category: 'guide',					
-						image: 'img/flclash/android/update.png',
+						category: 'guide',
+						image: '',
                         imageCaption: '',
-						content: `	
-									<div class="info-box">
-										<ol class="bold-numbers-list"><li>
-											Open <i class="fa-solid fa-tools"></i> <b>Tools</b>
-										</li><li>
-											Open <i class="fa-solid fa-circle-info"></i> <b>About</b>
-										</li><li>
-											Click <b>Check for Update</b>
-										</li><li>
-											Click <b>Go Downloads</b>
-										</li><li>
-											Confirm Latest
-										</li><li>
-											Click to download APK ARMv8 file
-										</li></ol>
-									</div>`,
-                        substeps: 
-							[
-								{
-									title: 'OR Update Manually',
 									content: `
 										<div class="info-box" style="margin-top: 15px;">
 											<i class="fas fa-download" style="color: #818bff;"></i>
@@ -1964,7 +1936,22 @@
 											<i class="fas fa-download"></i> Download Page
 										</button>
 										</div>`,
-									image: '',
+                        substeps: 
+							[
+								{
+									title: 'OR Download Directly',
+									content: `	
+											<div class="info-box">
+												<ol class="bold-numbers-list">
+													<li>Open <i class="fa-solid fa-tools"></i> <b>Tools</b></li>
+													<li>Open <i class="fa-solid fa-circle-info"></i> <b>About</b></li>
+													<li>Click <b>Check for Update</b></li>
+													<li>Click <b>Go Downloads</b></li>
+													<li>Confirm Latest</li>
+													<li>Click to download APK ARMv8 file</li>
+												</ol>
+											</div>`,
+									image: 'img/flclash/android/update.png',
 									note: ''
 								}
                         ]
