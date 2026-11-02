@@ -3,8 +3,11 @@
 header('Content-Type: application/json');
 
 $cacheFile = __DIR__ . '/app_versions.json';
-$interval = 86400;
-// 12 hours -> 43200 seconds, 24 hours -> 86400 seconds
+$interval = 21600;
+// 6 hours -> 21600 seconds
+// 12 hours -> 43200 seconds
+// 24 hours -> 86400 seconds
+// 48 hours -> 172800 seconds
 
 // GitHub repos (Android/Windows/Mac/Linux versions)
 $githubRepos = [
