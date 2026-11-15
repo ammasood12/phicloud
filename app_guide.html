@@ -282,7 +282,10 @@
 					</div>	
 				</div>
 				`;
-
+				
+		const useBackupLinkNoteHTML = `
+				<span style="color: #cb0000;"><b>Note:</b> if there is an <b>error</b> while importing, use <b>Backup Link</b> to import profile.</span>
+			`;
 		
 		// App Update
 		const targetVersion = getVersion === 'android13' ? '13+' : '≤12';
@@ -517,6 +520,7 @@
 											<li>Click on ➕ <b>sign</b></li>
 											<li>Tap <b><i class="fa-regular fa-clipboard"></i> Import From Clipboard</b></li>
 											<li>Click ✔️</li>
+											${useBackupLinkNoteHTML}
 										</ol>
 									</div>`,
                         substeps: [
@@ -882,6 +886,7 @@
 											<li>Paste <b>YOUR PROFILE LINK</b></li>
 											<li>Write <b>PhiCloud</b></li>
 											<li>Tap <b>Save</b></li>
+											${useBackupLinkNoteHTML}
 										</ol>
 									</div>`,
                         substeps: []
@@ -1328,6 +1333,7 @@
 											<li>Copy <b>YOUR PROFILE LINK</b> from WeChat message</li>
 											<li>Tap on ➕ icon</li>
 											<li>Select <b>Clipboard</b></li>
+											${useBackupLinkNoteHTML}
 										</ol>
 									</div>`,
                         substeps: []
@@ -1775,7 +1781,7 @@
 											<li>Press <b>Link or URL</b></li>
 											<li>Paste <b>YOUR PROFILE LINK</b></li>
 											<li>Press <i class="fa-solid fa-check"></i> to import profile</li>
-											<span style="color: #cb0000;"><b>Note: if there is an error while importing, use Backup Link to import profile.</b></span>
+											${useBackupLinkNoteHTML}
 										</ol>
 									</div>`,
                         substeps: []
@@ -2110,6 +2116,7 @@
 											<li>Paste <b>YOUR PROFILE LINK</b></li>
 											<li>Write <b>1440</b></li>
 											<li>Tap <i class="fa-solid fa-floppy-disk"></i> <b>Save</b> to save profile.</li>
+											${useBackupLinkNoteHTML}
 										</ol>
 									</div>`,
                         substeps: []
@@ -2544,7 +2551,7 @@
 											<li>Paste <b>URL</b> at the <i class="fa-regular fa-clipboard"></i> top bar</li>
 											<li>Click <b>Import</b></li>
 											<li>Click on <b>PhiCloud PROFILE</b> to select</li>
-											<span style="color: #cb0000;"><b>Note:</b> If unable to import profile link, use <b>Backup Link</b>.</span>
+											${useBackupLinkNoteHTML}
 										</ol>
 									</div>`,
                         substeps: [
@@ -2801,10 +2808,12 @@
 						content: `	
 								<div class="info-box" style="margin-top: 15px;">
 									<div>
-										<ol class="bold-numbers-list">											
-											<li><b>Right-Click</b> on the <b>Clashverge icon</b> and <b>run as administrator</b></li>
-											<li>Home → Network Settings → Tun Mode</li>
+										<ol class="bold-numbers-list">
+											<li>Goto <b>Home</b> → <b>Network Settings</b></li>
+											<li>Disable <i class="fa-solid fa-toggle-off"></i> <b>System Proxy</b></li>
+											<li>Open <b>Tun Mode</b></li>
 											<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Tun Mode</b></li>
+											<li>Click <b>Install Service</b></li>
 										</ol>
 									</div>
 								</div>
@@ -2813,18 +2822,17 @@
 									<div class="substep-container ">
 										<details class="accordion-item" style="margin: 10px 0;">
 											<summary class="substep-title" style="cursor: pointer; list-style: none;">
-												<i class="fa-solid fa-info-circle"></i> For Clashverge v2.5.2 and older
+												<i class="fa-solid fa-info-circle"></i> Method 2: Run as Administrator
 												<i style="font-size:14px;">(Click to Open)</i>
 											</summary>
 											<div style="substep-content">
 												<p>&nbsp;</p>
-												<ol class="bold-numbers-list">											
-													<li>Goto Home</li>
-													<li>Network Settings → Tun Mode</li>
-													<li>Click <i class="fa-solid fa-wrench"></i> to install</li>
+												<ol class="bold-numbers-list">													
+													<li><b>Right-Click</b> on the <b>Clashverge icon</b> and <b>run as administrator</b></li>
+													<li>Home → Network Settings → Tun Mode</li>
 													<li>Enable <i class="fa-solid fa-toggle-on"></i> <b>Tun Mode</b></li>
 												</ol>
-												<img src="img/clashverge/enable-tun.png" alt="Tunnel Mode" class="step-image" onclick="openModal('img/clashverge/enable-tun.png')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+												<img src="img/clashverge/enable-tun-admin.png" alt="Tunnel Mode" class="step-image" onclick="openModal('img/clashverge/enable-tun-admin.png')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
 											</div>
 										</details>
 									</div>
@@ -2889,7 +2897,7 @@
 						substeps: []
                     }] : []),	
 
-					// Note for DISABLED
+					// Note for HIT-SZ -> DISABLED
 					...(device === 'disable' ? [
                     { 
 						name: 'note-hitsz',
@@ -3624,7 +3632,7 @@
 									<ol class="bold-numbers-list">
 										<li>Make sure that not any <b>VPN</b> is working in the background </li>
 										<li>
-											If you have any <b>internet Protection software</b> installed e.g. RAV point, etc.<br>
+											If you have any <b>internet Protection software</b> installed e.g. RAV point, AdBlocker, etc.<br>
 											<strong>Uninstall &amp; restart computer</strong> to prevent connection issues.
 										</li>
 									</ol>
